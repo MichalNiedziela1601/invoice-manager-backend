@@ -1,0 +1,10 @@
+pg:
+  image: postgres:9.4
+  expose:
+    - "5432"
+  ports:
+    - "5432:5432"
+  environment:
+    - POSTGRES_PASSWORD=invoice-zaq1@WSX
+    - POSTGRES_USER=invoice_manager
+    - POSTGRES_DB=invoice_manager
