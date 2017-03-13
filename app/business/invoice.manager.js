@@ -6,6 +6,11 @@ function getInvoice()
     return invoiceDao.getInvoice();
 }
 
+function addInvoice(invoice)
+{
+    return invoiceDao.addInvoice(invoice);
+}
+
 module.exports = {
-    getInvoice
+    getInvoice, addInvoice
 };
