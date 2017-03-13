@@ -7,7 +7,11 @@ function getInvoice()
     return db.any(sql).then(result =>
     {
         return result;
-    })
+    }).catch(error =>
+    {
+        console.log('ERROR:', error.message || error);
+        return error;
+    });
 }
 
 module.exports = {
