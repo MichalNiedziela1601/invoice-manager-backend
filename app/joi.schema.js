@@ -15,6 +15,14 @@ module.exports = {
             companyRecipent: [Joi.number().integer(), Joi.allow(null)],
             personDealer: [Joi.number().integer(), Joi.allow(null)],
             personRecipent: [Joi.number().integer(), Joi.allow(null)]
+        },
+        contractor: {
+            name: Joi.string().min(2).required(),
+            shortcut: Joi.string(),
+            nip: Joi.number().required(),
+            regon: Joi.number(),
+            email: Joi.string().email(),
+            address: Joi.number().required()
         }
     }
 };
