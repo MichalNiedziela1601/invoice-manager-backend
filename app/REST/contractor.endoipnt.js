@@ -8,7 +8,7 @@ module.exports = function (server)
         path: '/api/contractor',
         handler: function (request, replay)
         {
-            contractorManager.getAll().then(result =>
+            contractorManager.getContractorCompanyAll().then(result =>
             {
                 replay(result);
             })
