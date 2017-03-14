@@ -1,11 +1,11 @@
 'use strict';
 const contractorDao = require('../dao/contractor.dao');
 
-function getAll()
+function getContractorCompanyAll()
 {
-    return contractorDao.getAll();
+    return contractorDao.getContractorCompanyAll();
 }
 
 module.exports = {
-    getAll
+    getContractorCompanyAll
 };

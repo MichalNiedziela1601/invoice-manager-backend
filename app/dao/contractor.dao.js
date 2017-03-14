@@ -1,15 +1,19 @@
 'use strict';
 const db = require('../services/db.connect');
 
-function getAll()
+function getContractorCompanyAll()
 {
-    let sql = 'SELECT * FROM contractor';
+    let sql = 'SELECT * FROM contractor_company';
     return db.any(sql).then(result =>
     {
         return result;
-    })
+    }).catch(error =>
+    {
+        console.log('ERROR:', error.message || error);
+        return error;
+    });
 }
 
 module.exports = {
-    getAll
+    getContractorCompanyAll
 };
