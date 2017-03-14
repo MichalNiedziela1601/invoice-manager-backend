@@ -19,7 +19,7 @@ module.exports = function (server)
                 }, 'stdout']
             }
         }
-    }, (err) =>
+    }, err =>
     {
         if (err) {
             throw err;

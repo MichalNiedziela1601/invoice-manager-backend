@@ -13,3 +13,8 @@ npm start
 ```
 npm run seed
 ```
+
+### Run eslint task
+```
+grunt lint
+```
