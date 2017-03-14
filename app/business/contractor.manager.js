@@ -5,7 +5,11 @@ function getContractorCompanyAll()
 {
     return contractorDao.getContractorCompanyAll();
 }
+function addContractorCompany(contractor)
+{
+    return contractorDao.addContractorCompany(contractor)
+}
 
 module.exports = {
-    getContractorCompanyAll
+    getContractorCompanyAll, addContractorCompany
 };
