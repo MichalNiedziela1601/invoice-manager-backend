@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 module.exports = {
     schema: {
-        validation: {
+        invoice: {
             invoiceNr: Joi.required(),
             type: Joi.string().alphanum().required(),
             createDate: Joi.date().required(),
