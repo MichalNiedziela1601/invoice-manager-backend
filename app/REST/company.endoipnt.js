@@ -25,6 +25,18 @@ module.exports = function (server)
                 reply();
             });
         }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/company/{nip}',
+        handler: function (request, reply)
+        {
+            let nip = encodeURIComponent(request.params.nip);
+            companyManager.findCompanyByNip(nip).then(company => {
+                reply(company);
+            })
+        }
     })
 };
 
