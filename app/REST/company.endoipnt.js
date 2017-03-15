@@ -26,14 +26,25 @@ module.exports = function (server)
             });
         }
     });
-
+    server.route({
+        method: 'POST',
+        path: '/api/address',
+        handler: function (request, reply)
+        {
+            companyManager.addAddress(request.payload).then(() =>
+            {
+                reply()
+            });
+        }
+    });
     server.route({
         method: 'GET',
         path: '/api/company/{nip}',
         handler: function (request, reply)
         {
             let nip = encodeURIComponent(request.params.nip);
-            companyManager.findCompanyByNip(nip).then(company => {
+            companyManager.findCompanyByNip(nip).then(company =>
+            {
                 reply(company);
             })
         }

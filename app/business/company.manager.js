@@ -9,12 +9,15 @@ function addCompany(company)
 {
     return companyDao.addCompany(company)
 }
-
+function addAddress(address)
+{
+    return companyDao.addAddress(address)
+}
 function findCompanyByNip(nip)
 {
     return companyDao.findCompanyByNip(nip);
 }
 
 module.exports = {
-    getCompanyAll, addCompany, findCompanyByNip
+    getCompanyAll, addCompany, addAddress, findCompanyByNip
 };
