@@ -10,7 +10,6 @@ CREATE TABLE "address" (
 CREATE TABLE "contractor_company" (
   "id" SERIAL PRIMARY KEY,
   "name" TEXT NOT NULL,
-  "shortcut" VARCHAR(30) NOT NULL,
   "nip" BIGINT UNIQUE NOT NULL,
   "regon" BIGINT UNIQUE,
   "email" TEXT NOT NULL,
