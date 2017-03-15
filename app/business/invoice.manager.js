@@ -11,6 +11,11 @@ function addInvoice(invoice)
     return invoiceDao.addInvoice(invoice);
 }
 
+function getInvoiceById(id)
+{
+    return invoiceDao.getInvoiceById(id);
+}
+
 module.exports = {
-    getInvoice, addInvoice
+    getInvoice, addInvoice, getInvoiceById
 };

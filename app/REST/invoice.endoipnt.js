@@ -21,5 +21,15 @@ module.exports = function(server){
                 reply();
             });
         }
+    });
+    server.route({
+        method: 'GET',
+        path: '/api/invoice/{id}',
+        handler: function(request,reply){
+            let id = encodeURIComponent(request.params.id);
+            invoiceManager.getInvoiceById(id).then(invoice => {
+                reply(invoice);
+            })
+        }
     })
 };
