@@ -15,7 +15,7 @@ module.exports = function(server){
     server.route({
         method: 'POST',
         path: '/api/invoice',
-        config: {validate: {payload: joiSchema.schema.validation}},
+        config: {validate: {payload: joiSchema.schema.invoice}},
         handler: function(request,reply){
             invoiceManager.addInvoice(request.payload).then(() => {
                 reply();
