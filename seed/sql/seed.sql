@@ -6,8 +6,8 @@ INSERT INTO address
 ('Osiedlowa',21,null,'33-100','Tarnów');
 
 INSERT INTO
-  contractor_company
-(name, shortcut,nip,regon, email,address) VALUES
+  company
+(name,nip,regon, email,address) VALUES
   ( 'Firma 1',1234567890,6789567,'firma1@mail.com',1),
   ( 'Firma BUDEX',1224567890,6189567,'firma2@mail.com',2);
 

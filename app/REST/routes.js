@@ -1,10 +1,10 @@
 'use strict';
 
-const contractorEndpoint = require('./contractor.endoipnt');
+const companyEndpoint = require('./company.endoipnt.js');
 const invoiceEndpoint = require('./invoice.endoipnt');
 
 module.exports = function (server)
 {
-    contractorEndpoint(server);
+    companyEndpoint(server);
     invoiceEndpoint(server);
 };
