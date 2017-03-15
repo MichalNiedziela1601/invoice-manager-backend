@@ -10,6 +10,11 @@ function addCompany(company)
     return companyDao.addCompany(company)
 }
 
+function findCompanyByNip(nip)
+{
+    return companyDao.findCompanyByNip(nip);
+}
+
 module.exports = {
-    getCompanyAll, addCompany
+    getCompanyAll, addCompany, findCompanyByNip
 };
