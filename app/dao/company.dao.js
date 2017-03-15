@@ -15,10 +15,14 @@ function getCompanyAll()
 }
 function addCompany(company)
 {
-    let sql = 'INSERT INTO company (name, shortcut, nip, regon, email, address) VALUES ($1,$2,$3,$4,$5,$6)';
-    return db.any(sql, [company.name, company.shortcut, company.nip, company.regon, company.email, company.address]);
+    let sql = 'INSERT INTO company (name,nip, regon, email, address) VALUES ($1,$2,$3,$4,$5)';
+    return db.any(sql, [company.name, company.nip, company.regon, company.email, company.address]);
 }
-
+function addAddress(address)
+{
+    let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5)';
+    return db.any(sql, [address.street, address.build_nr, address.flat_nr, address.post_code, address.city]);
+}
 function findCompanyByNip(nip)
 {
     let query = 'SELECT c.id,c.name,c.nip, c.regon, c.email, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
@@ -33,5 +37,5 @@ function findCompanyByNip(nip)
 }
 
 module.exports = {
-    getCompanyAll, addCompany, findCompanyByNip
+    getCompanyAll, addCompany, addAddress, findCompanyByNip
 };
