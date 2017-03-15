@@ -7,7 +7,7 @@ CREATE TABLE "address" (
   "city" TEXT NOT NULL
 );
 
-CREATE TABLE "contractor_company" (
+CREATE TABLE "company" (
   "id" SERIAL PRIMARY KEY,
   "name" TEXT NOT NULL,
   "nip" BIGINT UNIQUE NOT NULL,
@@ -16,9 +16,9 @@ CREATE TABLE "contractor_company" (
   "address" INTEGER NOT NULL
 );
 
-CREATE INDEX "idx_contractor_company__address" ON "contractor_company" ("address");
+CREATE INDEX "idx_company__address" ON "company" ("address");
 
-ALTER TABLE "contractor_company" ADD CONSTRAINT "fk_contractor_company__address" FOREIGN KEY ("address") REFERENCES "address" ("id");
+ALTER TABLE "company" ADD CONSTRAINT "fk_company__address" FOREIGN KEY ("address") REFERENCES "address" ("id");
 
 CREATE TABLE "contractor_person" (
   "id" SERIAL PRIMARY KEY,
@@ -58,9 +58,9 @@ CREATE INDEX "idx_invoice__person_dealer" ON "invoice" ("person_dealer");
 
 CREATE INDEX "idx_invoice__person_recipent" ON "invoice" ("person_recipent");
 
-ALTER TABLE "invoice" ADD CONSTRAINT "fk_invoice__company_dealer" FOREIGN KEY ("company_dealer") REFERENCES "contractor_company" ("id");
+ALTER TABLE "invoice" ADD CONSTRAINT "fk_invoice__company_dealer" FOREIGN KEY ("company_dealer") REFERENCES "company" ("id");
 
-ALTER TABLE "invoice" ADD CONSTRAINT "fk_invoice__company_recipent" FOREIGN KEY ("company_recipent") REFERENCES "contractor_company" ("id");
+ALTER TABLE "invoice" ADD CONSTRAINT "fk_invoice__company_recipent" FOREIGN KEY ("company_recipent") REFERENCES "company" ("id");
 
 ALTER TABLE "invoice" ADD CONSTRAINT "fk_invoice__person_dealer" FOREIGN KEY ("person_dealer") REFERENCES "contractor_person" ("id");
 

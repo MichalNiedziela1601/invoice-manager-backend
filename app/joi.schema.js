@@ -16,7 +16,7 @@ module.exports = {
             personDealer: [Joi.number().integer(), Joi.allow(null)],
             personRecipent: [Joi.number().integer(), Joi.allow(null)]
         },
-        contractor: {
+        company: {
             name: Joi.string().min(2).required(),
             nip: Joi.number().required(),
             regon: Joi.number(),
