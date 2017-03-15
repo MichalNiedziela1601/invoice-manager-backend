@@ -18,7 +18,6 @@ module.exports = {
         },
         contractor: {
             name: Joi.string().min(2).required(),
-            shortcut: Joi.string(),
             nip: Joi.number().required(),
             regon: Joi.number(),
             email: Joi.string().email(),
