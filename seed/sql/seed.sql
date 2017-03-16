@@ -7,15 +7,15 @@ INSERT INTO address
 
 INSERT INTO
   company
-(name,nip,regon, email,address) VALUES
-  ( 'Firma 1',1234567890,6789567,'firma1@mail.com',1),
-  ( 'Firma BUDEX',1224567890,6189567,'firma2@mail.com',2);
+(name, nip, regon) VALUES
+  ( 'Firma 1',1234567890,6789567),
+  ( 'Firma BUDEX',1224567890,6189567);
 
 INSERT INTO
   contractor_person
-(first_name, last_name, nip, pesel, email,address) VALUES
-  ( 'Jan','Kowalski',1234527890,84030434567,'jan.kowalski@mail.com',3),
-  ( 'Marian','Zalewski',null,null,'mzalewski@mail.com',4);
+(first_name, last_name, nip, pesel) VALUES
+  ( 'Jan','Kowalski',1234527890,84030434567),
+  ( 'Marian','Zalewski',null,null);
 
 INSERT INTO
   invoice
@@ -26,3 +26,8 @@ INSERT INTO
   ('FV/10/02/22' ,'Vat' ,  '2010-02-08',  '2010-02-25', 3230.45, 4145.89, 'paid', 'url4',1,2,null,null),
   ('FV/14/05/123' ,'Vat' ,  '2014-05-18',  '2014-05-23', 2230.45,2845.89, 'paid', 'url5',null,null,2,1);
 
+INSERT INTO
+  users
+(email, password ) VALUES
+('biel@gmail.com','pass123456'),
+('kot@hungry.com', 'kot21kot12');
