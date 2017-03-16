@@ -7,6 +7,7 @@ module.exports = function(server){
     server.route({
         method: 'GET',
         path: '/api/invoice',
+        config: {validate: {query: joiSchema.schema.invoiceType}},
         handler: function(request,reply){
             invoiceManager.getInvoices(request.query).then(result => {
                 reply(result);

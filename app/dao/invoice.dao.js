@@ -11,7 +11,6 @@ function getInvoices(filter)
     }
     return db.any(sql).then(result =>
     {
-        console.log(result);
         return parser.parseArrayOfObject(result);
 
     }).catch(error =>
