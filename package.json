@@ -18,6 +18,8 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "1.0.2",
+    "bcrypt-then": "1.1.0",
     "bluebird": "3.5.0",
     "good": "7.1.0",
     "good-console": "6.4.0",
@@ -38,6 +40,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node seed/seed.js",
-    "start": "node app/index.js"
+    "start": "nodemon app/index.js"
   }
 }

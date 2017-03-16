@@ -23,6 +23,12 @@ module.exports = {
             regon: Joi.number(),
             email: Joi.string().email(),
             address: Joi.number().required()
+        },
+        registerCompany: {
+            name: Joi.string().required().min(2),
+            nip: Joi.number().required(),
+            email: Joi.string().email(),
+            password: Joi.string().min(4).required()
         }
     }
 };
