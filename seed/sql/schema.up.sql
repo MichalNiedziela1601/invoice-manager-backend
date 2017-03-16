@@ -1,10 +1,15 @@
-CREATE TABLE "address" (
+CREATE TABLE "contractor_person" (
   "id" SERIAL PRIMARY KEY,
-  "street" TEXT NOT NULL,
-  "build_nr" INTEGER NOT NULL,
-  "flat_nr" INTEGER,
-  "post_code" VARCHAR(6) NOT NULL,
-  "city" TEXT NOT NULL
+  "first_name" TEXT NOT NULL,
+  "last_name" TEXT NOT NULL,
+  "nip" BIGINT UNIQUE,
+  "pesel" BIGINT UNIQUE
+);
+
+CREATE TABLE "users" (
+  "id" SERIAL PRIMARY KEY,
+  "email" TEXT UNIQUE NOT NULL,
+  "password" TEXT NOT NULL
 );
 
 CREATE TABLE "company" (
@@ -12,27 +17,31 @@ CREATE TABLE "company" (
   "name" TEXT NOT NULL,
   "nip" BIGINT UNIQUE NOT NULL,
   "regon" BIGINT UNIQUE,
-  "email" TEXT NOT NULL,
-  "address" INTEGER NOT NULL
+  "users" INTEGER
 );
 
-CREATE INDEX "idx_company__address" ON "company" ("address");
+CREATE INDEX "idx_company__users" ON "company" ("users");
 
-ALTER TABLE "company" ADD CONSTRAINT "fk_company__address" FOREIGN KEY ("address") REFERENCES "address" ("id");
+ALTER TABLE "company" ADD CONSTRAINT "fk_company__users" FOREIGN KEY ("users") REFERENCES "users" ("id");
 
-CREATE TABLE "contractor_person" (
+CREATE TABLE "address" (
   "id" SERIAL PRIMARY KEY,
-  "first_name" TEXT NOT NULL,
-  "last_name" TEXT NOT NULL,
-  "nip" BIGINT UNIQUE,
-  "pesel" BIGINT UNIQUE,
-  "email" TEXT UNIQUE,
-  "address" INTEGER NOT NULL
+  "street" TEXT NOT NULL,
+  "build_nr" INTEGER NOT NULL,
+  "flat_nr" INTEGER,
+  "post_code" VARCHAR(6) NOT NULL,
+  "city" TEXT NOT NULL,
+  "contractor_company" INTEGER,
+  "contractor_person" INTEGER
 );
 
-CREATE INDEX "idx_contractor_person__address" ON "contractor_person" ("address");
+CREATE INDEX "idx_address__contractor_company" ON "address" ("contractor_company");
 
-ALTER TABLE "contractor_person" ADD CONSTRAINT "fk_contractor_person__address" FOREIGN KEY ("address") REFERENCES "address" ("id");
+CREATE INDEX "idx_address__contractor_person" ON "address" ("contractor_person");
+
+ALTER TABLE "address" ADD CONSTRAINT "fk_address__contractor_company" FOREIGN KEY ("contractor_company") REFERENCES "company" ("id");
+
+ALTER TABLE "address" ADD CONSTRAINT "fk_address__contractor_person" FOREIGN KEY ("contractor_person") REFERENCES "contractor_person" ("id");
 
 CREATE TABLE "invoice" (
   "id" SERIAL PRIMARY KEY,
