@@ -1,12 +1,13 @@
 'use strict';
 const db = require('../services/db.connect');
+const parser = require('../services/camelCaseParser');
 
 function getInvoice()
 {
     let sql = 'SELECT * FROM invoice';
     return db.any(sql).then(result =>
     {
-        return result;
+        return parser.parseArrayOfObject(result);
     }).catch(error =>
     {
         console.log('ERROR:', error.message || error);
@@ -42,10 +43,16 @@ function getInvoiceById(id)
             + 'LEFT JOIN address AS ad ON cd.address = ad.id LEFT JOIN address AS ar ON cr.address = ar.id WHERE i.id = $1;';
     return db.oneOrNone(query, [id]).then(result =>
     {
+
         if (result === null) {
             result = 'Invoice not found';
+            return result
+        } else {
+            return parser.parseObj(result);
         }
-        return result;
+    }).catch(error => {
+        console.log('ERROR: ', error.message || error);
+        return error;
     })
 }
 
