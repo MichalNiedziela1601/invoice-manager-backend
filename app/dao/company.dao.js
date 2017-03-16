@@ -1,12 +1,13 @@
 'use strict';
 const db = require('../services/db.connect');
+const parser = require('../services/camelCaseParser');
 
 function getCompanyAll()
 {
     let sql = 'SELECT * FROM company';
     return db.any(sql).then(result =>
     {
-        return result;
+        return parser.parseArrayOfObject(result);
     }).catch(error =>
     {
         console.log('ERROR:', error.message || error);
@@ -31,8 +32,13 @@ function findCompanyByNip(nip)
     {
         if (result === null) {
             result = 'Company not found';
+            return result;
+        } else {
+            return parser.parseObj(result);
         }
-        return result;
+    }).catch(error => {
+        console.log('ERROR:', error.message || error);
+        return error;
     })
 }
 
