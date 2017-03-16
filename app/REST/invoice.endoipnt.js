@@ -1,3 +1,4 @@
+'use strict';
 const invoiceManager = require('../business/invoice.manager');
 const joiSchema = require('../joi.schema.js');
 
