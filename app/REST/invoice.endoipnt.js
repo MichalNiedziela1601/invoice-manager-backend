@@ -8,7 +8,7 @@ module.exports = function(server){
         method: 'GET',
         path: '/api/invoice',
         handler: function(request,reply){
-            invoiceManager.getInvoice().then(result => {
+            invoiceManager.getInvoices(request.query).then(result => {
                 reply(result);
             })
         }

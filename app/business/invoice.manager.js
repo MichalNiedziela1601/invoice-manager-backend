@@ -1,9 +1,9 @@
 'use strict';
 const invoiceDao = require('../dao/invoice.dao');
 
-function getInvoice()
+function getInvoices(filter)
 {
-    return invoiceDao.getInvoice();
+    return invoiceDao.getInvoices(filter);
 }
 
 function addInvoice(invoice)
@@ -17,5 +17,5 @@ function getInvoiceById(id)
 }
 
 module.exports = {
-    getInvoice, addInvoice, getInvoiceById
+    getInvoices, addInvoice, getInvoiceById
 };
