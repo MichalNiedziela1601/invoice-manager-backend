@@ -2,12 +2,18 @@
 const db = require('../services/db.connect');
 const parser = require('../services/camelCaseParser');
 
-function getInvoice()
+function getInvoices(filter)
 {
     let sql = 'SELECT * FROM invoice';
+
+    if (filter && filter.type) {
+        sql += ' WHERE type =\'' + filter.type +'\'';
+    }
     return db.any(sql).then(result =>
     {
+        console.log(result);
         return parser.parseArrayOfObject(result);
+
     }).catch(error =>
     {
         console.log('ERROR:', error.message || error);
@@ -20,8 +26,8 @@ function addInvoice(invoice)
     let sql = 'INSERT INTO invoice (invoice_nr, type, create_date, execution_end_date, netto_value, '
             + 'brutto_value, status, url, company_dealer, company_recipent, person_dealer, person_recipent ) '
             + 'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)';
-    return db.any(sql, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
-                        invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent])
+    return db.any(sql, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue, invoice.status,
+        invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent])
             .then(result =>
             {
                 return result;
@@ -50,12 +56,13 @@ function getInvoiceById(id)
         } else {
             return parser.parseObj(result);
         }
-    }).catch(error => {
+    }).catch(error =>
+    {
         console.log('ERROR: ', error.message || error);
         return error;
     })
 }
 
 module.exports = {
-    getInvoice, addInvoice, getInvoiceById
+    getInvoices, addInvoice, getInvoiceById
 };
