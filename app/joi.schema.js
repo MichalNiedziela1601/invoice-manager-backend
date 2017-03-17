@@ -31,7 +31,7 @@ module.exports = {
             nip: Joi.number().required(),
             regon: Joi.number(),
             email: Joi.string().email(),
-            address: Joi.number().required()
+            address: Joi.object().required()
         },
         registerCompany: {
             name: Joi.string().required().min(2),
