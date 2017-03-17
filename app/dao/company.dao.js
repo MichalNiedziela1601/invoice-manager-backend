@@ -10,14 +10,18 @@ function getCompanies()
         return parser.parseArrayOfObject(result);
     }).catch(error =>
     {
-        console.log('ERROR:', error.message || error);
-        return error;
+        console.error('ERROR company.dao.getCompanies:', error.message || error);
+        throw error;
     });
 }
 function addCompany(company)
 {
     let sql = 'INSERT INTO company (name,nip, regon, address_id) VALUES ($1,$2,$3,$4)';
-    return db.any(sql, [company.name, company.nip, company.regon,company.addressId]);
+    return db.any(sql, [company.name, company.nip, company.regon, company.addressId]).catch(error =>
+    {
+        console.error('ERROR company.dao.addCompany:', error.message || error);
+        throw error;
+    });
 }
 function addAddress(address)
 {
@@ -25,26 +29,23 @@ function addAddress(address)
     return db.any(sql, [address.street, address.build_nr, address.flat_nr, address.post_code, address.city]).then(result =>
     {
         return result[0].id;
-    }).catch(error => {
-        console.log('ERROR:', error.message || error);
-        return error;
+    }).catch(error =>
+    {
+        console.error('ERROR company.dao.addAddress:', error.message || error);
+        throw error;
     });
 }
 function findCompanyByNip(nip)
 {
     let query = 'SELECT c.id,c.name,c.nip, c.regon, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
             + 'FROM company AS c LEFT JOIN address AS a ON c.address_id = a.id WHERE c.nip = $1';
-    return db.oneOrNone(query, [nip]).then(result =>
+    return db.one(query, [nip]).then(result =>
     {
-        if (result === null) {
-            result = 'Company not found';
-            return result;
-        } else {
-            return parser.parseObj(result);
-        }
-    }).catch(error => {
-        console.log('ERROR:', error.message || error);
-        return error;
+        return parser.parseObj(result);
+    }).catch(error =>
+    {
+        console.error('ERROR company.dao.findCopmanyByNip:', error.message || error);
+        throw error;
     })
 }
 
@@ -55,7 +56,8 @@ function checkNip(nip)
         return result;
     }).catch(error =>
     {
-        return error;
+        console.error('ERROR checkNip:', error.message || error);
+        throw error;
     })
 }
 

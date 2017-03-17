@@ -17,8 +17,8 @@ function getInvoices(filter)
 
     }).catch(error =>
     {
-        console.log('ERROR:', error.message || error);
-        return error;
+        console.error('ERROR invoice.dao.getInvoices:', error.message || error);
+        throw error;
     });
 }
 
@@ -33,11 +33,12 @@ function addInvoice(invoice)
                     return result;
                 }).catch(error =>
                 {
-                    console.log('ERROR:', error.message || error);
-                    return error;
+                    console.error('ERROR invoice.dao.addInvoice.readSqlFile:', error.message || error);
+                    throw error;
                 })
     }).catch(error =>
     {
+        console.error('ERROR invoice.dao.addInvoice:', error.message || error);
         throw error;
     });
 }
@@ -46,7 +47,7 @@ function getInvoiceById(id)
 {
     return readSqlFile(path.join(__dirname, '/sql/getInvoiceById.sql')).then(query =>
     {
-        return db.oneOrNone(query, [id]).then(result =>
+        return db.one(query, [id]).then(result =>
         {
 
             if (result === null) {
@@ -57,11 +58,12 @@ function getInvoiceById(id)
             }
         }).catch(error =>
         {
-            console.log('ERROR: ', error.message || error);
-            return error;
+            console.error('ERROR invoice.dao.etInvoiceById.readSqlFile:', error.message || error);
+            throw error;
         })
     }).catch(error =>
     {
+        console.error('ERROR invoice.dao.getInvoiceById:', error.message || error);
         throw error;
     });
 }

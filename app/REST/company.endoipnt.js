@@ -12,7 +12,9 @@ module.exports = function (server)
             companyManager.getCompanies().then(result =>
             {
                 reply(result);
-            })
+            }).catch(error => {
+                reply(error.message).code(404);
+            });
         }
     });
     server.route({
@@ -24,6 +26,8 @@ module.exports = function (server)
             companyManager.addCompany(request.payload).then(() =>
             {
                 reply();
+            }).catch(error => {
+                reply(error.message);
             });
         }
     });
@@ -35,6 +39,8 @@ module.exports = function (server)
             companyManager.addAddress(request.payload).then(() =>
             {
                 reply()
+            }).catch(error => {
+                reply(error.message);
             });
         }
     });
@@ -47,7 +53,9 @@ module.exports = function (server)
             companyManager.findCompanyByNip(request.params.nip).then(company =>
             {
                 reply(company);
-            })
+            }).catch(error => {
+                reply(error.message).code(404);
+            });
         }
     })
 };
