@@ -2,11 +2,11 @@
 
 const companyEndpoint = require('./company.endoipnt.js');
 const invoiceEndpoint = require('./invoice.endoipnt');
-const registerEndpoint = require('./register.endpoint');
+const authEndpoint = require('./auth.endpoint.js');
 
 module.exports = function (server)
 {
     companyEndpoint(server);
     invoiceEndpoint(server);
-    registerEndpoint(server);
+    authEndpoint(server);
 };
