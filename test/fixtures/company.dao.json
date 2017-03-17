@@ -1,0 +1,18 @@
+{
+    "companies": [
+        {
+            "id": "101",
+            "name": "ABC Company",
+            "nip": "12345",
+            "regon": "10",
+            "addressId": "101"
+        },
+        {
+            "id": "102",
+            "name": "CDE Company",
+            "nip": "99999",
+            "regon": null,
+            "addressId": null
+        }
+    ]
+}

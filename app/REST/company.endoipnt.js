@@ -9,7 +9,7 @@ module.exports = function (server)
         path: '/api/company',
         handler: function (request, reply)
         {
-            companyManager.getCompanies().then(result =>
+            companyManager.getCompaniesWithAddress().then(result =>
             {
                 reply(result);
             }).catch(error => {

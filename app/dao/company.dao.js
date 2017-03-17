@@ -4,7 +4,7 @@ const parser = require('../services/camelCaseParser');
 
 function getCompanies()
 {
-    let sql = 'SELECT * FROM company LEFT JOIN address ON company.address_id = address.id';
+    let sql = 'SELECT * FROM company';
     return db.any(sql).then(result =>
     {
         return parser.parseArrayOfObject(result);

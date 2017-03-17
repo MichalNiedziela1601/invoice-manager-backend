@@ -196,7 +196,6 @@
         "padded-blocks": "off",
         "prefer-arrow-callback": "off",
         "prefer-const": "off",
-        "prefer-destructuring": "error",
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
         "prefer-reflect": "error",
