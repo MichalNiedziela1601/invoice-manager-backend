@@ -17,6 +17,12 @@ module.exports = {
             personDealer: [Joi.number().integer(), Joi.allow(null)],
             personRecipent: [Joi.number().integer(), Joi.allow(null)]
         },
+        invoiceById: {
+            id: Joi.number().min(1).required()
+        },
+        companyByNip: {
+            nip: Joi.number().required()
+        },
         invoiceType: {
             type: Joi.valid('Buy', 'Sale').required()
         },
@@ -33,6 +39,5 @@ module.exports = {
             email: Joi.string().email(),
             password: Joi.string().min(4).required()
         }
-
     }
 };
