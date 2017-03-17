@@ -2,7 +2,6 @@
 const registerDAO = require('../dao/register.dao');
 const Promise = require('bluebird');
 const bcrypt = require('bcrypt');
-const _ = require('lodash');
 
 
 function registerUserCompany(person)
@@ -19,7 +18,6 @@ function registerUserCompany(person)
                     return bcrypt.hash(person.password, saltCounts).then(hash =>
                     {
                         person.password = hash;
-                        console.log('person', person);
                         return person;
 
                     }).then(user =>
@@ -38,14 +36,14 @@ function registerUserCompany(person)
                             });
                 } else {
                     answer.success = false;
-                    answer.error = 'Istnieje już taki nip w bazie danych';
+                    answer.error = 'Nip exist in database';
                     return Promise.reject(answer);
                 }
             })
 
         } else {
             answer.success = false;
-            answer.error = 'Istnieje już taka nazwa użytkownika';
+            answer.error = 'Email exist in database';
             return Promise.reject(answer);
         }
     });

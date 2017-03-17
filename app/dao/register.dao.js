@@ -4,18 +4,17 @@ const db = require('../services/db.connect');
 
 function registerUserCompany(person)
 {
-
-    let sql = 'INSERT INTO users (email, password) values ($1,$2) returning id';
-
-    return db.one(sql, [person.email, person.password]).then(data =>
+    let query = 'INSERT INTO company (name,nip) values($1,$2) returning id';
+    let sql = 'INSERT INTO users (email, password,company_id) values ($1,$2,$3)';
+    return db.one(query, [person.name, person.nip]).then(data =>
     {
         person.id = data.id;
-        return db.none('INSERT INTO company (name,nip,users) values($1,$2,$3)', [person.name, person.nip, person.id]).then(() =>
+        return db.none(sql, [person.name, person.password, person.id]).then(() =>
         {
 
         }).catch(error =>
         {
-            db.none('DELETE FROM users WHERE id = $1', [data.id]);
+            db.none('DELETE FROM company WHERE id = $1', [data.id]);
             return error
         });
     }).catch(error =>
@@ -29,7 +28,6 @@ function checkUser(person)
 {
     return db.oneOrNone('SELECT id FROM users WHERE email = $1', [person.email]).then(result =>
     {
-        console.log('result', result);
         return result;
     });
 }

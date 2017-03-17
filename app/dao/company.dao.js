@@ -16,7 +16,7 @@ function getCompanyAll()
 }
 function addCompany(company)
 {
-    let sql = 'INSERT INTO company (name,nip, regon, email, address) VALUES ($1,$2,$3,$4,$5)';
+    let sql = 'INSERT INTO company (name,nip, regon, email, address_id) VALUES ($1,$2,$3,$4,$5)';
     return db.any(sql, [company.name, company.nip, company.regon, company.email, company.address]);
 }
 function addAddress(address)
@@ -26,8 +26,8 @@ function addAddress(address)
 }
 function findCompanyByNip(nip)
 {
-    let query = 'SELECT c.id,c.name,c.nip, c.regon, c.email, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
-            + 'FROM company AS c LEFT JOIN address AS a ON c.address = a.id WHERE c.nip = $1';
+    let query = 'SELECT c.id,c.name,c.nip, c.regon, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
+            + 'FROM company AS c LEFT JOIN address AS a ON c.address_id = a.id WHERE c.nip = $1';
     return db.oneOrNone(query, [nip]).then(result =>
     {
         if (result === null) {

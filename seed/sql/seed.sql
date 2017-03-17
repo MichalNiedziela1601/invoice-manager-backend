@@ -7,15 +7,15 @@ INSERT INTO address
 
 INSERT INTO
   company
-(name, nip, regon) VALUES
-  ( 'Firma 1',1234567890,6789567),
-  ( 'Firma BUDEX',1224567890,6189567);
+(name, nip, regon,address_id) VALUES
+  ( 'Firma 1',1234567890,6789567,1),
+  ( 'Firma BUDEX',1224567890,6189567,2);
 
 INSERT INTO
-  contractor_person
-(first_name, last_name, nip, pesel) VALUES
-  ( 'Jan','Kowalski',1234527890,84030434567),
-  ( 'Marian','Zalewski',null,null);
+  person
+(first_name, last_name, nip, pesel,address_id) VALUES
+  ( 'Jan','Kowalski',1234527890,84030434567,3),
+  ( 'Marian','Zalewski',null,null,4);
 
 INSERT INTO
   invoice
