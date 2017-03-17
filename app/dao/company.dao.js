@@ -2,7 +2,7 @@
 const db = require('../services/db.connect');
 const parser = require('../services/camelCaseParser');
 
-function getCompanyAll()
+function getCompanies()
 {
     let sql = 'SELECT * FROM company';
     return db.any(sql).then(result =>
@@ -43,5 +43,5 @@ function findCompanyByNip(nip)
 }
 
 module.exports = {
-    getCompanyAll, addCompany, addAddress, findCompanyByNip
+    getCompanies, addCompany, addAddress, findCompanyByNip
 };

@@ -1,9 +1,9 @@
 'use strict';
 const companyDao = require('../dao/company.dao.js');
 
-function getCompanyAll()
+function getCompanies()
 {
-    return companyDao.getCompanyAll();
+    return companyDao.getCompanies();
 }
 function addCompany(company)
 {
@@ -19,5 +19,5 @@ function findCompanyByNip(nip)
 }
 
 module.exports = {
-    getCompanyAll, addCompany, addAddress, findCompanyByNip
+    getCompanies, addCompany, addAddress, findCompanyByNip
 };
