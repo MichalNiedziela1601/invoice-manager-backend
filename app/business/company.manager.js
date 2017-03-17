@@ -5,14 +5,19 @@ function getCompanies()
 {
     return companyDao.getCompanies();
 }
-function addCompany(company)
-{
-    return companyDao.addCompany(company)
-}
 function addAddress(address)
 {
     return companyDao.addAddress(address)
 }
+function addCompany(company)
+{
+    return addAddress(company.address).then(function (addressId)
+    {
+        company.addressId = addressId;
+        return companyDao.addCompany(company)
+    });
+}
+
 function findCompanyByNip(nip)
 {
     return companyDao.findCompanyByNip(nip);

@@ -4,7 +4,7 @@ const parser = require('../services/camelCaseParser');
 
 function getCompanies()
 {
-    let sql = 'SELECT * FROM company';
+    let sql = 'SELECT * FROM company LEFT JOIN address ON company.address_id = address.id';
     return db.any(sql).then(result =>
     {
         return parser.parseArrayOfObject(result);
@@ -16,13 +16,19 @@ function getCompanies()
 }
 function addCompany(company)
 {
-    let sql = 'INSERT INTO company (name,nip, regon, email, address_id) VALUES ($1,$2,$3,$4,$5)';
-    return db.any(sql, [company.name, company.nip, company.regon, company.email, company.address]);
+    let sql = 'INSERT INTO company (name,nip, regon, address_id) VALUES ($1,$2,$3,$4)';
+    return db.any(sql, [company.name, company.nip, company.regon,company.addressId]);
 }
 function addAddress(address)
 {
-    let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5)';
-    return db.any(sql, [address.street, address.build_nr, address.flat_nr, address.post_code, address.city]);
+    let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5) RETURNING id;';
+    return db.any(sql, [address.street, address.build_nr, address.flat_nr, address.post_code, address.city]).then(result =>
+    {
+        return result[0].id;
+    }).catch(error => {
+        console.log('ERROR:', error.message || error);
+        return error;
+    });
 }
 function findCompanyByNip(nip)
 {
