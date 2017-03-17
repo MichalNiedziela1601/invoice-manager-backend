@@ -15,6 +15,9 @@ function addCompany(company)
     {
         company.addressId = addressId;
         return companyDao.addCompany(company)
+    }).catch(error =>
+    {
+        throw error;
     });
 }
 

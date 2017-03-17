@@ -27,6 +27,7 @@ function registerCompany(person)
                             })
                             .catch(error =>
                             {
+                                console.error('ERROR auth.manager.hashPassword:', error.message || error);
                                 throw error;
                             });
                 } else {
@@ -36,6 +37,9 @@ function registerCompany(person)
         } else {
             throw new Error('Email exist in database');
         }
+    }).catch(error =>
+    {
+        throw error;
     });
 }
 

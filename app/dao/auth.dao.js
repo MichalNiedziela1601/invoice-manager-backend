@@ -14,12 +14,13 @@ function registerCompany(person)
         }).catch(error =>
         {
             db.none('DELETE FROM company WHERE id = $1', [data.id]);
-            return error
+            console.error('ERROR auth.dao.registerCompany:', error.message || error);
+            throw error;
         });
     }).catch(error =>
     {
-
-        return error;
+        console.error('ERROR auth.dao.registerCompany:',error.message || error);
+        throw error;
     });
 }
 
