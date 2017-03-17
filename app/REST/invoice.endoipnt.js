@@ -29,10 +29,9 @@ module.exports = function(server){
         path: '/api/invoice/{id}',
         config: {validate: {params: joiSchema.schema.invoiceById}},
         handler: function(request,reply){
-            let id = encodeURIComponent(request.params.id);
-            invoiceManager.getInvoiceById(id).then(invoice => {
+            invoiceManager.getInvoiceById(request.params.id).then(invoice => {
                 reply(invoice);
-            })
+            });
         }
     })
 };

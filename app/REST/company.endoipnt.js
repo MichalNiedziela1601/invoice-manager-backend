@@ -44,8 +44,7 @@ module.exports = function (server)
         config: {validate: {params: joiSchema.schema.companyByNip}},
         handler: function (request, reply)
         {
-            let nip = encodeURIComponent(request.params.nip);
-            companyManager.findCompanyByNip(nip).then(company =>
+            companyManager.findCompanyByNip(request.params.nip).then(company =>
             {
                 reply(company);
             })
