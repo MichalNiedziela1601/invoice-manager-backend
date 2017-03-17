@@ -1,6 +1,6 @@
 'use strict';
 const companyManager = require('../business/company.manager.js');
-const joiSchema = require('../joi.schema');
+const joiSchema = require('joi.schema.js');
 module.exports = function (server)
 {
 
