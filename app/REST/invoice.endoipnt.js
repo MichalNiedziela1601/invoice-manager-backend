@@ -1,6 +1,6 @@
 'use strict';
 const invoiceManager = require('../business/invoice.manager');
-const joiSchema = require('joi.schema.js');
+const joiSchema = require('./joi.schema.js');
 
 module.exports = function (server)
 {

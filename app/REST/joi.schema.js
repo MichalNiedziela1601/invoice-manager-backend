@@ -30,7 +30,13 @@ module.exports = {
             name: Joi.string().min(2).required(),
             nip: Joi.number().required(),
             regon: Joi.number(),
-            address: Joi.object().required()
+            address: {
+                street: Joi.string().required(),
+                build_nr: Joi.number().integer().required(),
+                flat_nr: Joi.number().integer().optional(),
+                post_code: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
+                city: Joi.string().required()
+            }
         },
         registerCompany: {
             name: Joi.string().required().min(2),
