@@ -7,7 +7,7 @@ function getInvoices(filter)
     let sql = 'SELECT * FROM invoice';
 
     if (filter && filter.type) {
-        sql += ' WHERE type =\'' + filter.type +'\'';
+        sql += ' WHERE type =\'' + filter.type + '\'';
     }
     return db.any(sql).then(result =>
     {
@@ -26,7 +26,7 @@ function addInvoice(invoice)
             + 'brutto_value, status, url, company_dealer, company_recipent, person_dealer, person_recipent ) '
             + 'VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)';
     return db.any(sql, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue, invoice.status,
-        invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent])
+                        invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent])
             .then(result =>
             {
                 return result;
@@ -45,7 +45,7 @@ function getInvoiceById(id)
             + ' cr.id as recipent_id, cr.name as recipent_name, cr.nip as recipent_nip, cr.regon as recipent_regon, ar.street as recipent_street,'
             + ' ar.build_nr as recipent_build_nr, ar.flat_nr as recipent_falt_nr, ar.post_code as recipent_post_code, ar.city as recipent_city '
             + ' from invoice AS i LEFT JOIN company AS cd ON i.company_dealer = cd.id LEFT JOIN company AS cr ON i.company_recipent = cr.id '
-            + 'LEFT JOIN address AS ad ON cd.address = ad.id LEFT JOIN address AS ar ON cr.address = ar.id WHERE i.id = $1;';
+            + 'LEFT JOIN address AS ad ON cd.address_id = ad.id LEFT JOIN address AS ar ON cr.address_id = ar.id WHERE i.id = $1;';
     return db.oneOrNone(query, [id]).then(result =>
     {
 
