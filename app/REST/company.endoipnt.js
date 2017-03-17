@@ -41,6 +41,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/company/{nip}',
+        config: {validate: {params: joiSchema.schema.companyByNip}},
         handler: function (request, reply)
         {
             let nip = encodeURIComponent(request.params.nip);
