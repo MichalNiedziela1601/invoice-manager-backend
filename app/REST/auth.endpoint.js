@@ -1,5 +1,5 @@
 'use strict';
-const joiSchema = require('../joi.schema');
+const joiSchema = require('joi.schema.js');
 const authManager = require('../business/auth.manager.js');
 
 module.exports = function (server)
