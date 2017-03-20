@@ -32,9 +32,9 @@ module.exports = {
             regon: Joi.number(),
             address: {
                 street: Joi.string().required(),
-                build_nr: Joi.number().integer().required(),
-                flat_nr: Joi.number().integer().optional(),
-                post_code: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
+                buildNr: Joi.number().integer().required(),
+                flatNr: Joi.number().integer().optional(),
+                postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
                 city: Joi.string().required()
             }
         },

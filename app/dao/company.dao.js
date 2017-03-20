@@ -26,7 +26,7 @@ function addCompany(company)
 function addAddress(address)
 {
     let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5) RETURNING id;';
-    return db.any(sql, [address.street, address.build_nr, address.flat_nr, address.post_code, address.city]).then(result =>
+    return db.any(sql, [address.street, address.buildNr, address.flatNr, address.postCode, address.city]).then(result =>
     {
         return result[0].id;
     }).catch(error =>
