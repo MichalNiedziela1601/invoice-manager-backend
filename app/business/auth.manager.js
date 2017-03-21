@@ -14,7 +14,7 @@ function hashPassword(obj, password, salt)
 }
 function registerCompany(person)
 {
-    return userDAO.checkUser(person).then(result =>
+    return userDAO.getUserByEmail(person).then(result =>
     {
         if (result === null) {
             return companyDAO.checkNip(person.nip).then(nip =>
