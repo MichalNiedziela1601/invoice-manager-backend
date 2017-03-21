@@ -5,7 +5,7 @@ function getUserByEmail(person)
 {
     return db.oneOrNone('SELECT id FROM users WHERE email = $1', [person.email]).then(result =>
     {
-        console.log(result);
+
         if (result == null) {
          throw new ERROR('Email dont exsist');
         } else {
