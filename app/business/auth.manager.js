@@ -17,22 +17,23 @@ function registerCompany(person)
     return userDAO.getUserByEmail(person).then(result =>
     {
         if (result === null) {
-            return companyDAO.checkNip(person.nip).then(nip =>
+            return companyDAO.getCompanyByNip(person.nip).then(() =>
             {
-                if (nip === null) {
-                    return hashPassword(person, person.password, 10)
-                            .then(user =>
-                            {
-                                return authDAO.registerCompany(user);
-                            })
-                            .catch(error =>
-                            {
-                                console.error('ERROR auth.manager.hashPassword:', error.message || error);
-                                throw error;
-                            });
-                } else {
-                    throw new Error('Nip exist in database');
-                }
+                throw new Error('Nip exist in database');
+            }, () => {
+                return hashPassword(person, person.password, 10)
+                        .then(user =>
+                        {
+                            return authDAO.registerCompany(user);
+                        })
+                        .catch(error =>
+                        {
+                            console.error('ERROR auth.manager.hashPassword:', error.message || error);
+                            throw error;
+                        });
+            }).catch(error =>
+            {
+                throw error;
             })
         } else {
             throw new Error('Email exist in database');

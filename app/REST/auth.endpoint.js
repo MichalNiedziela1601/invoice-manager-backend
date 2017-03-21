@@ -10,9 +10,9 @@ module.exports = function (server)
         config: {validate: {payload: joiSchema.schema.registerCompany}},
         handler: function (request, reply)
         {
-            authManager.registerCompany(request.payload).then(() =>
+            authManager.registerCompany(request.payload).then(res =>
             {
-                reply();
+                reply(res);
             }).catch(error =>
             {
                 if (error.message === 'Email exist in database' || error.message === 'Nip exist in database') {
