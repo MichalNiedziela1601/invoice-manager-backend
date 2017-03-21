@@ -1,5 +1,40 @@
+CREATE SEQUENCE company_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE address_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE invoice_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE person_id_seq
+   START WITH 1
+   INCREMENT BY 1
+   NO MINVALUE
+   NO MAXVALUE
+   CACHE 1;
+
 CREATE TABLE "company" (
-	"id" serial NOT NULL,
+	"id"  bigint DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
 	"nip" bigint NOT NULL UNIQUE,
 	"regon" bigint UNIQUE,
@@ -9,10 +44,8 @@ CREATE TABLE "company" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "address" (
-	"id" serial NOT NULL,
+	"id"  bigint DEFAULT nextval('address_id_seq'::regclass) NOT NULL,
 	"street" TEXT NOT NULL,
 	"build_nr" TEXT NOT NULL,
 	"flat_nr" TEXT,
@@ -23,10 +56,8 @@ CREATE TABLE "address" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "users" (
-	"id" serial NOT NULL,
+	"id"  bigint DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
 	"company_id" bigint UNIQUE,
@@ -35,10 +66,8 @@ CREATE TABLE "users" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "invoice" (
-	"id" serial NOT NULL,
+	"id"  bigint DEFAULT nextval('invoice_id_seq'::regclass) NOT NULL,
 	"invoice_nr" TEXT NOT NULL,
 	"type" TEXT NOT NULL,
 	"create_date" DATE NOT NULL,
@@ -56,10 +85,8 @@ CREATE TABLE "invoice" (
   OIDS=FALSE
 );
 
-
-
 CREATE TABLE "person" (
-	"id" serial NOT NULL,
+	"id"  bigint DEFAULT nextval('person_id_seq'::regclass) NOT NULL,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"nip" bigint UNIQUE,
@@ -69,8 +96,6 @@ CREATE TABLE "person" (
 ) WITH (
   OIDS=FALSE
 );
-
-
 
 ALTER TABLE "company" ADD CONSTRAINT "company_fk0" FOREIGN KEY ("address_id") REFERENCES "address"("id");
 
