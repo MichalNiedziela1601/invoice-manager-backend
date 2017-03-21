@@ -49,18 +49,18 @@ function findCompanyByNip(nip)
     })
 }
 
-function checkNip(nip)
+function getCompanyByNip(nip)
 {
-    return db.oneOrNone('SELECT nip FROM company WHERE nip = $1', [nip]).then(result =>
+    return db.one('SELECT * FROM company WHERE nip = $1', [nip]).then(result =>
     {
         return result;
     }).catch(error =>
     {
-        console.error('ERROR checkNip:', error.message || error);
+        console.error('ERROR getCompanyByNip:', error.message || error);
         throw error;
     })
 }
 
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, checkNip
+    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip
 };

@@ -6,8 +6,8 @@ function getUserByEmail(person)
     return db.oneOrNone('SELECT id FROM users WHERE email = $1', [person.email]).then(result =>
     {
 
-        if (result == null) {
-         throw new ERROR('Email dont exsist');
+        if (result === null) {
+            throw new Error('Email dont exsist');
         } else {
             return result;
         }
