@@ -1,18 +1,24 @@
 'use script';
 const db = require('../services/db.connect');
 
-function checkUser(person)
+function getUserByEmail(person)
 {
     return db.oneOrNone('SELECT id FROM users WHERE email = $1', [person.email]).then(result =>
     {
-        return result;
+        console.log(result);
+        if (result == null) {
+         throw new ERROR('Email dont exsist');
+        } else {
+            return result;
+        }
     }).catch(error =>
     {
-        console.error('ERROR user.dao.checkUser:', error.message || error);
+        console.error('ERROR user.dao.getUserByEmail:', error.message || error);
         throw error;
     });
 }
 
+
 module.exports = {
-    checkUser
+    getUserByEmail
 };
