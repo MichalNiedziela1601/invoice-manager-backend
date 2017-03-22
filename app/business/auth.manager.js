@@ -14,34 +14,28 @@ function hashPassword(obj, password, salt)
 }
 function registerCompany(person)
 {
-    return userDAO.getUserByEmail(person).then(result =>
+    return userDAO.getUserByEmail(person.email).then(() =>
     {
-        if (result === null) {
-            return companyDAO.getCompanyByNip(person.nip).then(() =>
-            {
-                throw new Error('Nip exist in database');
-            }, () => {
-                return hashPassword(person, person.password, 10)
-                        .then(user =>
-                        {
-                            return authDAO.registerCompany(user);
-                        })
-                        .catch(error =>
-                        {
-                            console.error('ERROR auth.manager.hashPassword:', error.message || error);
-                            throw error;
-                        });
-            }).catch(error =>
-            {
-                throw error;
-            })
-        } else {
-            throw new Error('Email exist in database');
-        }
-    }).catch(error =>
+        throw new Error('Email exist in database');
+    }, () =>
     {
-        throw error;
-    });
+        return companyDAO.getCompanyByNip(person.nip).then(() =>
+        {
+            throw new Error('Nip exist in database');
+        }, () =>
+        {
+            return hashPassword(person, person.password, 10)
+                    .then(user =>
+                    {
+                        return authDAO.registerCompany(user);
+                    })
+                    .catch(error =>
+                    {
+                        console.error('ERROR auth.manager.hashPassword:', error.message || error);
+                        throw error;
+                    });
+        })
+    })
 }
 
 module.exports = {

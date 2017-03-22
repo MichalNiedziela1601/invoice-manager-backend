@@ -18,7 +18,7 @@ module.exports = function (server)
                 if (error.message === 'Email exist in database' || error.message === 'Nip exist in database') {
                     reply(error.message).code(409);
                 } else {
-                    reply(error.message);
+                    reply(error.message).code(500);
                 }
             })
         }
