@@ -24,7 +24,7 @@ module.exports = {
             nip: Joi.number().required()
         },
         invoiceType: {
-            type: Joi.valid('Buy', 'Sale').required()
+            type: Joi.valid('buy', 'sell').required()
         },
         company: {
             name: Joi.string().min(2).required(),
