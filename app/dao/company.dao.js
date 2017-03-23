@@ -54,11 +54,7 @@ function getCompanyByNip(nip)
     return db.one('SELECT * FROM company WHERE nip = $1', [nip]).then(result =>
     {
         return result;
-    }).catch(error =>
-    {
-        console.error('ERROR getCompanyByNip:', error.message || error);
-        throw error;
-    })
+    });
 }
 
 module.exports = {
