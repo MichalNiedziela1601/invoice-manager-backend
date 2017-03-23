@@ -1,4 +1,4 @@
-'use script';
+'use strict';
 const db = require('../services/db.connect');
 
 function getUserByEmail(email)

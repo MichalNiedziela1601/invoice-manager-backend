@@ -1,4 +1,4 @@
-'use script';
+'use strict';
 const google = require('googleapis');
 const oauthToken = require('../services/googleApi');
 const fs = require('fs');

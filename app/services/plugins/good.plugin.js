@@ -1,4 +1,4 @@
-'use script';
+'use strict';
 const Good = require('good');
 
 module.exports = function (server)
