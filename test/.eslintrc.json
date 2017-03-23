@@ -1,0 +1,14 @@
+{
+    "extends": "../.eslintrc.json",
+    "rules": {
+        "max-nested-callbacks": ["error", 15]
+    },
+    "globals": {
+        "it": true,
+        "describe": true,
+        "before": true,
+        "beforeEach": true,
+        "after": true,
+        "afterEach": true
+    }
+}
