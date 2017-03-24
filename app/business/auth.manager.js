@@ -34,7 +34,8 @@ function registerCompany(person)
                     {
                         userTemp.companyId = company;
                         return userDAO.addUser(userTemp);
-                    }).catch(error =>
+                    })
+                    .catch(error =>
                     {
                         console.error('ERROR auth.manager.hashPassword:', error.message || error);
                         throw error;

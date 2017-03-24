@@ -71,6 +71,11 @@ function getCompanyByNip(nip)
     });
 }
 
+function getCompanyById(id){
+    return db.one('SELECT * FROM company WHERE id = $1',[id]);
+}
+
+
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister
+    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister, getCompanyById
 };
