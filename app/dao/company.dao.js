@@ -23,6 +23,19 @@ function addCompany(company)
         throw error;
     });
 }
+function addCompanyRegister(person)
+{
+    let company = 'INSERT INTO company (name,nip) values($1,$2) returning id';
+    return db.one(company, [person.name, person.nip]).then(data =>
+    {
+        return data.id
+    }).catch(error =>
+    {
+        console.error('ERROR auth.dao.registerCompany:',error.message || error);
+        throw error;
+    });
+
+}
 function addAddress(address)
 {
     let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5) RETURNING id;';
@@ -58,5 +71,5 @@ function getCompanyByNip(nip)
 }
 
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip
+    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister
 };
