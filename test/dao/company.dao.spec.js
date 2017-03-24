@@ -26,7 +26,7 @@ describe('company.dao', function ()
         let companyValidId = {id: 2};
         _.assign(companyValidId, company);
 
-        describe('addCompany', function ()
+        describe('properties is valid', function ()
         {
             beforeEach(function ()
             {
@@ -43,9 +43,9 @@ describe('company.dao', function ()
                 expect(companies).to.eql(data.companies);
             });
         });
-        describe('if properties is invalid', function ()
+        describe('properties is invalid', function ()
         {
-            describe('if company name is invalid', function ()
+            describe('company name is invalid', function ()
             {
                 beforeEach(function ()
                 {
@@ -67,7 +67,7 @@ describe('company.dao', function ()
                     expect(companies).to.eql([data.companies[0]])
                 });
             });
-            describe('if company nip is invalid', function ()
+            describe('company nip is invalid', function ()
             {
                 beforeEach(function ()
                 {

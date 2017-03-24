@@ -102,7 +102,7 @@ describe('invoice.dao', function ()
         let mockedInvoiceId = {id: 4};
         _.assign(mockedInvoiceId, mockedInvoice);
 
-        describe('if properties are valid', function ()
+        describe('properties are valid', function ()
         {
             beforeEach(function ()
             {
@@ -120,9 +120,9 @@ describe('invoice.dao', function ()
             });
         });
 
-        describe('if properties are invalid', function ()
+        describe('properties is invalid', function ()
         {
-            describe('if invoice number is null', function ()
+            describe('invoice number is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['invoiceNr']);
 
@@ -137,7 +137,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if type is null', function ()
+            describe('type is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['type']);
                 beforeEach(function ()
@@ -151,7 +151,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if createDate is null', function ()
+            describe('createDate is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['createDate']);
 
@@ -166,7 +166,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if executionEndDate is null', function ()
+            describe('executionEndDate is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['executionEndDate']);
                 beforeEach(function ()
@@ -180,7 +180,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if nettoValue is null', function ()
+            describe('nettoValue is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['nettoValue']);
 
@@ -195,7 +195,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if bruttoValue is null', function ()
+            describe('bruttoValue is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['bruttoValue']);
 
@@ -210,7 +210,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if status is null', function ()
+            describe('status is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['status']);
 
@@ -225,7 +225,7 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('if url is null', function ()
+            describe('url is null', function ()
             {
                 let invalidInvoice = _.omit(mockedInvoice, ['url']);
 
