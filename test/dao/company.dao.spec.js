@@ -6,7 +6,7 @@ const data = require('../fixtures/company.dao.fixtures');
 const testHelper = require('../testHelper');
 const _ = require('lodash');
 
-describe.only('company.dao', function ()
+describe('company.dao', function ()
 {
     let companies = [];
 
