@@ -34,18 +34,18 @@ CREATE SEQUENCE person_id_seq
    CACHE 1;
 
 CREATE TABLE "company" (
-	"id"  bigint DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
+	"id"  INTEGER DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
-	"nip" bigint NOT NULL UNIQUE,
-	"regon" bigint UNIQUE,
-	"address_id" bigint,
+	"nip" INTEGER NOT NULL UNIQUE,
+	"regon" INTEGER UNIQUE,
+	"address_id" INTEGER,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
 
 CREATE TABLE "address" (
-	"id"  bigint DEFAULT nextval('address_id_seq'::regclass) NOT NULL,
+	"id"  INTEGER DEFAULT nextval('address_id_seq'::regclass) NOT NULL,
 	"street" TEXT NOT NULL,
 	"build_nr" TEXT NOT NULL,
 	"flat_nr" TEXT,

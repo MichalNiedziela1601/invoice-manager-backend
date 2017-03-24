@@ -9,8 +9,8 @@ const invoices = [
         bruttoValue: '$345.89',
         status: 'unpaid',
         url: 'url1',
-        companyDealer: '1',
-        companyRecipent: '2',
+        companyDealer: 1,
+        companyRecipent: 2,
         personDealer: null,
         personRecipent: null
     },
@@ -24,8 +24,8 @@ const invoices = [
         bruttoValue: '$475.89',
         status: 'paid',
         url: 'url2',
-        companyDealer: '2',
-        companyRecipent: '1',
+        companyDealer: 2,
+        companyRecipent: 1,
         personDealer: null,
         personRecipent: null
     },
@@ -41,10 +41,11 @@ const invoices = [
         url: 'url5',
         companyDealer: null,
         companyRecipent: null,
-        personDealer: '2',
-        personRecipent: '1'
+        personDealer: 2,
+        personRecipent: 1
     }
 ];
+
 
 module.exports = {
     invoices

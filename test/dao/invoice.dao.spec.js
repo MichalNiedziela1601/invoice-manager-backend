@@ -81,6 +81,7 @@ describe('invoice.dao', function ()
             });
         });
     });
+
     describe('addInvoice', function ()
     {
         let mockedInvoice = {
