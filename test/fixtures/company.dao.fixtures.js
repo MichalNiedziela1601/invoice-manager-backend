@@ -21,8 +21,16 @@ const companies = [{
     regon: 55343367,
     street: 'polska'
 }];
+const findCompany = {
+    address_id: 1,
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+};
+const nothing = [];
 
 module.exports = {
-    companies
+    companies, findCompany, nothing
 };
 

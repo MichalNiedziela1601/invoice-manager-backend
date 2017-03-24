@@ -32,7 +32,7 @@ function addCompanyRegister(person)
         return data.id
     }).catch(error =>
     {
-        console.error('ERROR auth.dao.registerCompany:',error.message || error);
+        console.error('ERROR auth.dao.registerCompany:', error.message || error);
         throw error;
     });
 
@@ -58,7 +58,7 @@ function findCompanyByNip(nip)
         return parser.parseObj(result);
     }).catch(error =>
     {
-        console.error('ERROR company.dao.findCopmanyByNip:', error.message || error);
+        console.error('ERROR company.dao.findCompanyByNip:', error.message || error);
         throw error;
     })
 }
@@ -68,6 +68,10 @@ function getCompanyByNip(nip)
     return db.one('SELECT * FROM company WHERE nip = $1', [nip]).then(result =>
     {
         return result;
+    }).catch(error =>
+    {
+        console.error('ERROR company.dao.getCompanyByNip:', error.message || error);
+        throw error;
     });
 }
 
