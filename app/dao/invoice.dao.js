@@ -45,27 +45,9 @@ function addInvoice(invoice)
 
 function getInvoiceById(id)
 {
-    return readSqlFile(path.join(__dirname, '/sql/getInvoiceById.sql')).then(query =>
-    {
-        return db.one(query, [id]).then(result =>
-        {
+    let query = 'SELECT * FROM invoice WHERE id = $1';
+    return db.one(query, [id]);
 
-            if (result === null) {
-                result = 'Invoice not found';
-                return result
-            } else {
-                return parser.parseObj(result);
-            }
-        }).catch(error =>
-        {
-            console.error('ERROR invoice.dao.etInvoiceById.readSqlFile:', error.message || error);
-            throw error;
-        })
-    }).catch(error =>
-    {
-        console.error('ERROR invoice.dao.getInvoiceById:', error.message || error);
-        throw error;
-    });
 }
 
 module.exports = {
