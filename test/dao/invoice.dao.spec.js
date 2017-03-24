@@ -95,8 +95,8 @@ describe('invoice.dao', function ()
             url: 'url6',
             companyDealer: null,
             companyRecipent: null,
-            personDealer: '1',
-            personRecipent: '2'
+            personDealer: 1,
+            personRecipent: 2
         };
 
         let mockedInvoiceId = {id: 4};
