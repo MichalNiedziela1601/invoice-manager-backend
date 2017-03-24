@@ -6,7 +6,7 @@ const data = require('../fixtures/company.dao.fixtures');
 const testHelper = require('../testHelper');
 const _ = require('lodash');
 
-describe('company.dao', function ()
+describe.only('company.dao', function ()
 {
     let companies = [];
 
@@ -21,10 +21,7 @@ describe('company.dao', function ()
     describe('addCompany', function ()
     {
         let company = {
-            name: 'Firma badfghjklrtek',
-            nip: 176543330,
-            regon: 55343367,
-            addressId: 1
+            name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367, addressId: 1
         };
         let companyValidId = {id: 2};
         _.assign(companyValidId, company);
@@ -92,6 +89,46 @@ describe('company.dao', function ()
                     expect(companies).to.eql([data.companies[0]])
                 });
             });
+        });
+    });
+    describe('getCompanyByNip', function ()
+    {
+        let nip = 1029384756;
+        let companies = {};
+        beforeEach(function ()
+        {
+            return companyDAO.getCompanyByNip(nip).then(function (result)
+            {
+                companies = result;
+            });
+        });
+        it('should add company to database', function ()
+        {
+            expect(companies).to.eql(data.findCompany);
+        });
+
+    });
+    describe('getCompanyByNip with invalid nip', function ()
+    {
+        beforeEach(function ()
+        {
+            let invalidNip = 3456791345;
+            let companies = {};
+            return companyDAO.getCompanyByNip(invalidNip).then(function ()
+            {
+                throw new Error('function then should not be served');
+
+            }).catch(function ()
+            {
+                return companyDAO.getCompanies().then(function (result)
+                {
+                    companies = result;
+                })
+            });
+        });
+        it('should add company to database', function ()
+        {
+            expect(companies).to.eql(data.nothing);
         });
     });
 });
