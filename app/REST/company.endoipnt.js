@@ -12,8 +12,7 @@ module.exports = function (server)
             companyManager.getCompanies().then(result =>
             {
                 reply(result);
-            }).catch(error =>
-            {
+            }).catch(error => {
                 reply(error.message).code(404);
             });
         }
@@ -27,8 +26,7 @@ module.exports = function (server)
             companyManager.addCompany(request.payload).then(() =>
             {
                 reply();
-            }).catch(error =>
-            {
+            }).catch(error => {
                 reply(error.message);
             });
         }
@@ -41,8 +39,7 @@ module.exports = function (server)
             companyManager.addAddress(request.payload).then(() =>
             {
                 reply()
-            }).catch(error =>
-            {
+            }).catch(error => {
                 reply(error.message);
             });
         }
