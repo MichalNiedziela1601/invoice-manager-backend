@@ -28,6 +28,7 @@ function addCompanyRegister(person)
     let company = 'INSERT INTO company (name,nip) values($1,$2) returning id';
     return db.one(company, [person.name, person.nip]).then(data =>
     {
+        return data.id
     }).catch(error =>
     {
         console.error('ERROR auth.dao.registerCompany:',error.message || error);
