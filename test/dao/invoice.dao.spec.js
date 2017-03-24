@@ -6,16 +6,32 @@ const data = require('../fixtures/invoice.dao.fixtures');
 const testHelper = require('../testHelper');
 const _ = require('lodash');
 
+let invoices = [];
+
 describe('invoice.dao', function ()
 {
     beforeEach(function ()
     {
+        invoices = [];
         return testHelper.clearDB().then(function ()
         {
             return testHelper.seed('test/seed/invoice.dao.sql');
         });
     });
 
+    function addInvalidInvoiceHelper(invalidInvoice)
+    {
+        return invoiceDAO.addInvoice(invalidInvoice).then(function ()
+        {
+            throw new Error('function then should not be served')
+        }).catch(function ()
+        {
+            return invoiceDAO.getInvoices().then(function (result)
+            {
+                invoices = result;
+            })
+        });
+    }
     describe('getInvoices', function ()
     {
         let invoices = [];
@@ -84,11 +100,9 @@ describe('invoice.dao', function ()
 
         let mockedInvoiceId = {id: 4};
         _.assign(mockedInvoiceId, mockedInvoice);
-        let invoices = [];
 
         describe('if properties are valid', function ()
         {
-
             beforeEach(function ()
             {
                 return invoiceDAO.addInvoice(mockedInvoice).then(function ()
@@ -113,17 +127,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if type is invalid', function ()
@@ -137,16 +141,7 @@ describe('invoice.dao', function ()
                 let invalidInvoice = _.omit(mockedInvoice, ['type']);
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if type is invalid', function ()
@@ -161,16 +156,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if createDate is invalid', function ()
@@ -184,16 +170,7 @@ describe('invoice.dao', function ()
                 let invalidInvoice = _.omit(mockedInvoice, ['executionEndDate']);
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if executionEndDate is invalid', function ()
@@ -208,16 +185,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if nettoValue is invalid', function ()
@@ -232,16 +200,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if bruttoValue is invalid', function ()
@@ -256,16 +215,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if status is invalid', function ()
@@ -280,16 +230,7 @@ describe('invoice.dao', function ()
 
                 beforeEach(function ()
                 {
-                    return invoiceDAO.addInvoice(invalidInvoice).then(function ()
-                    {
-                        throw new Error('function then should not be served')
-                    }).catch(function ()
-                    {
-                        return invoiceDAO.getInvoices().then(function (result)
-                        {
-                            invoices = result;
-                        })
-                    });
+                    return addInvalidInvoiceHelper(invalidInvoice);
                 });
 
                 it('should not add invoice if url is invalid', function ()
