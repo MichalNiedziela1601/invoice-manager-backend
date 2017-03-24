@@ -11,7 +11,7 @@ module.exports = {
             nettoValue: Joi.number().required(),
             bruttoValue: Joi.number().required(),
             status: Joi.valid('paid', 'unpaid').required(),
-            url: Joi.string().alphanum().required(),
+            url: Joi.string(),
             companyDealer: [Joi.number().integer(), Joi.allow(null)],
             companyRecipent: [Joi.number().integer(), Joi.allow(null)],
             personDealer: [Joi.number().integer(), Joi.allow(null)],
