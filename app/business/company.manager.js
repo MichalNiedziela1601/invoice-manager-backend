@@ -26,6 +26,11 @@ function findCompanyByNip(nip)
     return companyDao.findCompanyByNip(nip);
 }
 
+function getNips(nip)
+{
+    return companyDao.getNips(nip);
+}
+
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip
+    getCompanies, addCompany, addAddress, findCompanyByNip, getNips
 };
