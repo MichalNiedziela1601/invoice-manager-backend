@@ -36,8 +36,8 @@ CREATE SEQUENCE person_id_seq
 CREATE TABLE "company" (
 	"id"  INTEGER DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
-	"nip" INTEGER NOT NULL UNIQUE,
-	"regon" INTEGER UNIQUE,
+	"nip" BIGINT NOT NULL UNIQUE,
+	"regon" BIGINT UNIQUE,
 	"address_id" INTEGER,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
