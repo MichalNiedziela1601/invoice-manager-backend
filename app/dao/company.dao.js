@@ -75,11 +75,17 @@ function getCompanyByNip(nip)
     });
 }
 
+function getNips(nip){
+    nip = nip.toString();
+    return db.any('SELECT nip FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies => {
+        return parser.parseArrayOfObject(companies);
+    });
+}
 function getCompanyById(id){
     return db.one('SELECT * FROM company WHERE id = $1',[id]);
 }
 
 
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister, getCompanyById
+    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister, getCompanyById,getNips
 };
