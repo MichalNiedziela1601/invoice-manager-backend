@@ -18,9 +18,23 @@ const findCompany = {
     nip: 1029384756,
     regon: 243124,
 };
+
+const address = [{
+    street: 'polska',
+    buildNr: 8,
+    flatNr: 8,
+    postCode: '33-100',
+    city: 'tutaj'
+}, {
+    street: 'andrzje',
+    buildNr: 9,
+    flatNr: 6,
+    postCode: '33-100',
+    city: 'tuaj'
+}];
 const nothing = [];
 
 module.exports = {
-    companies, findCompany, nothing
+    companies, findCompany, nothing, address
 };
 

@@ -6,7 +6,53 @@ const _ = require('lodash');
 const oauthToken = require('../services/googleApi');
 const fs = require('fs');
 const path = require('path');
-const googleMethods = require('./google.mehods');
+const googleMethods = require('./../services/google.methods');
+
+function save(name, invoice, reply)
+{
+    oauthToken().then(auth =>
+    {
+        googleMethods.saveFile(auth, name).then(response =>
+        {
+            invoice.url = response.webViewLink;
+            googleMethods.shareFile(auth, response.id).then(() =>
+            {
+                invoiceManager.addInvoice(invoice).then(() =>
+                {
+                    reply('Invoice add');
+                });
+            }).catch(error =>
+            {
+                console.error('error', error);
+                throw error;
+            })
+
+        }).catch(error =>
+        {
+            console.error('error', error);
+            throw error;
+        })
+    }).catch(error =>
+    {
+        reply(error.message).code(500);
+    });
+
+}
+
+function convertToObject(data)
+{
+    let invoiceCompany = _.pickBy(data, function (value, key)
+    {
+        return _.startsWith(key, 'invoice');
+    });
+    let invoice = {};
+    _.each(invoiceCompany, function (value, key)
+    {
+        let newKey = key.match(/\[(\w+)\]/)[1];
+        invoice[newKey] = value;
+    });
+    return invoice;
+}
 
 module.exports = function (server)
 {
@@ -41,16 +87,7 @@ module.exports = function (server)
         {
             let data = request.payload;
             if (data.file) {
-                let invoiceCompany = _.pickBy(data, function (value, key)
-                {
-                    return _.startsWith(key, 'invoice');
-                });
-                let invoice = {};
-                _.each(invoiceCompany, function (value, key)
-                {
-                    let newKey = key.match(/\[(\w+)\]/)[1];
-                    invoice[newKey] = value;
-                });
+                let invoice = convertToObject(data);
 
                 Joi.validate(invoice, joiSchema.schema.invoice, function (err)
                 {
@@ -73,33 +110,7 @@ module.exports = function (server)
                             if (err) {
                                 throw err;
                             }
-
-                            oauthToken().then(auth =>
-                            {
-                                googleMethods.saveFile(auth, name).then(response =>
-                                {
-                                    invoice.url = response.webViewLink;
-                                    googleMethods.shareFile(auth, response.id).then(() =>
-                                    {
-                                        invoiceManager.addInvoice(invoice).then(() =>
-                                        {
-                                            reply('Invoice add');
-                                        });
-                                    }).catch(error =>
-                                    {
-                                        console.error('error', error);
-                                        throw error;
-                                    })
-
-                                }).catch(error =>
-                                {
-                                    console.error('error', error);
-                                    throw error;
-                                })
-                            }).catch(error =>
-                            {
-                                reply(error).code(500);
-                            });
+                            save(name, invoice, reply);
                         })
                     }
                 });

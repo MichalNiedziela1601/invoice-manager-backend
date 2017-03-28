@@ -12,7 +12,8 @@ module.exports = function (server)
             companyManager.getCompanies().then(result =>
             {
                 reply(result);
-            }).catch(error => {
+            }).catch(error =>
+            {
                 reply(error.message).code(404);
             });
         }
@@ -26,7 +27,8 @@ module.exports = function (server)
             companyManager.addCompany(request.payload).then(() =>
             {
                 reply();
-            }).catch(error => {
+            }).catch(error =>
+            {
                 reply(error.message);
             });
         }
@@ -39,7 +41,8 @@ module.exports = function (server)
             companyManager.addAddress(request.payload).then(() =>
             {
                 reply()
-            }).catch(error => {
+            }).catch(error =>
+            {
                 reply(error.message);
             });
         }
@@ -53,7 +56,24 @@ module.exports = function (server)
             companyManager.findCompanyByNip(request.params.nip).then(company =>
             {
                 reply(company);
-            }).catch(error => {
+            }).catch(error =>
+            {
+                reply(error.message).code(404);
+            });
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/companies/{nip}',
+        config: {validate: {params: joiSchema.schema.companyByNip}},
+        handler: function (request, reply)
+        {
+            companyManager.getNips(request.params.nip).then(company =>
+            {
+                reply(company);
+            }).catch(error =>
+            {
                 reply(error.message).code(404);
             });
         }

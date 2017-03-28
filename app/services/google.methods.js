@@ -16,14 +16,14 @@ function saveFile(auth, name)
             },
             media: {
                 mimeType: 'application/pdf',
-                body: fs.createReadStream(path.join(__dirname, '/uploads/', name))
+                body: fs.createReadStream(path.join('./app/REST/uploads/', name))
             }
         }, (err, file) =>
         {
             if (err) {
                 reject(err);
             } else {
-                fs.unlink(path.join(__dirname, '/uploads/', name));
+                fs.unlink(path.join('./app/REST/uploads/', name));
                 resolve(file);
             }
         });
