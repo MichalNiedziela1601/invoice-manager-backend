@@ -32,7 +32,14 @@ const address = [{
     postCode: '33-100',
     city: 'tuaj'
 }];
-const nothing = [];
+const nothing = {
+    address_id: 1,
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+
+};
 
 module.exports = {
     companies, findCompany, nothing, address

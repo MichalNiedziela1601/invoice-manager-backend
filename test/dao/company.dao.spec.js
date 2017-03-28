@@ -125,31 +125,31 @@ describe('company.dao', function ()
         {
             expect(companies).to.eql(data.findCompany);
         });
-
-    });
-    describe('getCompanyByNip with invalid nip', function ()
-    {
-        beforeEach(function ()
+        describe('getCompanyByNip with invalid nip', function ()
         {
-            let invalidNip = 3456791345;
-            let companies = {};
-            return companyDAO.getCompanyByNip(invalidNip).then(function ()
+            beforeEach(function ()
             {
-                throw new Error('function then should not be served');
-
-            }).catch(function ()
-            {
-                return companyDAO.getCompanies().then(function (result)
+                let invalidNip = 3456791345;
+                let companies = {};
+                return companyDAO.getCompanyByNip(invalidNip).then(function ()
                 {
-                    companies = result;
-                })
+                    throw new Error('function then should not be served');
+
+                }).catch(function ()
+                {
+                    return companyDAO.getCompanies().then(function (result)
+                    {
+                        companies = result;
+                    })
+                });
+            });
+            it('should add company to database', function ()
+            {
+                expect(companies).to.eql(data.nothing);
             });
         });
-        it('should add company to database', function ()
-        {
-            expect(companies).to.eql(data.nothing);
-        });
     });
+
     describe('addAddress', function ()
     {
         let validAddress = {street: 'Duza', buildNr: '1', flatNr: '13', postCode: '33 - 333', city: 'Waszyngton'};
