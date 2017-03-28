@@ -6,4 +6,4 @@ function getAddressById(id){
 
 module.exports = {
     getAddressById
-}
+};

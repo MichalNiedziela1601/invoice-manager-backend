@@ -1,9 +1,23 @@
 'use strict';
 const companyDao = require('../dao/company.dao.js');
+const addressDAO = require('../dao/address.dao');
+const Promise = require('bluebird');
 
 function getCompanies()
 {
-    return companyDao.getCompanies();
+    return companyDao.getCompanies().then(result =>
+    {
+        return Promise.map(result, function (company)
+        {
+            return addressDAO.getAddressById(company.addressId).then(address =>
+            {
+                company.address = address;
+                return company;
+            })
+        })
+    });
+
+
 }
 function addAddress(address)
 {
