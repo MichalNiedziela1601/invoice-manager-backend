@@ -6,7 +6,7 @@ const _ = require('lodash');
 const oauthToken = require('../services/googleApi');
 const fs = require('fs');
 const path = require('path');
-const googleMethods = require('./google.mehods');
+const googleMethods = require('./../services/google.methods');
 
 module.exports = function (server)
 {
