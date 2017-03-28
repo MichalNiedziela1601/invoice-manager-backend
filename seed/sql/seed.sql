@@ -3,13 +3,33 @@ INSERT INTO address
 ('Spokojna',4,3,'33-100','Tarnów'),
 ('Krakowska',4,null,'33-120','City 1'),
 ('Jana Pawła II',15,2,'33-234','Kraków'),
-('Osiedlowa',21,null,'33-100','Tarnów');
+('Osiedlowa',21,null,'33-100','Tarnów'),
+('Krakowska','5a',4,'33-120','City 1'),
+('Lwowska',40,2,'34-120','City 2'),
+('Długa',14,null,'33-120','City 1'),
+('Bohaterów',34,12,'33-125','City 3'),
+('Krakowska',6,null,'33-340','City 5'),
+('Słoneczna',22,null,'31-120','City 1'),
+('Klikowska',14,null,'33-120','City 1'),
+('Bema',37,null,'33-120','City 1'),
+('Długa',39,null,'33-120','City 1'),
+('Rolnicza',15,3,'33-120','City 1');
 
 INSERT INTO
   company
 (name, nip, regon,address_id) VALUES
   ( 'Firma 1',1234567890,6789567,1),
-  ( 'Firma BUDEX',1224567890,6189567,2);
+  ( 'Firma BUDEX',1224567890,6189567,2),
+  ( 'FHU "MELEX"',4567123456,null,5),
+  ( 'FHU "SPOŁEM"',2345678901,null,6),
+  ( 'FHU "LEŚ"',3456789012,null,7),
+  ( 'MotoZbyt',4567890123,null,8),
+  ( 'RWD',5678901234,null,9),
+  ( 'COMARCH',6789012345,null,10),
+  ( 'Insoft',7890123456,null,11),
+  ( 'Amiga',8901234567,null,12),
+  ( 'Microsoft',9012345678,null,13),
+  ( 'FHU "MET-TRANS"',5432109876,null,14);
 
 INSERT INTO
   person
