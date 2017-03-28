@@ -46,7 +46,7 @@ function addInvoice(invoice)
 function getInvoiceById(id)
 {
     let query = 'SELECT * FROM invoice WHERE id = $1';
-    return db.one(query, [id]);
+    return db.one(query, [id]).then(invoice => parser.parseObj(invoice));
 
 }
 

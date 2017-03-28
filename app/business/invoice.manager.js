@@ -2,7 +2,6 @@
 const invoiceDao = require('../dao/invoice.dao');
 const companyDao = require('../dao/company.dao');
 const addressDao = require('../dao/address.dao');
-const parser = require('../services/camelCaseParser');
 const personDao = require('../dao/person.dao');
 
 function getInvoices(filter)
@@ -15,65 +14,57 @@ function addInvoice(invoice)
     return invoiceDao.addInvoice(invoice);
 }
 
+function getAddressById(id)
+{
+    return addressDao.getAddressById(id.addressId).then(address =>
+    {
+        id.address = address;
+        return id;
+    });
+}
+
+function getCompanyById(id)
+{
+    return companyDao.getCompanyById(id).then(company =>
+    {
+        id = company;
+        return id;
+    }).then(getAddressById);
+}
+
+function getPersonById(id)
+{
+    return personDao.getPersonById(id).then(person =>
+    {
+        id = person;
+        return id;
+    }).then(getAddressById);
+}
+function getContractorDetails(invoice, id, callback)
+{
+    return callback(invoice[id]).then(result =>
+    {
+        invoice[id] = result;
+        return invoice;
+    })
+}
+
 function getInvoiceById(id)
 {
-    let invoiceResult = {};
-    return invoiceDao.getInvoiceById(id).then(invoice =>
-    {
-        invoiceResult = parser.parseObj(invoice);
-    }).then(() =>
+    return invoiceDao.getInvoiceById(id).then(invoice => invoice).then(invoiceResult =>
     {
         if (null !== invoiceResult.companyDealer) {
-            return companyDao.getCompanyById(invoiceResult.companyDealer).then(company =>
-            {
-                invoiceResult.companyDealer = parser.parseObj(company);
-                return addressDao.getAddressById(invoiceResult.companyDealer.addressId).then(address =>
-                {
-                    invoiceResult.companyDealer.address = parser.parseObj(address);
-                    return invoiceResult;
-                })
-
-            });
+            return getContractorDetails(invoiceResult, 'companyDealer', getCompanyById);
         } else if (null !== invoiceResult.personDealer) {
-            return personDao.getPersonById(invoiceResult.personDealer).then(person =>
-            {
-                invoiceResult.personDealer = parser.parseObj(person);
-                return addressDao.getAddressById(invoiceResult.personDealer.addressId).then(address =>
-                {
-                    invoiceResult.personDealer.address = parser.parseObj(address);
-                    return invoiceResult;
-                })
-
-            })
+            return getContractorDetails(invoiceResult, 'personDealer', getPersonById);
         }
-
     })
-            .then(() =>
+            .then(invoiceResult =>
             {
                 if (null !== invoiceResult.companyRecipent) {
-                    return companyDao.getCompanyById(invoiceResult.companyRecipent).then(company =>
-                    {
-                        invoiceResult.companyRecipent = parser.parseObj(company);
-                    }).then(() =>
-                    {
-                        return addressDao.getAddressById(invoiceResult.companyRecipent.addressId).then(address =>
-                        {
-                            invoiceResult.companyRecipent.address = parser.parseObj(address);
-                            return invoiceResult;
-                        })
-                    })
+                    return getContractorDetails(invoiceResult, 'companyRecipent', getCompanyById);
                 } else if (null !== invoiceResult.personRecipent) {
-                    return personDao.getPersonById(invoiceResult.personRecipent).then(person =>
-                    {
-                        invoiceResult.personRecipent = parser.parseObj(person);
-                    }).then(() =>
-                    {
-                        return addressDao.getAddressById(invoiceResult.personRecipent.addressId).then(address =>
-                        {
-                            invoiceResult.personRecipent.address = parser.parseObj(address);
-                            return invoiceResult;
-                        })
-                    })
+                    return getContractorDetails(invoiceResult, 'personRecipent', getPersonById);
                 }
             })
             .catch(error =>
