@@ -7,7 +7,7 @@ module.exports = function (server)
     server.route({
         method: 'POST',
         path: '/api/auth/registration',
-        config: {validate: {payload: joiSchema.schema.registerCompany}},
+        config: {validate: {payload: joiSchema.schema.registerCompany}, auth: false},
         handler: function (request, reply)
         {
             authManager.registerCompany(request.payload).then(res =>

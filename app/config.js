@@ -7,5 +7,6 @@ module.exports = {
         port: 5432,
         host: 'localhost'
     },
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000,
+    secret: 'NeverShareYourSecret'
 };
