@@ -5,7 +5,6 @@ const Promise = require('bluebird');
 
 function getCompanies()
 {
-    let companies = [];
     return companyDao.getCompanies().then(result =>
     {
         return Promise.map(result, function (company)
