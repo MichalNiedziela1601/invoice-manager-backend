@@ -38,6 +38,7 @@
     "grunt": "1.0.1",
     "grunt-cli": "1.2.0",
     "grunt-eslint": "19.0.0",
+    "istanbul": "0.4.5",
     "load-grunt-tasks": "3.5.2",
     "mocha": "3.2.0",
     "proxyquire": "1.7.11",
@@ -45,6 +46,7 @@
     "sinon-chai": "2.9.0"
   },
   "scripts": {
+    "coverage": "node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "test": "mocha --opts test/mocha.opts",
     "seed": "node seed/seed.js",
     "start": "nodemon app/index.js"
