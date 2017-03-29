@@ -16,29 +16,32 @@ function getCompanies()
             })
         })
     });
-
-
-}
-function addAddress(address)
-{
-    return companyDao.addAddress(address)
-}
-function addCompany(company)
-{
-    return addAddress(company.address).then(function (addressId)
-    {
-        company.addressId = addressId;
-        return companyDao.addCompany(company)
-    }).catch(error =>
-    {
-        throw error;
-    });
 }
 
 function findCompanyByNip(nip)
 {
     return companyDao.findCompanyByNip(nip);
 }
+
+function addAddress(address)
+{
+    return companyDao.addAddress(address)
+}
+function addCompany(company)
+{
+    return findCompanyByNip(company.nip).then(() =>
+    {
+        throw new Error('Company with this nip exist in database');
+    }, () =>
+    {
+        return addAddress(company.address).then(function (addressId)
+        {
+            company.addressId = addressId;
+            return companyDao.addCompany(company)
+        });
+    });
+}
+
 
 function getNips(nip)
 {
