@@ -29,7 +29,11 @@ module.exports = function (server)
                 reply();
             }).catch(error =>
             {
-                reply(error.message);
+                if (error.message === 'Company with this nip exist in database') {
+                    reply(error.message).code(400);
+                } else {
+                    reply(error.message).code(500);
+                }
             });
         }
     });
