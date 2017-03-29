@@ -7,6 +7,7 @@ const testHelper = require('../testHelper');
 const _ = require('lodash');
 
 let invoices = [];
+let invoiceById;
 
 describe('invoice.dao', function ()
 {
@@ -32,6 +33,7 @@ describe('invoice.dao', function ()
             })
         });
     }
+
     describe('getInvoices', function ()
     {
         let invoices = [];
@@ -241,4 +243,19 @@ describe('invoice.dao', function ()
             });
         })
     })
+
+    describe('getInvoiceById', function ()
+    {
+        beforeEach(function ()
+        {
+            return invoiceDAO.getInvoiceById(1).then(function (result)
+            {
+                invoiceById = result;
+            })
+        });
+        it('should return invoice by id', function ()
+        {
+            expect(invoiceById).to.eql(data.invoices[0]);
+        });
+    });
 });
