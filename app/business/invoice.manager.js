@@ -15,66 +15,70 @@ function addInvoice(invoice)
     return invoiceDao.addInvoice(invoice);
 }
 
+function getInvoiceByCompanyDealerId(invoiceResult)
+{
+    if (null !== invoiceResult.companyDealer) {
+        return companyDao.getCompanyById(invoiceResult.companyDealer).then(company =>
+        {
+            invoiceResult.companyDealer = company;
+            return addressDao.getAddressById(invoiceResult.companyDealer.addressId).then(address =>
+            {
+                invoiceResult.companyDealer.address = address;
+                return invoiceResult;
+            })
+        });
+    } else if (null !== invoiceResult.personDealer) {
+        return personDao.getPersonById(invoiceResult.personDealer).then(person =>
+        {
+            invoiceResult.personDealer = person;
+            return addressDao.getAddressById(invoiceResult.personDealer.addressId).then(address =>
+            {
+                invoiceResult.personDealer.address = address;
+                return invoiceResult;
+            })
+        })
+    }
+}
+
+function getInvoiceByCompanyRecipentId(invoiceResult)
+{
+    if (null !== invoiceResult.companyRecipent) {
+        return companyDao.getCompanyById(invoiceResult.companyRecipent).then(company =>
+        {
+            invoiceResult.companyRecipent = company;
+        }).then(() =>
+        {
+            return addressDao.getAddressById(invoiceResult.companyRecipent.addressId).then(address =>
+            {
+                invoiceResult.companyRecipent.address = address;
+                return invoiceResult;
+            })
+        })
+    } else if (null !== invoiceResult.personRecipent) {
+        return personDao.getPersonById(invoiceResult.personRecipent).then(person =>
+        {
+            invoiceResult.personRecipent = person;
+        }).then(() =>
+        {
+            return addressDao.getAddressById(invoiceResult.personRecipent.addressId).then(address =>
+            {
+                invoiceResult.personRecipent.address = address;
+                return invoiceResult;
+            })
+        })
+    }
+}
+
 function getInvoiceById(id)
 {
-    let invoiceResult = {};
-    return invoiceDao.getInvoiceById(id).then(invoice =>
+
+    return invoiceDao.getInvoiceById(id).then(invoice => invoice).then(invoice =>
     {
-        invoiceResult = parser.parseObj(invoice);
-    }).then(() =>
-    {
-        if (null !== invoiceResult.companyDealer) {
-            return companyDao.getCompanyById(invoiceResult.companyDealer).then(company =>
-            {
-                invoiceResult.companyDealer = parser.parseObj(company);
-                return addressDao.getAddressById(invoiceResult.companyDealer.addressId).then(address =>
-                {
-                    invoiceResult.companyDealer.address = parser.parseObj(address);
-                    return invoiceResult;
-                })
-
-            });
-        } else if (null !== invoiceResult.personDealer) {
-            return personDao.getPersonById(invoiceResult.personDealer).then(person =>
-            {
-                invoiceResult.personDealer = parser.parseObj(person);
-                return addressDao.getAddressById(invoiceResult.personDealer.addressId).then(address =>
-                {
-                    invoiceResult.personDealer.address = parser.parseObj(address);
-                    return invoiceResult;
-                })
-
-            })
-        }
-
+        return getInvoiceByCompanyDealerId(invoice);
     })
-            .then(() =>
+            .then(invoice =>
             {
-                if (null !== invoiceResult.companyRecipent) {
-                    return companyDao.getCompanyById(invoiceResult.companyRecipent).then(company =>
-                    {
-                        invoiceResult.companyRecipent = parser.parseObj(company);
-                    }).then(() =>
-                    {
-                        return addressDao.getAddressById(invoiceResult.companyRecipent.addressId).then(address =>
-                        {
-                            invoiceResult.companyRecipent.address = parser.parseObj(address);
-                            return invoiceResult;
-                        })
-                    })
-                } else if (null !== invoiceResult.personRecipent) {
-                    return personDao.getPersonById(invoiceResult.personRecipent).then(person =>
-                    {
-                        invoiceResult.personRecipent = parser.parseObj(person);
-                    }).then(() =>
-                    {
-                        return addressDao.getAddressById(invoiceResult.personRecipent.addressId).then(address =>
-                        {
-                            invoiceResult.personRecipent.address = parser.parseObj(address);
-                            return invoiceResult;
-                        })
-                    })
-                }
+                return getInvoiceByCompanyRecipentId(invoice);
             })
             .catch(error =>
             {

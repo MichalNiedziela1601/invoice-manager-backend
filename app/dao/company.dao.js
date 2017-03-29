@@ -81,7 +81,7 @@ function getNips(nip){
     });
 }
 function getCompanyById(id){
-    return db.one('SELECT * FROM company WHERE id = $1',[id]);
+    return db.one('SELECT * FROM company WHERE id = $1',[id]).then(company => parser.parseObj(company));
 }
 
 
