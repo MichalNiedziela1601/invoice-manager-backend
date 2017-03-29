@@ -40,9 +40,9 @@ describe('company.dao', function ()
     describe('addCompany', function ()
     {
         let company = {
-            name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367, addressId: 1
+            name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367, addressId: 2
         };
-        let companyValidId = {id: 2};
+        let companyValidId = {id: 3};
         _.assign(companyValidId, company);
 
         describe('properties is valid', function ()
@@ -83,7 +83,7 @@ describe('company.dao', function ()
                 });
                 it('should not add contractor', function ()
                 {
-                    expect(companies).to.eql([data.companies[0]])
+                    expect(companies).to.eql([data.companies[0],data.companies[1]])
                 });
             });
             describe('company nip is invalid', function ()
@@ -105,7 +105,7 @@ describe('company.dao', function ()
                 });
                 it('should not add contractor', function ()
                 {
-                    expect(companies).to.eql([data.companies[0]])
+                    expect(companies).to.eql([data.companies[0],data.companies[1]])
                 });
             });
         });
@@ -232,5 +232,128 @@ describe('company.dao', function ()
                 });
             });
         });
-    })
+    });
+
+    describe('addCompanyRegister', function ()
+    {
+        let company = {name: 'Firma test', nip: 7890123456};
+        describe('when company data is valid', function ()
+        {
+            let id = null;
+            beforeEach(function ()
+            {
+                return companyDAO.addCompanyRegister(company).then(result =>
+                {
+                    id = result;
+
+                }).then(() => {
+                    return companyDAO.getCompanies().then(result => {
+                        companies = _.sortBy(result,'id');
+                    })
+                })
+            });
+            it('should return id', function ()
+            {
+                expect(id).to.eql(3);
+            });
+            it('should add new company', function ()
+            {
+                expect(companies).to.eql(data.afterRegisterCompany);
+            });
+
+        });
+        describe('when company data is not valid', function ()
+        {
+            describe('when name is invalid', function ()
+            {
+                beforeEach(function ()
+                {
+                    let invalidCompany = _.omit(company, ['name']);
+
+                    return companyDAO.addCompanyRegister(invalidCompany).then(function ()
+                    {
+                        throw new Error('function then should not be served');
+                    }).catch(function ()
+                    {
+                        return companyDAO.getCompanies().then(function (result)
+                        {
+                            companies = result;
+                        })
+                    });
+                });
+                it('should not add company', function ()
+                {
+                    expect(companies).to.eql([data.companies[0], data.companies[1]]);
+                });
+            });
+            describe('when nip is valid', function ()
+            {
+                beforeEach(function ()
+                {
+                    let invalidCompany = _.omit(company, ['nip']);
+
+                    return companyDAO.addCompanyRegister(invalidCompany).then(function ()
+                    {
+                        throw new Error('function then should not be served');
+                    }).catch(function ()
+                    {
+                        return companyDAO.getCompanies().then(function (result)
+                        {
+                            companies = result;
+                        })
+                    });
+                });
+                it('should not add company', function ()
+                {
+                    expect(companies).to.eql([data.companies[0],data.companies[1]]);
+                });
+            });
+        });
+    });
+
+    describe('getNips', function ()
+    {
+        let nips = [];
+        describe('when nip valid to more then one', function ()
+        {
+            beforeEach(function ()
+            {
+                return companyDAO.getNips(102).then(result => {
+                    nips = result;
+                })
+            });
+            it('should return array of nips', function ()
+            {
+                expect(nips).to.eql([{nip: data.companies[0].nip}, {nip: data.companies[1].nip}]);
+            });
+        });
+        describe('when nip valid to one', function ()
+        {
+            beforeEach(function ()
+            {
+                return companyDAO.getNips(10293).then(result => {
+                    nips = result;
+                })
+            });
+            it('should return array of nips', function ()
+            {
+                expect(nips).to.eql([{nip: data.companies[0].nip}]);
+            });
+        });
+
+    });
+
+    describe('getCompanyById', function ()
+    {
+        beforeEach(function ()
+        {
+            return companyDAO.getCompanyById(1).then(result => {
+                companies = result;
+            })
+        });
+        it('should return company', function ()
+        {
+            expect(companies).to.eql(data.companies[0]);
+        });
+    });
 });

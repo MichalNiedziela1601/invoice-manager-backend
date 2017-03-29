@@ -66,7 +66,7 @@ function getCompanyByNip(nip)
 {
     return db.one('SELECT * FROM company WHERE nip = $1', [nip]).then(result =>
     {
-        return result;
+        return parser.parseObj(result);
     }).catch(error =>
     {
         console.error('ERROR company.dao.getCompanyByNip:', error.message || error);
@@ -81,7 +81,7 @@ function getNips(nip){
     });
 }
 function getCompanyById(id){
-    return db.one('SELECT * FROM company WHERE id = $1',[id]);
+    return db.one('SELECT * FROM company WHERE id = $1',[id]).then(company => parser.parseObj(company));
 }
 
 

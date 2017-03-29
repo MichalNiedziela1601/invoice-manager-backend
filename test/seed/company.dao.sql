@@ -5,4 +5,5 @@ INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES
 
 --companies
 INSERT INTO company (name, nip, regon, address_id) VALUES
-  ( 'Kuba',1029384756, 243124,1);
+  ( 'Kuba',1029384756, 243124,1),
+  ('Firma Testowa',1029456789,null,null);
