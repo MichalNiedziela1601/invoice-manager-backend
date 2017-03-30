@@ -80,11 +80,16 @@ function getNips(nip){
         return parser.parseArrayOfObject(companies);
     });
 }
+
+function updateCompanyAddress(addressId,companyId){
+    return db.none('UPDATE company SET address_id=$1 WHERE id=$2;',[addressId,companyId]);
+}
 function getCompanyById(id){
     return db.one('SELECT * FROM company WHERE id = $1',[id]).then(company => parser.parseObj(company));
+
 }
 
 
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById,getNips
+    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById,getNips,updateCompanyAddress
 };
