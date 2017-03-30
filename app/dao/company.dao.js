@@ -48,7 +48,7 @@ function addAddress(address)
         throw error;
     });
 }
-function findCompanyByNip(nip)
+function getCompanyDetails(nip)
 {
     let query = 'SELECT c.id,c.name,c.nip, c.regon, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
             + 'FROM company AS c LEFT JOIN address AS a ON c.address_id = a.id WHERE c.nip = $1';
@@ -57,7 +57,7 @@ function findCompanyByNip(nip)
         return parser.parseObj(result);
     }).catch(error =>
     {
-        console.error('ERROR company.dao.findCompanyByNip:', error.message || error);
+        console.error('ERROR company.dao.getCompanyDetails:', error.message || error);
         throw error;
     })
 }
@@ -86,5 +86,5 @@ function getCompanyById(id){
 
 
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, getCompanyByNip, addCompanyRegister, getCompanyById,getNips
+    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById,getNips
 };
