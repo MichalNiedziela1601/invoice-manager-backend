@@ -63,7 +63,7 @@ const address = [{
     city: 'tuaj'
 }];
 const nothing = {
-    address_id: 1,
+    addressId: 1,
     id: 1,
     name: 'Kuba',
     nip: 1029384756,
