@@ -18,9 +18,9 @@ function getCompanies()
     });
 }
 
-function findCompanyByNip(nip)
+function getCompanyDetails(nip)
 {
-    return companyDao.findCompanyByNip(nip);
+    return companyDao.getCompanyDetails(nip);
 }
 
 function addAddress(address)
@@ -29,7 +29,7 @@ function addAddress(address)
 }
 function addCompany(company)
 {
-    return findCompanyByNip(company.nip).then(() =>
+    return getCompanyDetails(company.nip).then(() =>
     {
         throw new Error('Company with this nip exist in database');
     }, () =>
@@ -49,5 +49,5 @@ function getNips(nip)
 }
 
 module.exports = {
-    getCompanies, addCompany, addAddress, findCompanyByNip, getNips
+    getCompanies, addCompany, addAddress, getCompanyDetails, getNips
 };
