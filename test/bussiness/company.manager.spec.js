@@ -9,47 +9,26 @@ chai.use(sinonChai);
 const expect = chai.expect;
 
 const companies = [{
-    addressId: 2,
-    id: 1,
-    name: 'Kuba',
-    nip: 1029384756,
-    regon: 243124,
+    addressId: 2, id: 1, name: 'Kuba', nip: 1029384756, regon: 243124,
 }, {
-    addressId: 1,
-    id: 2,
-    name: 'Firma badfghjklrtek',
-    nip: 176543330,
-    regon: 55343367,
+    addressId: 1, id: 2, name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367,
 }];
 const address = [{
-    id: 1,
-    street: 'Spokojna',
-    buildNr: 4,
-    flatNr: 3,
-    postCode: '33-199',
-    city: 'Tarnow'
+    id: 1, street: 'Spokojna', buildNr: 4, flatNr: 3, postCode: '33-199', city: 'Tarnow'
 }, {
-    id: 3,
-    street: 'Krakowska',
-    buildNr: 8,
-    flatNr: 7,
-    postCode: '33-159',
-    city: 'Kakow'
+    id: 3, street: 'Krakowska', buildNr: 8, flatNr: 7, postCode: '33-159', city: 'Kakow'
 
 }];
 
 let companyDAOMock = {
-    getCompanies: sinon.stub().resolves(companies),
-    addAddress: sinon.stub().resolves(),
-    addCompany: sinon.stub().resolves()
+    getCompanies: sinon.stub().resolves(companies), addAddress: sinon.stub().resolves(), addCompany: sinon.stub().resolves()
 };
 let addressDAOMock = {
     getAddressById: sinon.stub().resolves(address)
 };
 
 let companyManager = proxyquire('../../app/business/company.manager', {
-    '../dao/company.dao.js': companyDAOMock,
-    '../dao/address.dao.js': addressDAOMock
+    '../dao/company.dao.js': companyDAOMock, '../dao/address.dao.js': addressDAOMock
 });
 
 companyManager.catch = sinon.stub();
@@ -66,24 +45,23 @@ describe('company.manager', function ()
         {
             expect(companyDAOMock.getCompanies).to.have.callCount(1);
         });
-    });
-    describe('getAddressById on addressDAO', function ()
-    {
-        before(function ()
+        describe('getAddressById on addressDAO', function ()
         {
-            return addressDAOMock.getAddressById({addressId: 1});
-        });
-        it('should call getAddressById on addressDAO ', function ()
-        {
-            expect(addressDAOMock.getAddressById).to.have.callCount(1);
-        });
-        it('should call getAddressById with company.addressId', function ()
-        {
-            expect(addressDAOMock.getAddressById).to.have.been.calledWith({addressId: 1});
+            before(function ()
+            {
+                return addressDAOMock.getAddressById({addressId: 1});
+            });
+            it('should call getAddressById on addressDAO ', function ()
+            {
+                expect(addressDAOMock.getAddressById).to.have.callCount(1);
+            });
+            it('should call getAddressById with company.addressId', function ()
+            {
+                expect(addressDAOMock.getAddressById).to.have.been.calledWith({addressId: 1});
 
+            });
         });
     });
-
 
     describe('addAddress', function ()
     {
