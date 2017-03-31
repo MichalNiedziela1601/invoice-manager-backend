@@ -86,6 +86,11 @@ function getInvoiceById(id)
             });
 }
 
+function updateInvoice(invoice,id)
+{
+    return invoiceDao.updateInvoice(invoice,id);
+}
+
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById
+    getInvoices, addInvoice, getInvoiceById, updateInvoice
 };

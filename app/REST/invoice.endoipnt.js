@@ -131,5 +131,18 @@ module.exports = function (server)
                 reply(error.message).code(404);
             });
         }
+    });
+
+    server.route({
+        method: 'PUT',
+        path: '/api/invoice/{id}',
+        handler: function (request, reply)
+        {
+            invoiceManager.updateInvoice(request.payload, request.params.id).then(() => {
+                reply();
+            }).catch(error => {
+                reply(error.message).code(400);
+            })
+        }
     })
 };

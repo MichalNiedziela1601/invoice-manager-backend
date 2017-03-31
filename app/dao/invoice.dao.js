@@ -49,6 +49,15 @@ function getInvoiceById(id)
     return db.one(query, [id]).then(invoice => parser.parseObj(invoice));
 }
 
+function updateInvoice(invoice, id)
+{
+    return readSqlFile(path.join(__dirname, '/sql/updateInvoice.sql')).then(query =>
+    {
+        return db.none(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate,
+                               invoice.nettoValue, invoice.bruttoValue, invoice.status,id]);
+    })
+}
+
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById
+    getInvoices, addInvoice, getInvoiceById,updateInvoice
 };
