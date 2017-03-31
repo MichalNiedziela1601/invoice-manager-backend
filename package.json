@@ -27,6 +27,8 @@
     "google-auth-library": "0.10.0",
     "googleapis": "18.0.0",
     "hapi": "16.1.0",
+    "hapi-auth-jwt": "4.0.0",
+    "jsonwebtoken": "7.3.0",
     "joi": "10.2.2",
     "lodash": "4.17.4",
     "pg": "6.1.3",

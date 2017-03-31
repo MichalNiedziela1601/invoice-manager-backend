@@ -48,6 +48,7 @@ INSERT INTO
 
 INSERT INTO
   users
-(email, password ) VALUES
-('biel@gmail.com','pass123456'),
-('kot@hungry.com', 'kot21kot12');
+(email, password,company_id ) VALUES
+('biel@gmail.com','pass123456',null),
+('kot@hungry.com', 'kot21kot12',null),
+('admin@gmail.com','$2a$10$IyqupLdOhOdp/DhQHpJgBuMXNawbABO7BF/Emc2.DswWYwRR9gFfC',2);

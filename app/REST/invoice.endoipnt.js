@@ -60,7 +60,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/invoice',
-        config: {validate: {query: joiSchema.schema.invoiceType}},
+        config: {auth: 'token', validate: {query: joiSchema.schema.invoiceType}},
         handler: function (request, reply)
         {
             invoiceManager.getInvoices(request.query).then(result =>
@@ -76,7 +76,7 @@ module.exports = function (server)
         method: 'POST',
         path: '/api/invoice',
         config: {
-
+            auth: 'token',
             payload: {
                 output: 'stream',
                 parse: true,
@@ -120,7 +120,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/invoice/{id}',
-        config: {validate: {params: joiSchema.schema.invoiceById}},
+        config: {auth: 'token',validate: {params: joiSchema.schema.invoiceById}},
         handler: function (request, reply)
         {
             invoiceManager.getInvoiceById(request.params.id).then(invoice =>

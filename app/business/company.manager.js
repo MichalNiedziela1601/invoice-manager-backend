@@ -9,11 +9,15 @@ function getCompanies()
     {
         return Promise.map(result, function (company)
         {
-            return addressDAO.getAddressById(company.addressId).then(address =>
-            {
-                company.address = address;
+            if (company.addressId) {
+                return addressDAO.getAddressById(company.addressId).then(address =>
+                {
+                    company.address = address;
+                    return company;
+                })
+            } else {
                 return company;
-            })
+            }
         })
     });
 }
@@ -48,6 +52,22 @@ function getNips(nip)
     return companyDao.getNips(nip);
 }
 
+function updateCompanyAddress(address, companyId)
+{
+    return companyDao.getCompanyById(companyId).then(company =>
+    {
+        if (company.addressId) {
+            return addressDAO.updateAddress(address, company.addressId);
+        } else {
+            return addAddress(address).then(addressId =>
+            {
+                return companyDao.updateCompanyAddress(addressId, companyId);
+            });
+        }
+    })
+
+}
+
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getNips
+    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress
 };

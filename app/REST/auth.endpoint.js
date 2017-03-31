@@ -1,6 +1,7 @@
 'use strict';
 const joiSchema = require('./joi.schema.js');
 const authManager = require('../business/auth.manager.js');
+const loginManager = require('../business/login.manager');
 
 module.exports = function (server)
 {
@@ -20,6 +21,41 @@ module.exports = function (server)
                 } else {
                     reply(error.message).code(500);
                 }
+            })
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/auth/login',
+        handler: function (req, res)
+        {
+            let person = req.payload;
+            loginManager.login(person).then(result =>
+            {
+                res({token: result});
+            }, error =>
+            {
+                res(error.message).code(400)
+            }).catch(error =>
+            {
+                res(error).code(400);
+            });
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/auth/login',
+        config: {
+            auth: 'token'
+        },
+        handler: function (request, reply)
+        {
+            let email = request.auth.credentials.email;
+            loginManager.getUserInformation(email).then(userInfo =>
+            {
+                reply(userInfo);
             })
         }
     })
