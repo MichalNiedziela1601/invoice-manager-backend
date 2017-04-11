@@ -324,7 +324,7 @@ describe('company.dao', function ()
             });
             it('should return array of nips', function ()
             {
-                expect(nips).to.eql([{nip: data.companies[0].nip}, {nip: data.companies[1].nip}]);
+                expect(nips).to.eql([{name: data.companies[0].name, nip: data.companies[0].nip}, {name: data.companies[1].name, nip: data.companies[1].nip}]);
             });
         });
         describe('when nip valid to one', function ()
@@ -337,7 +337,7 @@ describe('company.dao', function ()
             });
             it('should return array of nips', function ()
             {
-                expect(nips).to.eql([{nip: data.companies[0].nip}]);
+                expect(nips).to.eql([{name: data.companies[0].name, nip: data.companies[0].nip}]);
             });
         });
 
