@@ -76,7 +76,7 @@ function getCompanyByNip(nip)
 
 function getNips(nip){
     nip = nip.toString();
-    return db.any('SELECT nip FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies => {
+    return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies => {
         return parser.parseArrayOfObject(companies);
     });
 }
