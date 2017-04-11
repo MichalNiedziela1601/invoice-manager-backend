@@ -98,7 +98,9 @@ describe('invoice.dao', function ()
             companyDealer: null,
             companyRecipent: null,
             personDealer: 1,
-            personRecipent: 2
+            personRecipent: 2,
+            googleMonthFolderId: null,
+            googleYearFolderId: null
         };
 
         let mockedInvoiceId = {id: 4};

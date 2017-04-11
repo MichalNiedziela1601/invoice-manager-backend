@@ -12,7 +12,9 @@ const invoices = [
         companyDealer: 1,
         companyRecipent: 2,
         personDealer: null,
-        personRecipent: null
+        personRecipent: null,
+        googleMonthFolderId: null,
+        googleYearFolderId: null
     },
     {
         id: 2,
@@ -27,7 +29,9 @@ const invoices = [
         companyDealer: 2,
         companyRecipent: 1,
         personDealer: null,
-        personRecipent: null
+        personRecipent: null,
+        googleMonthFolderId: null,
+        googleYearFolderId: null
     },
     {
         id: 3,
@@ -42,7 +46,9 @@ const invoices = [
         companyDealer: null,
         companyRecipent: null,
         personDealer: 2,
-        personRecipent: 1
+        personRecipent: 1,
+        googleMonthFolderId: null,
+        googleYearFolderId: null
     }
 ];
 

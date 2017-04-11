@@ -4,18 +4,21 @@ const companies = [{
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
+    googleCompanyId: null
 }, {
     addressId: null,
     id: 2,
     name: 'Firma Testowa',
     nip: 1029456789,
-    regon: null
+    regon: null,
+    googleCompanyId: null
 }, {
     addressId: 2,
     id: 3,
     name: 'Firma badfghjklrtek',
     nip: 176543330,
     regon: 55343367,
+    googleCompanyId: null
 }];
 const findCompany = {
     addressId: 1,
@@ -23,6 +26,7 @@ const findCompany = {
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
+    googleCompanyId: null
 };
 
 const afterRegisterCompany = [
@@ -32,20 +36,23 @@ const afterRegisterCompany = [
         name: 'Kuba',
         nip: 1029384756,
         regon: 243124,
+        googleCompanyId: null
     },
     {
         addressId: null,
         id: 2,
         name: 'Firma Testowa',
         nip: 1029456789,
-        regon: null
+        regon: null,
+        googleCompanyId: null
     },
     {
         id: 3,
         name: 'Firma test',
         nip: 7890123456,
         regon: null,
-        addressId: null
+        addressId: null,
+        googleCompanyId: null
     }
 ];
 
@@ -68,6 +75,7 @@ const nothing = {
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
+    googleCompanyId: null
 
 };
 
