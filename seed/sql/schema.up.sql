@@ -39,6 +39,7 @@ CREATE TABLE "company" (
 	"nip" BIGINT NOT NULL UNIQUE,
 	"regon" BIGINT UNIQUE,
 	"address_id" INTEGER,
+	"google_company_id" TEXT,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -80,6 +81,8 @@ CREATE TABLE "invoice" (
 	"company_recipent" bigint,
 	"person_dealer" bigint,
 	"person_recipent" bigint,
+	"google_year_folder_id" TEXT,
+	"google_month_folder_id" TEXT,
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
