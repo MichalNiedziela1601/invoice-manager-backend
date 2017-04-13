@@ -27,7 +27,8 @@ function addInvoice(invoice)
     return readSqlFile(path.join(__dirname, '/sql/addInvoice.sql')).then(query =>
     {
         return db.any(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
-                              invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent])
+                              invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
+                              invoice.googleYearFolderId, invoice.googleMonthFolderId])
                 .then(result =>
                 {
                     return result;
@@ -54,10 +55,10 @@ function updateInvoice(invoice, id)
     return readSqlFile(path.join(__dirname, '/sql/updateInvoice.sql')).then(query =>
     {
         return db.none(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate,
-                               invoice.nettoValue, invoice.bruttoValue, invoice.status,id]);
+                               invoice.nettoValue, invoice.bruttoValue, invoice.status, id]);
     })
 }
 
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById,updateInvoice
+    getInvoices, addInvoice, getInvoiceById, updateInvoice
 };

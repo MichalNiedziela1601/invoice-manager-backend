@@ -91,7 +91,9 @@ function getCompanyById(id){
 
 function addFolderId(folderId, nip)
 {
-    return db.none('UPDATE company SET google_company_id = $1 WHERE nip = $2',[folderId,nip]);
+    return db.none('UPDATE company SET google_company_id = $1 WHERE nip = $2',[folderId,nip]).then(() => {
+        return folderId;
+    });
 }
 
 

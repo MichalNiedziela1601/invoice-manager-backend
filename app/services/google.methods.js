@@ -2,7 +2,7 @@
 const google = require('googleapis');
 const fs = require('fs');
 const path = require('path');
-function saveFile(auth, name)
+function saveFile(auth, name, invoice)
 {
     let service = google.drive({version: 'v3', auth: auth});
 
@@ -12,7 +12,8 @@ function saveFile(auth, name)
             fields: 'id,webViewLink',
             resource: {
                 name: name,
-                mimeType: 'application/pdf'
+                mimeType: 'application/pdf',
+                parents: [invoice.googleMonthFolderId]
             },
             media: {
                 mimeType: 'application/pdf',
