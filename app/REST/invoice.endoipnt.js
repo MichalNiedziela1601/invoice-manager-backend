@@ -3,41 +3,8 @@ const invoiceManager = require('../business/invoice.manager');
 const joiSchema = require('./joi.schema.js');
 const Joi = require('joi');
 const _ = require('lodash');
-const oauthToken = require('../services/googleApi');
 const fs = require('fs');
 const path = require('path');
-const googleMethods = require('./../services/google.methods');
-
-function save(name, invoice, reply)
-{
-    oauthToken().then(auth =>
-    {
-        googleMethods.saveFile(auth, name).then(response =>
-        {
-            invoice.url = response.webViewLink;
-            googleMethods.shareFile(auth, response.id).then(() =>
-            {
-                invoiceManager.addInvoice(invoice).then(() =>
-                {
-                    reply('Invoice add');
-                });
-            }).catch(error =>
-            {
-                console.error('error', error);
-                throw error;
-            })
-
-        }).catch(error =>
-        {
-            console.error('error', error);
-            throw error;
-        })
-    }).catch(error =>
-    {
-        reply(error.message).code(500);
-    });
-
-}
 
 function convertToObject(data)
 {
@@ -110,7 +77,11 @@ module.exports = function (server)
                             if (err) {
                                 throw err;
                             }
-                            save(name, invoice, reply);
+                            invoiceManager.addInvoice(name, invoice).then(() => {
+                                reply('invoice add');
+                            }).catch(error => {
+                                reply(error.message).code(500);
+                            });
                         })
                     }
                 });
@@ -120,7 +91,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/invoice/{id}',
-        config: {auth: 'token',validate: {params: joiSchema.schema.invoiceById}},
+        config: {auth: 'token', validate: {params: joiSchema.schema.invoiceById}},
         handler: function (request, reply)
         {
             invoiceManager.getInvoiceById(request.params.id).then(invoice =>
@@ -138,9 +109,11 @@ module.exports = function (server)
         path: '/api/invoice/{id}',
         handler: function (request, reply)
         {
-            invoiceManager.updateInvoice(request.payload, request.params.id).then(() => {
+            invoiceManager.updateInvoice(request.payload, request.params.id).then(() =>
+            {
                 reply();
-            }).catch(error => {
+            }).catch(error =>
+            {
                 reply(error.message).code(400);
             })
         }

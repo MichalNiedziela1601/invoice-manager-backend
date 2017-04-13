@@ -2,17 +2,45 @@
 const invoiceDao = require('../dao/invoice.dao');
 const companyDao = require('../dao/company.dao');
 const addressDao = require('../dao/address.dao');
-const parser = require('../services/camelCaseParser');
 const personDao = require('../dao/person.dao');
+const oauthToken = require('../services/googleApi');
+const googleMethods = require('../services/google.methods');
+const folderMethods = require('../services/createFoldersGoogle');
 
 function getInvoices(filter)
 {
     return invoiceDao.getInvoices(filter);
 }
 
-function addInvoice(invoice)
+function addInvoice(filename, invoice)
 {
-    return invoiceDao.addInvoice(invoice);
+
+    let auth = null;
+    return oauthToken().then(token =>
+    {
+        auth = token;
+        return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
+    }).then(companyFolderId =>
+    {
+        return folderMethods.createYearMonthFolder(auth, invoice,companyFolderId);
+    })
+            .then(invoice =>
+            {
+                return googleMethods.saveFile(auth, filename, invoice).then(response =>
+                {
+                    invoice.url = response.webViewLink;
+                    return googleMethods.shareFile(auth, response.id).then(() =>
+                    {
+                        return invoiceDao.addInvoice(invoice);
+                    });
+
+                })
+            })
+            .catch(error =>
+            {
+                console.error('ERROR: ' + error.message);
+                throw error;
+            });
 }
 
 function getInvoiceByCompanyDealerId(invoiceResult)
@@ -86,9 +114,9 @@ function getInvoiceById(id)
             });
 }
 
-function updateInvoice(invoice,id)
+function updateInvoice(invoice, id)
 {
-    return invoiceDao.updateInvoice(invoice,id);
+    return invoiceDao.updateInvoice(invoice, id);
 }
 
 module.exports = {

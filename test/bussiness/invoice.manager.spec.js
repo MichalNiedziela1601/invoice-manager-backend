@@ -32,17 +32,30 @@ let personDaoMock = {
     getPersonById: sinon.stub().resolves()
 };
 
-let parserMock = {
-    parseObj: sinon.spy()
+let oauthTokenMock = sinon.stub().resolves('token');
+let googleMethodsMock = {
+    createFolder: sinon.stub().resolves(),
+    createChildFolder: sinon.stub().resolves(),
+    saveFile: sinon.stub().resolves(),
+    shareFile: sinon.stub().resolves()
 };
+
+let createFoldersGoogleMock = {
+    createYearMonthFolder: sinon.stub().resolves(),
+    createFolderCompany: sinon.stub().resolves()
+};
+
 
 let invoiceManager = proxyquire('../../app/business/invoice.manager', {
     '../dao/invoice.dao': invoiceDAOMock,
     '../dao/company.dao': companyDaoMock,
     '../dao/address.dao': addressDaoMock,
     '../dao/person.dao': personDaoMock,
-    '../services/caleCaseParser': parserMock
+    '../services/googleApi': oauthTokenMock,
+    '../services/google.methods': googleMethodsMock,
+    '../services/createFoldersGoogle': createFoldersGoogleMock
 });
+
 
 invoiceManager.catch = sinon.stub();
 
@@ -66,17 +79,68 @@ describe('invoice.manager', function ()
 
     describe('addInvoice', function ()
     {
+        let yearId = 'sdf897sfdsk';
+        let monthId = 'hku4h5uik4';
+        let response = {
+            id: 'sdfhshs45j3h',
+            webViewLink: 'https://google/sdfksdjfskfhs4j5jk'
+        };
         before(function ()
         {
-            return invoiceManager.addInvoice('invoice')
+            companyDaoMock.getCompanyById.reset();
+
+            invoiceMock = {
+                invoiceNr: 'FV/14/05/111',
+                type: 'Sale',
+                createDate: new Date('2012-05-07T22:00:00.000Z'),
+                executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                nettoValue: '$2,330.45',
+                bruttoValue: '$3,475.89',
+                status: 'paid',
+                url: 'url6',
+                companyDealer: 1,
+                companyRecipent: 2,
+                personDealer: null,
+                personRecipent: null
+            };
+            googleMethodsMock.shareFile.withArgs('token',response.id).resolves();
+            googleMethodsMock.saveFile.withArgs('token','filename',invoiceMock).resolves(response);
+            createFoldersGoogleMock.createFolderCompany.withArgs('token',invoiceMock.companyRecipent).resolves(yearId);
+            createFoldersGoogleMock.createYearMonthFolder.withArgs('token',invoiceMock,yearId).resolves(monthId);
+
+            invoiceManager.addInvoice('filename', invoiceMock)
         });
-        it('should call addInvoice on invoiceDao', function ()
+        it('should call oauthToken', function ()
         {
-            expect(invoiceDAOMock.addInvoice).callCount(1);
+            expect(oauthTokenMock).callCount(1);
         });
-        it('should call addInvoice with invoice', function ()
+        it('should call createFolderCompany', function ()
         {
-            expect(invoiceDAOMock.addInvoice).calledWith('invoice');
+            expect(createFoldersGoogleMock.createFolderCompany).callCount(1);
+            expect(createFoldersGoogleMock.createFolderCompany).calledWith('token',2);
+        });
+        it('should call createYearMonthFolder', function ()
+        {
+            expect(createFoldersGoogleMock.createYearMonthFolder).callCount(1);
+            expect(createFoldersGoogleMock.createYearMonthFolder).calledWith('token',invoiceMock,yearId);
+        });
+        it('should call saveFile', function ()
+        {
+            expect(googleMethodsMock.saveFile, 'call saveFile').callCount(1);
+        });
+        it('should call shareFile', function ()
+        {
+            googleMethodsMock.saveFile().then(() => {
+                expect(googleMethodsMock.shareFile).callCount(1);
+                expect(googleMethodsMock.shareFile).calledWith('token',response.id);
+            });
+        });
+        it('should call addInvoice', function ()
+        {
+            googleMethodsMock.shareFile().then(() => {
+                expect(invoiceDAOMock.addInvoice).callCount(1);
+                expect(invoiceDAOMock.addInvoice).calledWith(invoiceMock)
+            })
         });
     });
 
@@ -100,6 +164,8 @@ describe('invoice.manager', function ()
                     personDealer: null,
                     personRecipent: null
                 };
+
+                companyDaoMock.getCompanyById.reset();
                 companyDealer = {name: 'Firma Test 1', addressId: 1};
                 companyRecipent = {name: 'Firma Test 2', addressId: 2};
                 addressDealer = {id: 1, street: 'dealer'};

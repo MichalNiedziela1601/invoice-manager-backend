@@ -2,7 +2,7 @@
 const google = require('googleapis');
 const fs = require('fs');
 const path = require('path');
-function saveFile(auth, name)
+function saveFile(auth, name, invoice)
 {
     let service = google.drive({version: 'v3', auth: auth});
 
@@ -12,7 +12,8 @@ function saveFile(auth, name)
             fields: 'id,webViewLink',
             resource: {
                 name: name,
-                mimeType: 'application/pdf'
+                mimeType: 'application/pdf',
+                parents: [invoice.googleMonthFolderId]
             },
             media: {
                 mimeType: 'application/pdf',
@@ -53,7 +54,58 @@ function shareFile(auth, id)
     });
 }
 
+function createFolder(auth, name)
+{
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        let fileMetaData = {
+            name: name,
+            mimeType: 'application/vnd.google-apps.folder'
+        };
+
+        service.files.create({
+            resource: fileMetaData,
+            fields: 'id'
+        }, (err, res) =>
+        {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        })
+    })
+}
+
+function createChildFolder(auth, name, parent)
+{
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        let fileMetaData = {
+            name: name,
+            mimeType: 'application/vnd.google-apps.folder',
+            parents: [parent]
+        };
+
+        service.files.create({
+            resource: fileMetaData,
+            fields: 'id'
+        }, (err, res) =>
+        {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        })
+    })
+}
+
 module.exports = {
     saveFile,
-    shareFile
+    shareFile,
+    createFolder,
+    createChildFolder
 };
