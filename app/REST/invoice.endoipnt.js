@@ -62,6 +62,13 @@ module.exports = function (server)
                         reply(err.message).code(400);
                     } else {
                         let name = data.file.hapi.filename;
+                        try {
+                            fs.mkdirSync(path.join(__dirname, '/uploads/'));
+                        } catch (error) {
+                            if (error.code !== 'EEXIST') {
+                                throw error;
+                            }
+                        }
                         let filepath = path.join(__dirname, '/uploads/', name);
                         let file = fs.createWriteStream(filepath);
 
