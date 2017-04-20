@@ -5,7 +5,8 @@ const readFile = Promise.promisify(fs.readFile, fs);
 
 function executeSqlFromFile(path)
 {
-    return readFile(path, {encoding: 'UTF-8'}).then(file => {
+    return readFile(path, {encoding: 'UTF-8'}).then(file =>
+    {
         return file;
     });
 }

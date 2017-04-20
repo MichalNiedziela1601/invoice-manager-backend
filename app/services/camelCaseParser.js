@@ -8,8 +8,10 @@ function parseObj(obj)
     });
 }
 
-function parseArrayOfObject(array){
-    return _.map(array, function(val){
+function parseArrayOfObject(array)
+{
+    return _.map(array, function (val)
+    {
         return parseObj(val);
     })
 }

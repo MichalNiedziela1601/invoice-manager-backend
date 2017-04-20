@@ -5,15 +5,19 @@ const token = require('../services/token');
 const companyDAO = require('../dao/company.dao');
 const userDAO = require('../dao/user.dao');
 
+//TODO rename this file to userManager
+
 function getUser(email)
 {
     let userInfo = {};
-    return loginDAO.getUser(email).then(user => {
-        return companyDAO.getCompanyById(user.companyId).then(company => {
-            userInfo = user;
-            userInfo.company = company;
-            return userInfo;
-        })
+    return loginDAO.getUser(email).then(user =>
+    {
+        userInfo = user;
+        return companyDAO.getCompanyById(user.companyId);
+    }).then(company =>
+    {
+        userInfo.company = company;
+        return userInfo;
     });
 }
 

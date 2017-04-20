@@ -5,8 +5,9 @@ const options = {
 };
 
 let pgp = require('pg-promise')(options);
-pgp.pg.types.setTypeParser(20, function (value) {
-    return parseInt(value);
+pgp.pg.types.setTypeParser(20, function (value)
+{
+    return parseInt(value,10);
 });
 
 let configFile = require('../config');

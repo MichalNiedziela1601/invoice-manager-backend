@@ -74,29 +74,34 @@ function getCompanyByNip(nip)
     });
 }
 
-function getNips(nip){
+function getNips(nip)
+{
     nip = nip.toString();
-    return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies => {
+    return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies =>
+    {
         return parser.parseArrayOfObject(companies);
     });
 }
 
-function updateCompanyAddress(addressId,companyId){
-    return db.none('UPDATE company SET address_id=$1 WHERE id=$2;',[addressId,companyId]);
+function updateCompanyAddress(addressId, companyId)
+{
+    return db.none('UPDATE company SET address_id=$1 WHERE id=$2;', [addressId, companyId]);
 }
-function getCompanyById(id){
-    return db.one('SELECT * FROM company WHERE id = $1',[id]).then(company => parser.parseObj(company));
+function getCompanyById(id)
+{
+    return db.one('SELECT * FROM company WHERE id = $1', [id]).then(company => parser.parseObj(company));
 
 }
 
 function addFolderId(folderId, nip)
 {
-    return db.none('UPDATE company SET google_company_id = $1 WHERE nip = $2',[folderId,nip]).then(() => {
+    return db.none('UPDATE company SET google_company_id = $1 WHERE nip = $2', [folderId, nip]).then(() =>
+    {
         return folderId;
     });
 }
 
 
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById,getNips,updateCompanyAddress, addFolderId
+    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById, getNips, updateCompanyAddress, addFolderId
 };

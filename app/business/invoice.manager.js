@@ -38,7 +38,7 @@ function addInvoice(filename, invoice)
             })
             .catch(error =>
             {
-                console.error('ERROR: ' + error.message);
+                console.error('ERROR: ' + error.message || error);
                 throw error;
             });
 }

@@ -2,7 +2,7 @@
 const joiSchema = require('./joi.schema.js');
 const authManager = require('../business/auth.manager.js');
 const loginManager = require('../business/login.manager');
-
+//TODO move to user.endpoint
 module.exports = function (server)
 {
     server.route({
@@ -33,10 +33,8 @@ module.exports = function (server)
             let person = req.payload;
             loginManager.login(person).then(result =>
             {
+                //TODO Generate token here, userManager.authenticate should return user object
                 res({token: result});
-            }, error =>
-            {
-                res(error.message).code(400)
             }).catch(error =>
             {
                 res(error).code(400);
