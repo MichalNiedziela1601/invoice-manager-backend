@@ -95,11 +95,11 @@ module.exports = function ()
     return getClientSecretFile(SECRET_FILE).then(credentials =>
     {
         console.log('Get client secret file from local');
-        let clientSecret = credentials.installed.client_secret;
-        let clientId = credentials.installed.client_id;
-        let redirectUrl = credentials.installed.redirect_uris[0];
-        let auth = new GoogleAuth();
-        let oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+        const clientSecret = credentials.installed.clientSecret;
+        const clientId = credentials.installed.clientId;
+        const redirectUrl = credentials.installed.redirectUris[0];
+        const auth = new GoogleAuth();
+        const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
         return getToken(oauth2Client, SCOPES, TOKEN_FILE);
     })
             .then(null, params =>
