@@ -77,10 +77,12 @@ module.exports = function (server)
                             if (err) {
                                 throw err;
                             }
-                            invoiceManager.addInvoice(name, invoice).then(() => {
+                            invoiceManager.addInvoice(name, invoice).then(() =>
+                            {
                                 reply('invoice add');
-                            }).catch(error => {
-                                reply(error.message).code(500);
+                            }).catch(error =>
+                            {
+                                reply(error.message || error).code(500);
                             });
                         })
                     }

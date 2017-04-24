@@ -13,18 +13,19 @@ function createFolderCompany(auth, id)
                 company = result;
                 return googleMethods.createFolder(auth, company.name);
             })
-            .then(folderId => {
+            .then(folderId =>
+            {
                 return companyDao.addFolderId(folderId.id, company.nip)
             });
 }
 
-function createYearMonthFolder(auth, invoice,companyFolderId)
+function createYearMonthFolder(auth, invoice, companyFolderId)
 {
-    return googleMethods.createChildFolder(auth, new Date(invoice.createDate).getFullYear(),companyFolderId)
+    return googleMethods.createChildFolder(auth, new Date(invoice.createDate).getFullYear(), companyFolderId)
             .then(yearId =>
             {
                 invoice.googleYearFolderId = yearId.id;
-                return googleMethods.createChildFolder(auth, monthNames[new Date(invoice.createDate).getMonth()],yearId.id)
+                return googleMethods.createChildFolder(auth, monthNames[new Date(invoice.createDate).getMonth()], yearId.id)
             }).then(monthId =>
             {
                 invoice.googleMonthFolderId = monthId.id;
@@ -33,5 +34,5 @@ function createYearMonthFolder(auth, invoice,companyFolderId)
 }
 
 module.exports = {
-    createFolderCompany,createYearMonthFolder
+    createFolderCompany, createYearMonthFolder
 };

@@ -68,8 +68,9 @@ function updateCompanyAddress(address, companyId)
 
 }
 
-function addFolderId(folderId,nip){
-    return companyDao.addFolderId(folderId,nip);
+function addFolderId(folderId, nip)
+{
+    return companyDao.addFolderId(folderId, nip);
 }
 
 module.exports = {

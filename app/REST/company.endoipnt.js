@@ -22,7 +22,7 @@ module.exports = function (server)
     server.route({
         method: 'POST',
         path: '/api/company',
-        config: {auth: 'token',validate: {payload: joiSchema.schema.company}},
+        config: {auth: 'token', validate: {payload: joiSchema.schema.company}},
         handler: function (request, reply)
         {
             companyManager.addCompany(request.payload).then(() =>
@@ -56,7 +56,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/company/{nip}',
-        config: {auth: 'token',validate: {params: joiSchema.schema.companyByNip}},
+        config: {auth: 'token', validate: {params: joiSchema.schema.companyByNip}},
         handler: function (request, reply)
         {
             companyManager.getCompanyDetails(request.params.nip).then(company =>
@@ -72,7 +72,7 @@ module.exports = function (server)
     server.route({
         method: 'GET',
         path: '/api/companies/{nip}',
-        config: {auth: 'token',validate: {params: joiSchema.schema.companyByNip}},
+        config: {auth: 'token', validate: {params: joiSchema.schema.companyByNip}},
         handler: function (request, reply)
         {
             companyManager.getNips(request.params.nip).then(company =>
