@@ -72,7 +72,7 @@ function createFolder(auth, name)
             if (err) {
                 reject(err);
             } else {
-                resolve(res);
+                resolve(res.id);
             }
         })
     })
@@ -97,8 +97,49 @@ function createChildFolder(auth, name, parent)
             if (err) {
                 reject(err);
             } else {
-                resolve(res);
+                resolve(res.id);
             }
+        })
+    })
+}
+
+function checkFolderExists(auth, id)
+{
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        service.files.get({
+            fileId: id,
+            fields: 'name, id'
+
+        }, (err, res) =>
+        {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(res.id);
+            }
+        })
+    })
+}
+
+function findFolderByName(auth, name, parentId)
+{
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        service.files.list({
+            corpora: 'user',
+            q: '"' + parentId + '" in parents and name="' + name + '"',
+            spaces: 'drive',
+            fields: 'files(id, name)'
+
+        }, (err, res) =>
+        {
+            if (err) {
+                reject(err);
+            }
+            resolve(res);
         })
     })
 }
@@ -107,5 +148,7 @@ module.exports = {
     saveFile,
     shareFile,
     createFolder,
-    createChildFolder
+    createChildFolder,
+    checkFolderExists,
+    findFolderByName
 };

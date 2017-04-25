@@ -6,16 +6,12 @@ const sinon = require('sinon');
 chai.use(sinonChai);
 
 const expect = chai.expect;
-let companyFolderId = {
-    id: 'uifg7dyfg78'
-};
-let yearId = {
-    id: 'sdfksf'
-};
+let companyFolderId = 'uifg7dyfg78';
+let yearId = {files: [{id: 'sdfksf'}]};
+let monthId = {files: [{id: 'jskhggu7sdy8'}]};
+let createYearId = 'jsdfhsjkdfhsdkjfh';
+let createMonthId = 'sjkdfhsjkfh';
 
-let monthId = {
-    id: 'jskhggu7sdy8'
-};
 let companyDaoMock = {
     getCompanyById: sinon.stub(),
     addFolderId: sinon.spy()
@@ -23,7 +19,9 @@ let companyDaoMock = {
 
 let googleMethods = {
     createFolder: sinon.stub(),
-    createChildFolder: sinon.stub()
+    createChildFolder: sinon.stub(),
+    checkFolderExists: sinon.stub(),
+    findFolderByName: sinon.stub()
 };
 
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -32,7 +30,8 @@ const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
 
 let company = {
     name: 'Firma do testów',
-    nip: 1234567890
+    nip: 1234567890,
+    googleCompanyId: 'sdfsfashks'
 };
 
 let invoice = {
@@ -48,49 +47,223 @@ describe('createFoldersGoogle', function ()
 {
     describe('createFolderCompany', function ()
     {
-        before(function ()
+        describe('when company folder exist', function ()
         {
-            companyDaoMock.getCompanyById.withArgs(1).resolves(company);
-            googleMethods.createFolder.resolves(companyFolderId);
-            createFoldersGoogleMock.createFolderCompany('auth', 1);
+            before(function ()
+            {
+                companyDaoMock.getCompanyById.withArgs(1).resolves(company);
+                googleMethods.checkFolderExists.resolves(companyFolderId);
+                createFoldersGoogleMock.createFolderCompany('auth', 1);
+            });
+            it('should call getCompanyById', function ()
+            {
+                expect(companyDaoMock.getCompanyById).callCount(1);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
+            });
+            it('should call createFolder', function ()
+            {
+                expect(googleMethods.checkFolderExists).callCount(1);
+                expect(googleMethods.checkFolderExists).calledWith('auth', company.googleCompanyId);
+            });
+            it('should call addFolderId', function ()
+            {
+                expect(companyDaoMock.addFolderId).callCount(1);
+                expect(companyDaoMock.addFolderId).calledWith(companyFolderId, company.nip);
+            });
         });
-        it('should call getCompanyById', function ()
+        describe('when company folder don\'t exist', function ()
         {
-            expect(companyDaoMock.getCompanyById).callCount(1);
-            expect(companyDaoMock.getCompanyById).calledWith(1);
-        });
-        it('should call createFolder', function ()
-        {
-            expect(googleMethods.createFolder).callCount(1);
-            expect(googleMethods.createFolder).calledWith('auth', company.name);
-        });
-        it('should call addFolderId', function ()
-        {
-            expect(companyDaoMock.addFolderId).callCount(1);
-            expect(companyDaoMock.addFolderId).calledWith(companyFolderId.id, company.nip);
+            before(function ()
+            {
+                companyDaoMock.addFolderId.reset();
+                companyDaoMock.getCompanyById.reset();
+                googleMethods.checkFolderExists.reset();
+                companyDaoMock.getCompanyById.withArgs(1).resolves(company);
+                googleMethods.checkFolderExists.rejects();
+                googleMethods.createFolder.resolves(companyFolderId);
+                createFoldersGoogleMock.createFolderCompany('auth', 1);
+            });
+            it('should call getCompanyById', function ()
+            {
+                expect(companyDaoMock.getCompanyById).callCount(1);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
+            });
+            it('should call createFolder', function ()
+            {
+                expect(googleMethods.checkFolderExists).callCount(1);
+                expect(googleMethods.checkFolderExists).calledWith('auth', company.googleCompanyId);
+            });
+            it('should call addFolderId', function ()
+            {
+                expect(companyDaoMock.addFolderId).callCount(1);
+                expect(companyDaoMock.addFolderId).calledWith(companyFolderId, company.nip);
+            });
         });
     });
 
     describe('createYearMonthFolder', function ()
     {
-        before(function ()
+        describe('when folder year and month exist', function ()
         {
-            googleMethods.createChildFolder.onFirstCall().resolves(yearId);
-            googleMethods.createChildFolder.onSecondCall().resolves(monthId);
+            before(function ()
+            {
+                googleMethods.findFolderByName.onFirstCall().resolves(yearId);
+                googleMethods.findFolderByName.onSecondCall().resolves(monthId);
 
-            createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId.id)
+
+                createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId)
+            });
+            it('should call findFolderById two times', function ()
+            {
+                expect(googleMethods.findFolderByName).callCount(2);
+            });
+            it('should first call with auth, year and companyFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+            });
+            it('should second call with auth, month and yearFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], yearId.files[0].id);
+            });
+            it('should set invoice googleYearFolderId', function ()
+            {
+                expect(invoice.googleYearFolderId).eql(yearId.files[0].id);
+            });
+            it('should set invoice googleMonthFolderId', function ()
+            {
+                expect(invoice.googleMonthFolderId).eql(monthId.files[0].id);
+            });
+
         });
-        it('should call createChildFolder', function ()
+
+        describe('when folder year exist and create new month folder', function ()
         {
-            expect(googleMethods.createChildFolder).callCount(2);
+            before(function ()
+            {
+                monthId.files = [];
+                googleMethods.findFolderByName.reset();
+                googleMethods.findFolderByName.onFirstCall().resolves(yearId);
+                googleMethods.createChildFolder.resolves(createMonthId);
+                googleMethods.findFolderByName.onSecondCall().resolves(monthId);
+
+
+                createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId)
+            });
+            it('should call findFolderById two times', function ()
+            {
+                expect(googleMethods.findFolderByName).callCount(2);
+            });
+            it('should first call with auth, year and companyFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+            });
+            it('should second call with auth, month and yearFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], yearId.files[0].id);
+            });
+            it('should call createChildFolder', function ()
+            {
+                expect(googleMethods.createChildFolder).callCount(1);
+                expect(googleMethods.createChildFolder).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()],yearId.files[0].id)
+            });
+            it('should set invoice googleYearFolderId', function ()
+            {
+                expect(invoice.googleYearFolderId).eql(yearId.files[0].id);
+            });
+            it('should set invoice googleMonthFolderId', function ()
+            {
+                expect(invoice.googleMonthFolderId).eql(createMonthId);
+            });
+
         });
-        it('should first call with auth, year and id properties', function ()
+
+        describe('when folder year don\'t exist and month folder exists', function ()
         {
-            expect(googleMethods.createChildFolder).calledWith('auth', 2017, companyFolderId.id);
+            before(function ()
+            {
+                yearId.files = [];
+                monthId = {files: [{id: 'jskhggu7sdy8'}]};
+                googleMethods.findFolderByName.reset();
+                googleMethods.createChildFolder.reset();
+                googleMethods.findFolderByName.onFirstCall().resolves(yearId);
+                googleMethods.createChildFolder.resolves(createYearId);
+                googleMethods.findFolderByName.onSecondCall().resolves(monthId);
+
+
+                createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId)
+            });
+            it('should call findFolderById two times', function ()
+            {
+                expect(googleMethods.findFolderByName).callCount(2);
+            });
+            it('should first call with auth, year and companyFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+            });
+            it('should second call with auth, month and yearFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], createYearId);
+            });
+            it('should call createChildFolder', function ()
+            {
+                expect(googleMethods.createChildFolder).callCount(1);
+                expect(googleMethods.createChildFolder).calledWith('auth',new Date(invoice.createDate).getFullYear(),companyFolderId)
+            });
+            it('should set invoice googleYearFolderId', function ()
+            {
+                expect(invoice.googleYearFolderId).eql(createYearId);
+            });
+            it('should set invoice googleMonthFolderId', function ()
+            {
+                expect(invoice.googleMonthFolderId).eql(monthId.files[0].id);
+            });
+
         });
-        it('should second call with auth, month and id properties ', function ()
+
+        describe('when folder year don\'t exist and month folder don\'t exist', function ()
         {
-            expect(googleMethods.createChildFolder).calledWith('auth', monthNames[new Date(invoice.createDate).getMonth()], yearId.id);
+            before(function ()
+            {
+                yearId.files = [];
+                monthId.files = [];
+                googleMethods.findFolderByName.reset();
+                googleMethods.createChildFolder.reset();
+                googleMethods.findFolderByName.onFirstCall().resolves(yearId);
+                googleMethods.createChildFolder.onFirstCall().resolves(createYearId);
+                googleMethods.findFolderByName.onSecondCall().resolves(monthId);
+                googleMethods.createChildFolder.onSecondCall().resolves(createMonthId);
+
+                createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId)
+            });
+            it('should call findFolderById two times', function ()
+            {
+                expect(googleMethods.findFolderByName).callCount(2);
+            });
+            it('should first call with auth, year and companyFolderId', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+            });
+            it('should second call with auth, month and yearFolderId arguments', function ()
+            {
+                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], createYearId);
+            });
+            it('should call createChildFolder', function ()
+            {
+                expect(googleMethods.createChildFolder).callCount(2);
+            });
+            it('should first call createChildFolder with auth, year and companyFolderId arguments', function ()
+            {
+                expect(googleMethods.createChildFolder).calledWith('auth',new Date(invoice.createDate).getFullYear(),companyFolderId)
+            });
+            it('should set invoice googleYearFolderId', function ()
+            {
+                expect(invoice.googleYearFolderId).eql(createYearId);
+            });
+            it('should set invoice googleMonthFolderId', function ()
+            {
+                expect(invoice.googleMonthFolderId).eql(createMonthId);
+            });
+
         });
     });
 });

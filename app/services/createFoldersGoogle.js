@@ -11,24 +11,44 @@ function createFolderCompany(auth, id)
             .then(result =>
             {
                 company = result;
-                return googleMethods.createFolder(auth, company.name);
+                return googleMethods.checkFolderExists(auth, company.googleCompanyId).then(folderId =>
+                {
+                    return folderId;
+                }, () =>
+                {
+                    return googleMethods.createFolder(auth, company.name);
+                })
             })
             .then(folderId =>
             {
-                return companyDao.addFolderId(folderId.id, company.nip)
+                return companyDao.addFolderId(folderId, company.nip)
             });
 }
 
 function createYearMonthFolder(auth, invoice, companyFolderId)
 {
-    return googleMethods.createChildFolder(auth, new Date(invoice.createDate).getFullYear(), companyFolderId)
+    return googleMethods.findFolderByName(auth, new Date(invoice.createDate).getFullYear(), companyFolderId).then(res =>
+    {
+        if (res.files.length > 0) {
+            return res.files[0].id;
+        }
+        return googleMethods.createChildFolder(auth, new Date(invoice.createDate).getFullYear(), companyFolderId)
+    })
+
             .then(yearId =>
             {
-                invoice.googleYearFolderId = yearId.id;
-                return googleMethods.createChildFolder(auth, monthNames[new Date(invoice.createDate).getMonth()], yearId.id)
-            }).then(monthId =>
+                invoice.googleYearFolderId = yearId;
+                return googleMethods.findFolderByName(auth, monthNames[new Date(invoice.createDate).getMonth()], yearId).then(res =>
+                {
+                    if (res.files.length > 0) {
+                        return res.files[0].id;
+                    }
+                    return googleMethods.createChildFolder(auth, monthNames[new Date(invoice.createDate).getMonth()], yearId);
+                })
+            })
+            .then(monthId =>
             {
-                invoice.googleMonthFolderId = monthId.id;
+                invoice.googleMonthFolderId = monthId;
                 return invoice;
             })
 }

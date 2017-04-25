@@ -8,6 +8,8 @@ chai.use(sinonChai);
 const expect = chai.expect;
 let filesCreateFunc = sinon.spy();
 let permissionsCreateFun = sinon.spy();
+let filesGetFunc = sinon.spy();
+let filesListFunc = sinon.spy();
 let googleMock = {
     drive: sinon.stub()
 };
@@ -359,4 +361,171 @@ describe('Google Methods', function ()
             });
         });
     });
+
+    describe('checkFolderExists', function ()
+    {
+        let id = 'sjdfs7df9sf';
+        before(function ()
+        {
+            googleMock.drive = sinon.stub();
+            googleMock.drive.returns(
+                    {
+                        files: {get: filesGetFunc}
+                    }
+            );
+            googleMethodsMock.checkFolderExists('auth', id);
+        });
+        it('should call google.drive', function ()
+        {
+            expect(googleMock.drive).callCount(1);
+            expect(googleMock.drive).calledWith({version: 'v3', auth: 'auth'})
+        });
+        it('should call files.get', function ()
+        {
+            expect(filesGetFunc).callCount(1);
+            expect(filesGetFunc).calledWith(
+                    {
+                        fileId: id,
+                        fields: 'name, id',
+                    }, sinon.match.func
+            )
+        });
+        describe('when call callback', function ()
+        {
+            describe('when callback returns error', function ()
+            {
+                before(function ()
+                {
+                    filesGetFunc = function (obj, callback)
+                    {
+                        callback(errorMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {get: filesGetFunc}
+                            }
+                    );
+
+                });
+                it('should reject', function ()
+                {
+                    return googleMethodsMock.checkFolderExists('auth', id).catch(error =>
+                    {
+                        expect(error).to.be.eql(errorMock);
+                    });
+                });
+            });
+            describe('when callback not return error', function ()
+            {
+                let fileMock = {id: id, name: 'blabla'};
+                before(function ()
+                {
+                    filesGetFunc = function (obj, callback)
+                    {
+                        callback(0, fileMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {get: filesGetFunc}
+                            }
+                    );
+
+                });
+                it('should resolve', function ()
+                {
+                    return googleMethodsMock.checkFolderExists('auth', id).then(file =>
+                    {
+                        expect(file).to.be.eql(fileMock.id);
+                    });
+
+                });
+            });
+        });
+
+    });
+
+    describe('findFolderByName', function ()
+    {
+        let name = 'April';
+        let parentId = 'sjdhfsgs9879f9ss';
+        before(function(){
+            googleMock.drive = sinon.stub();
+            googleMock.drive.returns(
+                    {
+                        files: {list: filesListFunc}
+                    }
+            );
+            googleMethodsMock.findFolderByName('auth',name,parentId);
+        });
+        it('should call google.drive', function ()
+        {
+            expect(googleMock.drive).callCount(1);
+            expect(googleMock.drive).calledWith({version: 'v3', auth: 'auth'})
+        });
+        it('should call files.list', function ()
+        {
+            expect(filesListFunc).callCount(1);
+            expect(filesListFunc).calledWith(
+                    {
+                        corpora: 'user',
+                        q: '"' + parentId + '" in parents and name="' + name + '"',
+                        spaces: 'drive',
+                        fields: 'files(id, name)'
+                    }, sinon.match.func
+            );
+        });
+        describe('when call callback', function ()
+        {
+            describe('when callback returns error', function ()
+            {
+                before(function ()
+                {
+                    filesListFunc = function (obj, callback)
+                    {
+                        callback(errorMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {list: filesListFunc}
+                            }
+                    );
+
+                });
+                it('should reject', function ()
+                {
+                    return googleMethodsMock.findFolderByName('auth',name,parentId).catch(error =>
+                    {
+                        expect(error).to.be.eql(errorMock);
+                    });
+                });
+            });
+            describe('when callback not return error', function ()
+            {
+                let fileMock = {files: [{id: 'sdfhsjfs', name: 'blabla'}]};
+                before(function ()
+                {
+                    filesListFunc = function (obj, callback)
+                    {
+                        callback(0, fileMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {list: filesListFunc}
+                            }
+                    );
+
+                });
+                it('should resolve', function ()
+                {
+                    return googleMethodsMock.findFolderByName('auth',name,parentId).then(file =>
+                    {
+                        expect(file).to.be.eql(fileMock);
+                    });
+
+                });
+            });
+        });
+
+    });
+
 });
