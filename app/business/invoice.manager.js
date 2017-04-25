@@ -6,6 +6,7 @@ const personDao = require('../dao/person.dao');
 const oauthToken = require('../services/googleApi');
 const googleMethods = require('../services/google.methods');
 const folderMethods = require('../services/createFoldersGoogle');
+const applicationException = require('../services/applicationException');
 
 function getInvoices(filter)
 {
@@ -38,8 +39,7 @@ function addInvoice(filename, invoice)
             })
             .catch(error =>
             {
-                console.error('ERROR: ' + error.message || error);
-                throw error;
+                throw applicationException.new(applicationException.ERROR, error);
             });
 }
 
@@ -110,7 +110,7 @@ function getInvoiceById(id)
             })
             .catch(error =>
             {
-                console.error('ERROR', error);
+                throw applicationException(applicationException.ERROR,error);
             });
 }
 

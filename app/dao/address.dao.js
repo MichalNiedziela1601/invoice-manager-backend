@@ -1,9 +1,13 @@
 'use strict';
 const db = require('../services/db.connect');
 const parser = require('../services/camelCaseParser');
+const applicationException = require('../services/applicationException');
 function getAddressById(id)
 {
-    return db.one('SELECT * FROM address WHERE id = $1', [id]).then(address => parser.parseObj(address));
+    return db.one('SELECT * FROM address WHERE id = $1', [id]).then(address => parser.parseObj(address))
+            .catch(() => {
+                throw applicationException.new(applicationException.NOT_FOUND,'Address not found');
+            });
 }
 
 function updateAddress(address, addressId)

@@ -1,6 +1,7 @@
 'use strict';
 const db = require('../services/db.connect');
 const parser = require('../services/camelCaseParser');
+const applicationException = require('../services/applicationException');
 
 function getCompanies()
 {
@@ -8,10 +9,9 @@ function getCompanies()
     return db.any(sql).then(result =>
     {
         return parser.parseArrayOfObject(result);
-    }).catch(error =>
+    }).catch(() =>
     {
-        console.error('ERROR company.dao.getCompanies:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.NOT_FOUND)
     });
 }
 function addCompany(company)
@@ -19,8 +19,7 @@ function addCompany(company)
     let sql = 'INSERT INTO company (name,nip, regon, address_id) VALUES ($1,$2,$3,$4)';
     return db.any(sql, [company.name, company.nip, company.regon, company.addressId]).catch(error =>
     {
-        console.error('ERROR company.dao.addCompany:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.ERROR, error);
     });
 }
 function addCompanyRegister(person)
@@ -31,8 +30,7 @@ function addCompanyRegister(person)
         return data.id
     }).catch(error =>
     {
-        console.error('ERROR auth.dao.registerCompany:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.PRECONDITION_FAILED,error);
     });
 
 }
@@ -44,8 +42,7 @@ function addAddress(address)
         return result[0].id;
     }).catch(error =>
     {
-        console.error('ERROR company.dao.addAddress:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.PRECONDITION_FAILED,error);
     });
 }
 function getCompanyDetails(nip)
@@ -55,10 +52,9 @@ function getCompanyDetails(nip)
     return db.one(query, [nip]).then(result =>
     {
         return parser.parseObj(result);
-    }).catch(error =>
+    }).catch(() =>
     {
-        console.error('ERROR company.dao.getCompanyDetails:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.NOT_FOUND, 'Company not found');
     })
 }
 
@@ -67,10 +63,9 @@ function getCompanyByNip(nip)
     return db.one('SELECT * FROM company WHERE nip = $1', [nip]).then(result =>
     {
         return parser.parseObj(result);
-    }).catch(error =>
+    }).catch(() =>
     {
-        console.error('ERROR company.dao.getCompanyByNip:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.NOT_FOUND, 'Company not found');
     });
 }
 
@@ -80,6 +75,9 @@ function getNips(nip)
     return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies =>
     {
         return parser.parseArrayOfObject(companies);
+    }).catch(() =>
+    {
+        throw applicationException.new(applicationException.NOT_FOUND, 'Nip not found');
     });
 }
 
@@ -89,8 +87,11 @@ function updateCompanyAddress(addressId, companyId)
 }
 function getCompanyById(id)
 {
-    return db.one('SELECT * FROM company WHERE id = $1', [id]).then(company => parser.parseObj(company));
-
+    return db.one('SELECT * FROM company WHERE id = $1', [id]).then(company => parser.parseObj(company))
+            .catch(() =>
+            {
+                throw applicationException.new(applicationException.NOT_FOUND, 'Company not found');
+            });
 }
 
 function addFolderId(folderId, nip)

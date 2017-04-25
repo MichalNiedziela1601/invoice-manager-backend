@@ -3,6 +3,7 @@ const db = require('../services/db.connect');
 const parser = require('../services/camelCaseParser');
 const readSqlFile = require('../services/readSqlFile');
 const path = require('path');
+const applicationException = require('../services/applicationException');
 
 function getInvoices(filter)
 {
@@ -15,10 +16,9 @@ function getInvoices(filter)
     {
         return parser.parseArrayOfObject(result);
 
-    }).catch(error =>
+    }).catch(() =>
     {
-        console.error('ERROR invoice.dao.getInvoices:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.NOT_FOUND, 'Invoice not found');
     });
 }
 
@@ -34,20 +34,22 @@ function addInvoice(invoice)
                     return result;
                 }).catch(error =>
                 {
-                    console.error('ERROR invoice.dao.addInvoice.readSqlFile:', error.message || error);
-                    throw error;
+                    throw applicationException.new(applicationException.ERROR, error);
                 })
     }).catch(error =>
     {
-        console.error('ERROR invoice.dao.addInvoice:', error.message || error);
-        throw error;
+        throw applicationException.new(applicationException.ERROR, error);
     });
 }
 
 function getInvoiceById(id)
 {
     let query = 'SELECT * FROM invoice WHERE id = $1';
-    return db.one(query, [id]).then(invoice => parser.parseObj(invoice));
+    return db.one(query, [id]).then(invoice => parser.parseObj(invoice))
+            .catch(() =>
+            {
+                throw applicationException.new(applicationException.NOT_FOUND, 'Invoice not found');
+            });
 }
 
 function updateInvoice(invoice, id)
@@ -55,7 +57,11 @@ function updateInvoice(invoice, id)
     return readSqlFile(path.join(__dirname, '/sql/updateInvoice.sql')).then(query =>
     {
         return db.none(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate,
-                               invoice.nettoValue, invoice.bruttoValue, invoice.status, id]);
+                               invoice.nettoValue, invoice.bruttoValue, invoice.status, id])
+                .catch(error =>
+                {
+                    throw applicationException.new(applicationException.ERROR, error);
+                });
     })
 }
 

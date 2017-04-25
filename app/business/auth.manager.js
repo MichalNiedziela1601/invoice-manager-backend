@@ -2,6 +2,7 @@
 const bcrypt = require('bcrypt');
 const companyDAO = require('../dao/company.dao');
 const userDAO = require('../dao/user.dao');
+const applicationException = require('../services/applicationException');
 
 function hashPassword(obj, password, salt)
 {
@@ -16,12 +17,12 @@ function registerCompany(person)
     let userTemp = {};
     return userDAO.getUserByEmail(person.email).then(() =>
     {
-        throw new Error('Email exist in database');
+        throw applicationException.new(applicationException.CONFLICT,'Email exist in database');
     }, () =>
     {
         return companyDAO.getCompanyByNip(person.nip).then(() =>
         {
-            throw new Error('Nip exist in database');
+            throw applicationException.new(applicationException.CONFLICT,'Nip exist in database');
         }, () =>
         {
             return hashPassword(person, person.password, 10)
@@ -37,8 +38,7 @@ function registerCompany(person)
                     })
                     .catch(error =>
                     {
-                        console.error('ERROR auth.manager.hashPassword:', error.message || error);
-                        throw error;
+                        throw applicationException.new(applicationException.ERROR,error);
                     });
         })
     })
