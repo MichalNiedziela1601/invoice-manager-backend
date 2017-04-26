@@ -14,7 +14,8 @@ const invoices = [
         personDealer: null,
         personRecipent: null,
         googleMonthFolderId: null,
-        googleYearFolderId: null
+        googleYearFolderId: null,
+        description: null
     },
     {
         id: 2,
@@ -31,7 +32,8 @@ const invoices = [
         personDealer: null,
         personRecipent: null,
         googleMonthFolderId: null,
-        googleYearFolderId: null
+        googleYearFolderId: null,
+        description: null
     },
     {
         id: 3,
@@ -48,12 +50,32 @@ const invoices = [
         personDealer: 2,
         personRecipent: 1,
         googleMonthFolderId: null,
-        googleYearFolderId: null
+        googleYearFolderId: null,
+        description: null
     }
 ];
 
+const afterUpdateInvoice = {
+    id: 1,
+    invoiceNr: 'FV/14/05/111',
+    type: 'Sale',
+    createDate: new Date('2012-05-07T22:00:00.000Z'),
+    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+    nettoValue: '2430.45',
+    bruttoValue: '3675.89',
+    status: 'paid',
+    url: 'url1',
+    companyDealer: 1,
+    companyRecipent: 2,
+    personDealer: null,
+    personRecipent: null,
+    googleMonthFolderId: null,
+    googleYearFolderId: null,
+    description: null
+};
+
 
 module.exports = {
-    invoices
+    invoices, afterUpdateInvoice
 };
 

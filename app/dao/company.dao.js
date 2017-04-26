@@ -9,9 +9,6 @@ function getCompanies()
     return db.any(sql).then(result =>
     {
         return parser.parseArrayOfObject(result);
-    }).catch(() =>
-    {
-        throw applicationException.new(applicationException.NOT_FOUND)
     });
 }
 function addCompany(company)
@@ -75,9 +72,6 @@ function getNips(nip)
     return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies =>
     {
         return parser.parseArrayOfObject(companies);
-    }).catch(() =>
-    {
-        throw applicationException.new(applicationException.NOT_FOUND, 'Nip not found');
     });
 }
 
@@ -90,6 +84,7 @@ function getCompanyById(id)
     return db.one('SELECT * FROM company WHERE id = $1', [id]).then(company => parser.parseObj(company))
             .catch(() =>
             {
+
                 throw applicationException.new(applicationException.NOT_FOUND, 'Company not found');
             });
 }

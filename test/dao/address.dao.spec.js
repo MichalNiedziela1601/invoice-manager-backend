@@ -8,6 +8,7 @@ const testHelper = require('../testHelper');
 describe('address.dao', function ()
 {
     let addresses = [];
+    let errorMock = null;
 
     beforeEach(function ()
     {
@@ -22,13 +23,31 @@ describe('address.dao', function ()
     {
         beforeEach(function ()
         {
-            return addressDAO.getAddressById(1).then(address => {
+            return addressDAO.getAddressById(1).then(address =>
+            {
                 addresses = address;
             })
         });
         it('should return address', function ()
         {
             expect(addresses).to.eql(data.addresses[0]);
+        });
+    });
+    describe('when error', function ()
+    {
+        beforeEach(function ()
+        {
+            return addressDAO.getAddressById(9).catch(error =>
+            {
+                errorMock = error;
+            })
+        });
+        it('should throw error', function ()
+        {
+            expect(errorMock).deep.eql({
+                error: {message: 'NOT_FOUND', code: 404},
+                message: 'Address not found'
+            });
         });
     });
 });

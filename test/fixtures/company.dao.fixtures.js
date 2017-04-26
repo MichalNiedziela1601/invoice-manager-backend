@@ -4,21 +4,24 @@ const companies = [{
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
-    googleCompanyId: null
+    googleCompanyId: null,
+    bankAccount: '22068903623586048228853407'
 }, {
     addressId: null,
     id: 2,
     name: 'Firma Testowa',
     nip: 1029456789,
     regon: null,
-    googleCompanyId: null
+    googleCompanyId: null,
+    bankAccount: '22068903623586048228853408'
 }, {
     addressId: 2,
     id: 3,
     name: 'Firma badfghjklrtek',
     nip: 176543330,
     regon: 55343367,
-    googleCompanyId: null
+    googleCompanyId: null,
+    bankAccount: null
 }];
 const findCompany = {
     addressId: 1,
@@ -26,7 +29,8 @@ const findCompany = {
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
-    googleCompanyId: null
+    googleCompanyId: null,
+    bankAccount: '22068903623586048228853407'
 };
 
 const afterRegisterCompany = [
@@ -36,7 +40,8 @@ const afterRegisterCompany = [
         name: 'Kuba',
         nip: 1029384756,
         regon: 243124,
-        googleCompanyId: null
+        googleCompanyId: null,
+        bankAccount: '22068903623586048228853407'
     },
     {
         addressId: null,
@@ -44,7 +49,8 @@ const afterRegisterCompany = [
         name: 'Firma Testowa',
         nip: 1029456789,
         regon: null,
-        googleCompanyId: null
+        googleCompanyId: null,
+        bankAccount: '22068903623586048228853408'
     },
     {
         id: 3,
@@ -52,7 +58,8 @@ const afterRegisterCompany = [
         nip: 7890123456,
         regon: null,
         addressId: null,
-        googleCompanyId: null
+        googleCompanyId: null,
+        bankAccount: null
     }
 ];
 
@@ -75,11 +82,45 @@ const nothing = {
     name: 'Kuba',
     nip: 1029384756,
     regon: 243124,
-    googleCompanyId: null
+    googleCompanyId: null,
+    bankAccount: '22068903623586048228853407'
 
 };
 
+const updateAddress = {
+    addressId: 2,
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+    googleCompanyId: null,
+    bankAccount: '22068903623586048228853407'
+};
+
+const afterAddFolderId = {
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+    addressId: 1,
+    googleCompanyId: 'sdfhshf',
+    bankAccount: '22068903623586048228853407'
+};
+
+const getCompanyDetails = {
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+    street: 'polska',
+    buildNr: '8',
+    flatNr: '8',
+    postCode: '33-100',
+    city: 'tutaj'
+};
+
+
 module.exports = {
-    companies, findCompany, nothing, address, afterRegisterCompany
+    companies, findCompany, nothing, address, afterRegisterCompany, updateAddress, afterAddFolderId,getCompanyDetails
 };
 

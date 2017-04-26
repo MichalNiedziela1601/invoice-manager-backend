@@ -16,9 +16,6 @@ function getInvoices(filter)
     {
         return parser.parseArrayOfObject(result);
 
-    }).catch(() =>
-    {
-        throw applicationException.new(applicationException.NOT_FOUND, 'Invoice not found');
     });
 }
 
@@ -32,9 +29,6 @@ function addInvoice(invoice)
                 .then(result =>
                 {
                     return result;
-                }).catch(error =>
-                {
-                    throw applicationException.new(applicationException.ERROR, error);
                 })
     }).catch(error =>
     {
@@ -57,12 +51,11 @@ function updateInvoice(invoice, id)
     return readSqlFile(path.join(__dirname, '/sql/updateInvoice.sql')).then(query =>
     {
         return db.none(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate,
-                               invoice.nettoValue, invoice.bruttoValue, invoice.status, id])
-                .catch(error =>
-                {
-                    throw applicationException.new(applicationException.ERROR, error);
-                });
-    })
+                               invoice.nettoValue, invoice.bruttoValue, invoice.status, id]);
+    }).catch(error =>
+    {
+        throw applicationException.new(applicationException.ERROR, error);
+    });
 }
 
 module.exports = {

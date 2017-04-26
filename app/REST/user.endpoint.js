@@ -70,7 +70,7 @@ module.exports = {
 
         server.route({
             method: 'GET',
-            path: '/api/user/login',
+            path: '/api/user/auth',
             handler: function (request, reply)
             {
                 const email = _.get(request, 'auth.credentials.email');
