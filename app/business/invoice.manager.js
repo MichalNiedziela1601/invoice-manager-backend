@@ -7,6 +7,7 @@ const oauthToken = require('../services/googleApi');
 const googleMethods = require('../services/google.methods');
 const folderMethods = require('../services/createFoldersGoogle');
 const applicationException = require('../services/applicationException');
+const _ = require('lodash');
 
 function getInvoices(filter)
 {
@@ -15,32 +16,46 @@ function getInvoices(filter)
 
 function addInvoice(filename, invoice)
 {
+    invoice.year = new Date(invoice.createDate).getFullYear();
+    invoice.month = new Date(invoice.createDate).getMonth() + 1;
+    invoice.number = parseInt(_.split(invoice.invoiceNr, '/')[2],10);
 
     let auth = null;
-    return oauthToken().then(token =>
+    return invoiceDao.getInvoiceFullNumber(invoice.year, invoice.month, invoice.number).then(() =>
     {
-        auth = token;
-        return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
-    }).then(companyFolderId =>
-    {
-        return folderMethods.createYearMonthFolder(auth, invoice,companyFolderId);
+        return oauthToken();
+
     })
+            .then(token =>
+            {
+                auth = token;
+                return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
+            })
+            .then(companyFolderId =>
+            {
+                return folderMethods.createYearMonthFolder(auth, invoice, companyFolderId);
+            })
             .then(invoice =>
             {
-                return googleMethods.saveFile(auth, filename, invoice).then(response =>
-                {
-                    invoice.url = response.webViewLink;
-                    return googleMethods.shareFile(auth, response.id).then(() =>
-                    {
-                        return invoiceDao.addInvoice(invoice);
-                    });
-
-                })
+                return googleMethods.saveFile(auth, filename, invoice);
+            })
+            .then(response =>
+            {
+                invoice.url = response.webViewLink;
+                return googleMethods.shareFile(auth, response.id);
+            })
+            .then(() =>
+            {
+                return invoiceDao.addInvoice(invoice);
             })
             .catch(error =>
             {
+                if (applicationException.is(error)) {
+                    throw error;
+                }
                 throw applicationException.new(applicationException.ERROR, error);
             });
+
 }
 
 function getInvoiceByCompanyDealerId(invoiceResult)
@@ -110,7 +125,7 @@ function getInvoiceById(id)
             })
             .catch(error =>
             {
-                throw applicationException(applicationException.ERROR,error);
+                throw applicationException(applicationException.ERROR, error);
             });
 }
 
@@ -119,6 +134,19 @@ function updateInvoice(invoice, id)
     return invoiceDao.updateInvoice(invoice, id);
 }
 
+function getInvoiceNumber(year, month)
+{
+    return invoiceDao.getInvoiceNumber(year, month).then(number =>
+    {
+        if (_.isNull(number.number)) {
+            number.number = 1;
+        } else {
+            number.number += 1;
+        }
+        return number;
+    });
+}
+
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice
+    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber
 };

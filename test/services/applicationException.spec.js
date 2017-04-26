@@ -25,6 +25,7 @@ describe('applicationException', function ()
         describe('when error is not of instance ApplicationError', function ()
         {
             before(function(){
+                isMock.reset();
                 result = applicationExceptionMock.is(errorStub,applicationExceptionMock.NOT_FOUND);
             });
             it('should call is function', function ()

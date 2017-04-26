@@ -128,6 +128,20 @@ module.exports = {
                     applicationException.errorHandler(error, reply)
                 })
             }
+        });
+
+        server.route({
+            method: 'GET',
+            path: '/api/invoice/number',
+            config: {auth: false, validate: {query: joiSchema.schema.invoiceGetNumber}},
+            handler: function(request,reply){
+                const year = _.get(request,'query.year');
+                const month = _.get(request,'query.month');
+                invoiceManager.getInvoiceNumber(year,month).then(number => {
+                    reply(number);
+                })
+
+            }
         })
     }
 };

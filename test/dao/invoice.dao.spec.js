@@ -102,7 +102,10 @@ describe('invoice.dao', function ()
             personRecipent: 2,
             googleMonthFolderId: null,
             googleYearFolderId: null,
-            description: null
+            description: null,
+            year: 2014,
+            month: 5,
+            number: 111
         };
 
         let mockedInvoiceId = {id: 4};
@@ -325,6 +328,72 @@ describe('invoice.dao', function ()
             it('should throw error', function ()
             {
                 expect(errorMock.error).eql({message: 'ERROR', code: 500})
+            });
+        });
+    });
+
+    describe('getInvoiceNumber', function ()
+    {
+        let number = {};
+        describe('when find max', function ()
+        {
+            beforeEach(function ()
+            {
+                return invoiceDAO.getInvoiceNumber(2012,2).then(result => {
+                    number = result;
+                })
+            });
+            it('should return max', function ()
+            {
+                expect(number).eql({number: 2});
+            });
+        });
+
+        describe('when not find max', function ()
+        {
+            beforeEach(function ()
+            {
+                return invoiceDAO.getInvoiceNumber(2012,3).then(result => {
+                    number = result;
+                })
+            });
+            it('should return max', function ()
+            {
+                expect(number).eql({number: null});
+            });
+        });
+    });
+
+    describe('getInvoiceFullNumber', function ()
+    {
+        describe('when find number', function ()
+        {
+            let error = {};
+            beforeEach(function ()
+            {
+                return invoiceDAO.getInvoiceFullNumber(2012,2,2).catch(result => {
+                    error = result;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(error).eql({
+                    error: {message: 'CONFLICT', code: 409 },
+                    message: 'This invoice number exists. Try another!' });
+            });
+        });
+        describe('when not find invoice', function ()
+        {
+            let id = {};
+            beforeEach(function ()
+            {
+                return invoiceDAO.getInvoiceFullNumber(2012,2,4).then(result => {
+                    id = result;
+                })
+            });
+            it('should return null', function ()
+            {
+                expect(id).eql(null);
             });
         });
     });

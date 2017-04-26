@@ -4,6 +4,7 @@ const proxyquire = require('proxyquire');
 const sinonChai = require('sinon-chai');
 const sinon = require('sinon');
 chai.use(sinonChai);
+const applicationException = require('../../app/services/applicationException');
 
 const expect = chai.expect;
 let invoiceMock = {};
@@ -17,7 +18,10 @@ let addressRecipent = {};
 let invoiceDAOMock = {
     getInvoices: sinon.spy(),
     addInvoice: sinon.spy(),
-    getInvoiceById: sinon.stub().resolves()
+    getInvoiceById: sinon.stub().resolves(),
+    getInvoiceFullNumber: sinon.stub(),
+    getInvoiceNumber: sinon.stub(),
+    updateInvoice: sinon.spy()
 };
 
 let companyDaoMock = {
@@ -36,8 +40,8 @@ let oauthTokenMock = sinon.stub().resolves('token');
 let googleMethodsMock = {
     createFolder: sinon.stub().resolves(),
     createChildFolder: sinon.stub().resolves(),
-    saveFile: sinon.stub().resolves(),
-    shareFile: sinon.stub().resolves()
+    saveFile: sinon.stub(),
+    shareFile: sinon.stub()
 };
 
 let createFoldersGoogleMock = {
@@ -79,68 +83,142 @@ describe('invoice.manager', function ()
 
     describe('addInvoice', function ()
     {
-        let yearId = 'sdf897sfdsk';
-        let monthId = 'hku4h5uik4';
-        let response = {
-            id: 'sdfhshs45j3h',
-            webViewLink: 'https://google/sdfksdjfskfhs4j5jk'
-        };
-        before(function ()
+        describe('when getInvoiceFullNumber', function ()
         {
-            companyDaoMock.getCompanyById.reset();
-
-            invoiceMock = {
-                invoiceNr: 'FV/14/05/111',
-                type: 'Sale',
-                createDate: new Date('2012-05-07T22:00:00.000Z'),
-                executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
-                nettoValue: '$2,330.45',
-                bruttoValue: '$3,475.89',
-                status: 'paid',
-                url: 'url6',
-                companyDealer: 1,
-                companyRecipent: 2,
-                personDealer: null,
-                personRecipent: null
+            let yearId = 'sdf897sfdsk';
+            let monthId = 'hku4h5uik4';
+            let response = {
+                id: 'sdfhshs45j3h',
+                webViewLink: 'https://google/sdfksdjfskfhs4j5jk'
             };
-            googleMethodsMock.shareFile.withArgs('token',response.id).resolves();
-            googleMethodsMock.saveFile.withArgs('token','filename',invoiceMock).resolves(response);
-            createFoldersGoogleMock.createFolderCompany.withArgs('token',invoiceMock.companyRecipent).resolves(yearId);
-            createFoldersGoogleMock.createYearMonthFolder.withArgs('token',invoiceMock,yearId).resolves(monthId);
+            before(function ()
+            {
+                companyDaoMock.getCompanyById.reset();
 
-            invoiceManager.addInvoice('filename', invoiceMock)
-        });
-        it('should call oauthToken', function ()
-        {
-            expect(oauthTokenMock).callCount(1);
-        });
-        it('should call createFolderCompany', function ()
-        {
-            expect(createFoldersGoogleMock.createFolderCompany).callCount(1);
-            expect(createFoldersGoogleMock.createFolderCompany).calledWith('token',2);
-        });
-        it('should call createYearMonthFolder', function ()
-        {
-            expect(createFoldersGoogleMock.createYearMonthFolder).callCount(1);
-            expect(createFoldersGoogleMock.createYearMonthFolder).calledWith('token',invoiceMock,yearId);
-        });
-        it('should call saveFile', function ()
-        {
-            expect(googleMethodsMock.saveFile, 'call saveFile').callCount(1);
-        });
-        it('should call shareFile', function ()
-        {
-            googleMethodsMock.saveFile().then(() => {
-                expect(googleMethodsMock.shareFile).callCount(1);
-                expect(googleMethodsMock.shareFile).calledWith('token',response.id);
+                invoiceMock = {
+                    invoiceNr: 'FV 12/05/111',
+                    type: 'Sale',
+                    createDate: new Date('2012-05-07T22:00:00.000Z'),
+                    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                    nettoValue: '$2,330.45',
+                    bruttoValue: '$3,475.89',
+                    status: 'paid',
+                    url: 'url6',
+                    companyDealer: 1,
+                    companyRecipent: 2,
+                    personDealer: null,
+                    personRecipent: null
+                };
+                invoiceDAOMock.getInvoiceFullNumber.resolves();
+                googleMethodsMock.shareFile.resolves();
+                googleMethodsMock.saveFile.resolves(response);
+                createFoldersGoogleMock.createFolderCompany.withArgs('token', invoiceMock.companyRecipent).resolves(yearId);
+                createFoldersGoogleMock.createYearMonthFolder.withArgs('token', invoiceMock, yearId).resolves(monthId);
+
+                invoiceManager.addInvoice('filename', invoiceMock)
             });
-        });
-        it('should call addInvoice', function ()
-        {
-            googleMethodsMock.shareFile().then(() => {
+            it('should call getInvoiceFullNumber', function ()
+            {
+                expect(invoiceDAOMock.getInvoiceFullNumber).callCount(1);
+                expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(2012, 5, 111);
+            });
+            it('should call oauthToken', function ()
+            {
+                expect(oauthTokenMock).callCount(1);
+            });
+            it('should call createFolderCompany', function ()
+            {
+                expect(createFoldersGoogleMock.createFolderCompany).callCount(1);
+                expect(createFoldersGoogleMock.createFolderCompany).calledWith('token', 2);
+            });
+            it('should call createYearMonthFolder', function ()
+            {
+                expect(createFoldersGoogleMock.createYearMonthFolder).callCount(1);
+                expect(createFoldersGoogleMock.createYearMonthFolder).calledWith('token', invoiceMock, yearId);
+            });
+            it('should call saveFile', function ()
+            {
+                expect(googleMethodsMock.saveFile, 'call saveFile').callCount(1);
+            });
+            it('should call shareFile', function ()
+            {
+
+                expect(googleMethodsMock.shareFile).callCount(1);
+                expect(googleMethodsMock.shareFile).calledWith('token', response.id);
+
+            });
+            it('should call addInvoice', function ()
+            {
+
                 expect(invoiceDAOMock.addInvoice).callCount(1);
                 expect(invoiceDAOMock.addInvoice).calledWith(invoiceMock)
-            })
+
+            });
+        });
+        describe('when getInvoiceFullNumber found number', function ()
+        {
+            before(() =>
+            {
+                invoiceMock = {
+                    invoiceNr: 'FV 12/05/111',
+                    type: 'Sale',
+                    createDate: new Date('2012-05-07T22:00:00.000Z'),
+                    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                    nettoValue: '$2,330.45',
+                    bruttoValue: '$3,475.89',
+                    status: 'paid',
+                    url: 'url6',
+                    companyDealer: 1,
+                    companyRecipent: 2,
+                    personDealer: null,
+                    personRecipent: null
+                };
+                invoiceDAOMock.getInvoiceFullNumber.reset();
+                invoiceDAOMock.getInvoiceFullNumber.rejects(
+                        applicationException.new(applicationException.CONFLICT, 'This invoice number exists. Try another!'));
+
+            });
+            it('should throw error CONFLICT', function ()
+            {
+                invoiceManager.addInvoice('filename', invoiceMock).catch(error =>
+                {
+                    expect(error).eql({
+                        error: {message: 'CONFLICT', code: 409},
+                        message: 'This invoice number exists. Try another!'
+                    })
+                })
+            });
+        });
+
+        describe('when something wrong', function ()
+        {
+            before(() =>
+            {
+                invoiceMock = {
+                    invoiceNr: 'FV 12/05/111',
+                    type: 'Sale',
+                    createDate: new Date('2012-05-07T22:00:00.000Z'),
+                    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                    nettoValue: '$2,330.45',
+                    bruttoValue: '$3,475.89',
+                    status: 'paid',
+                    url: 'url6',
+                    companyDealer: 1,
+                    companyRecipent: 2,
+                    personDealer: null,
+                    personRecipent: null
+                };
+                invoiceDAOMock.getInvoiceFullNumber.reset();
+                invoiceDAOMock.getInvoiceFullNumber.rejects();
+
+            });
+            it('should throw error', function ()
+            {
+                invoiceManager.addInvoice('filename', invoiceMock).catch(error =>
+                {
+                    expect(error.error).eql({message: 'ERROR', code: 500})
+                })
+            });
         });
     });
 
@@ -359,6 +437,79 @@ describe('invoice.manager', function ()
                 });
             });
         });
+        describe('when error occured', function ()
+        {
 
+            before(function ()
+            {
+                invoiceDAOMock.getInvoiceById.resetHistory();
+                personDaoMock.getPersonById.resetHistory();
+                addressDaoMock.getAddressById.resetHistory();
+                companyDaoMock.getCompanyById.resetHistory();
+
+                invoiceDAOMock.getInvoiceById.rejects();
+            });
+            it('should throw error 500', function ()
+            {
+                invoiceManager.getInvoiceById(2).catch(error =>
+                {
+                    expect(error.error).eql({message: 'ERROR', code: 500});
+                })
+            });
+        });
+    });
+
+    describe('updateInvoice', function ()
+    {
+        before(() =>
+        {
+            invoiceMock = {
+                invoiceNr: 'FV 2012/5/33'
+            };
+
+            invoiceManager.updateInvoice(invoiceMock, 2);
+        });
+        it('should call invoiceDao.updateInvoice', function ()
+        {
+            expect(invoiceDAOMock.updateInvoice).callCount(1);
+            expect(invoiceDAOMock.updateInvoice).calledWith(invoiceMock, 2);
+        });
+    });
+
+    describe('getInvoiceNumber', function ()
+    {
+        let number = {};
+        describe('when find number', function ()
+        {
+            before(() =>
+            {
+                invoiceDAOMock.getInvoiceNumber.resolves({number: 1});
+                return invoiceManager.getInvoiceNumber().then(result =>
+                {
+                    number = result;
+                })
+
+            });
+            it('should return number incrased by 1', function ()
+            {
+                expect(number).to.deep.equal({number: 2});
+            });
+        });
+        describe('when not find number', function ()
+        {
+            before(() =>
+            {
+                invoiceDAOMock.getInvoiceNumber.reset();
+                invoiceDAOMock.getInvoiceNumber.resolves({number: null});
+                return invoiceManager.getInvoiceNumber().then(result =>
+                {
+                    number = result;
+                })
+            });
+            it('should return number incrased by 1', function ()
+            {
+                expect(number).eql({number: 1});
+            });
+        });
     });
 });
