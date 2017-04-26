@@ -83,7 +83,7 @@ describe('company.dao', function ()
                 });
                 it('should not add contractor', function ()
                 {
-                    expect(companies).to.eql([data.companies[0],data.companies[1]])
+                    expect(companies).to.eql([data.companies[0], data.companies[1]])
                 });
             });
             describe('company nip is invalid', function ()
@@ -105,7 +105,7 @@ describe('company.dao', function ()
                 });
                 it('should not add contractor', function ()
                 {
-                    expect(companies).to.eql([data.companies[0],data.companies[1]])
+                    expect(companies).to.eql([data.companies[0], data.companies[1]])
                 });
             });
         });
@@ -130,7 +130,6 @@ describe('company.dao', function ()
             beforeEach(function ()
             {
                 let invalidNip = 3456791345;
-                let companies = {};
                 return companyDAO.getCompanyByNip(invalidNip).then(function ()
                 {
                     throw new Error('function then should not be served');
@@ -145,7 +144,7 @@ describe('company.dao', function ()
             });
             it('should add company to database', function ()
             {
-                expect(companies).to.eql(data.nothing);
+                expect(companies).to.eql([data.companies[0], data.companies[1]]);
             });
         });
     });
@@ -246,9 +245,11 @@ describe('company.dao', function ()
                 {
                     id = result;
 
-                }).then(() => {
-                    return companyDAO.getCompanies().then(result => {
-                        companies = _.sortBy(result,'id');
+                }).then(() =>
+                {
+                    return companyDAO.getCompanies().then(result =>
+                    {
+                        companies = _.sortBy(result, 'id');
                     })
                 })
             });
@@ -305,7 +306,7 @@ describe('company.dao', function ()
                 });
                 it('should not add company', function ()
                 {
-                    expect(companies).to.eql([data.companies[0],data.companies[1]]);
+                    expect(companies).to.eql([data.companies[0], data.companies[1]]);
                 });
             });
         });
@@ -318,7 +319,8 @@ describe('company.dao', function ()
         {
             beforeEach(function ()
             {
-                return companyDAO.getNips(102).then(result => {
+                return companyDAO.getNips(102).then(result =>
+                {
                     nips = result;
                 })
             });
@@ -331,7 +333,8 @@ describe('company.dao', function ()
         {
             beforeEach(function ()
             {
-                return companyDAO.getNips(10293).then(result => {
+                return companyDAO.getNips(10293).then(result =>
+                {
                     nips = result;
                 })
             });
@@ -343,17 +346,130 @@ describe('company.dao', function ()
 
     });
 
-    describe('getCompanyById', function ()
+    describe('updateCompanyAddress', function ()
     {
         beforeEach(function ()
         {
-            return companyDAO.getCompanyById(1).then(result => {
+            return companyDAO.updateCompanyAddress(2, 1).then(() =>
+            {
+                return companyDAO.getCompanyById(1).then(company =>
+                {
+                    companies = company;
+                })
+            })
+        });
+        it('should set new address', function ()
+        {
+            expect(companies).eql(data.updateAddress);
+        });
+    });
+
+    describe('getCompanyById', function ()
+    {
+        describe('when company exists', function ()
+        {
+            beforeEach(function ()
+            {
+                return companyDAO.getCompanyById(1).then(result =>
+                {
+                    companies = result;
+                })
+            });
+            it('should return company', function ()
+            {
+                expect(companies).to.eql(data.companies[0]);
+            });
+        });
+        describe('when company not exists', function ()
+        {
+            let errorMock = {};
+            beforeEach(function ()
+            {
+                return companyDAO.getCompanyById(8).catch(error =>
+                {
+                    errorMock = error;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(errorMock).eql({
+                    error: {message: 'NOT_FOUND', code: 404},
+                    message: 'Company not found'
+                });
+            });
+        });
+
+    });
+
+    describe('getCompanies', function ()
+    {
+
+        beforeEach(function ()
+        {
+            return companyDAO.getCompanies().then(result =>
+            {
                 companies = result;
             })
         });
-        it('should return company', function ()
+        it('should return result', function ()
         {
-            expect(companies).to.eql(data.companies[0]);
+            expect(companies).eql([data.companies[0], data.companies[1]]);
+        });
+    });
+
+    describe('addFolderId', function ()
+    {
+        const folderId = 'sdfhshf';
+        const nip = 1029384756;
+        beforeEach(function ()
+        {
+            return companyDAO.addFolderId(folderId, nip).then(() =>
+            {
+                return companyDAO.getCompanyById(1).then(result =>
+                {
+                    companies = result;
+                })
+            })
+        });
+        it('should update company ', function ()
+        {
+            expect(companies).eql(data.afterAddFolderId);
+        });
+    });
+
+    describe('getCompanyDetails', function ()
+    {
+        describe('when company exists', function ()
+        {
+            beforeEach(function ()
+            {
+                return companyDAO.getCompanyDetails(1029384756).then(result =>
+                {
+                    companies = result;
+                })
+            });
+            it('should return company details', function ()
+            {
+                expect(companies).eql(data.getCompanyDetails)
+            });
+        });
+        describe('when company not found', function ()
+        {
+            let errorMock = {};
+            beforeEach(function ()
+            {
+                return companyDAO.getCompanyDetails(1029444756).catch(error =>
+                {
+                    errorMock = error;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(errorMock).eql({
+                    error: {message: 'NOT_FOUND', code: 404},
+                    message: 'Company not found'
+                })
+            });
         });
     });
 });

@@ -36,14 +36,17 @@ CREATE SEQUENCE person_id_seq
 CREATE TABLE "company" (
 	"id"  INTEGER DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
-	"nip" BIGINT NOT NULL UNIQUE,
-	"regon" BIGINT UNIQUE,
-	"address_id" INTEGER,
-	"google_company_id" TEXT,
+	"nip" bigint NOT NULL UNIQUE,
+	"regon" bigint UNIQUE,
+	"address_id" bigint,
+	"google_company_id" TEXT UNIQUE,
+	"bank_account" TEXT,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
+
+
 
 CREATE TABLE "address" (
 	"id"  INTEGER DEFAULT nextval('address_id_seq'::regclass) NOT NULL,
@@ -57,6 +60,8 @@ CREATE TABLE "address" (
   OIDS=FALSE
 );
 
+
+
 CREATE TABLE "users" (
 	"id"  bigint DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
@@ -67,14 +72,16 @@ CREATE TABLE "users" (
   OIDS=FALSE
 );
 
+
+
 CREATE TABLE "invoice" (
 	"id"  bigint DEFAULT nextval('invoice_id_seq'::regclass) NOT NULL,
 	"invoice_nr" TEXT NOT NULL,
 	"type" TEXT NOT NULL,
 	"create_date" DATE NOT NULL,
 	"execution_end_date" DATE NOT NULL,
-	"netto_value" decimal(12,2) NOT NULL,
-	"brutto_value" decimal(12,2) NOT NULL,
+	"netto_value" DECIMAL(12,2) NOT NULL,
+	"brutto_value" DECIMAL(12,2) NOT NULL,
 	"status" TEXT NOT NULL,
 	"url" TEXT NOT NULL,
 	"company_dealer" bigint,
@@ -83,10 +90,13 @@ CREATE TABLE "invoice" (
 	"person_recipent" bigint,
 	"google_year_folder_id" TEXT,
 	"google_month_folder_id" TEXT,
+	"description" TEXT,
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
 );
+
+
 
 CREATE TABLE "person" (
 	"id"  bigint DEFAULT nextval('person_id_seq'::regclass) NOT NULL,
@@ -100,6 +110,23 @@ CREATE TABLE "person" (
   OIDS=FALSE
 );
 
+
+
+CREATE TABLE "product" (
+	"id" serial NOT NULL,
+	"name" TEXT NOT NULL,
+	"netto_value" DECIMAL(12,2) NOT NULL,
+	"vat" int NOT NULL,
+	"brutto_value" DECIMAL(12,2) NOT NULL,
+	"quantity" DECIMAL NOT NULL,
+	"invoice_id" bigint,
+	CONSTRAINT product_pk PRIMARY KEY ("id")
+) WITH (
+  OIDS=FALSE
+);
+
+
+
 ALTER TABLE "company" ADD CONSTRAINT "company_fk0" FOREIGN KEY ("address_id") REFERENCES "address"("id");
 
 
@@ -111,3 +138,5 @@ ALTER TABLE "invoice" ADD CONSTRAINT "invoice_fk2" FOREIGN KEY ("person_dealer")
 ALTER TABLE "invoice" ADD CONSTRAINT "invoice_fk3" FOREIGN KEY ("person_recipent") REFERENCES "person"("id");
 
 ALTER TABLE "person" ADD CONSTRAINT "person_fk0" FOREIGN KEY ("address_id") REFERENCES "address"("id");
+
+ALTER TABLE "product" ADD CONSTRAINT "product_fk0" FOREIGN KEY ("invoice_id") REFERENCES "invoice"("id") ON DELETE CASCADE ON UPDATE CASCADE;

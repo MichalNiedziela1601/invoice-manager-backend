@@ -7,7 +7,8 @@ const testHelper = require('../testHelper');
 const _ = require('lodash');
 
 let invoices = [];
-let invoiceById;
+let invoiceById = {};
+let errorMock = {};
 
 describe('invoice.dao', function ()
 {
@@ -100,7 +101,8 @@ describe('invoice.dao', function ()
             personDealer: 1,
             personRecipent: 2,
             googleMonthFolderId: null,
-            googleYearFolderId: null
+            googleYearFolderId: null,
+            description: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -244,20 +246,86 @@ describe('invoice.dao', function ()
                 });
             });
         })
-    })
+    });
 
     describe('getInvoiceById', function ()
     {
-        beforeEach(function ()
+        describe('when invoice exist', function ()
         {
-            return invoiceDAO.getInvoiceById(1).then(function (result)
+            beforeEach(function ()
             {
-                invoiceById = result;
-            })
+                return invoiceDAO.getInvoiceById(1).then(function (result)
+                {
+                    invoiceById = result;
+                })
+            });
+            it('should return invoice by id', function ()
+            {
+                expect(invoiceById).to.eql(data.invoices[0]);
+            });
         });
-        it('should return invoice by id', function ()
+        describe('when invoice not found', function ()
         {
-            expect(invoiceById).to.eql(data.invoices[0]);
+            beforeEach(function ()
+            {
+                return invoiceDAO.getInvoiceById(7).catch(error =>
+                {
+                    errorMock = error;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(errorMock).eql({
+                    error: {message: 'NOT_FOUND', code: 404},
+                    message: 'Invoice not found'
+                })
+            });
+        });
+    });
+
+    describe('updateInvoice', function ()
+    {
+        let mockedInvoice = {
+            invoiceNr: 'FV/14/05/111',
+            type: 'Sale',
+            createDate: new Date('2012-05-07T22:00:00.000Z'),
+            executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+            nettoValue: '2430.45',
+            bruttoValue: '3675.89',
+            status: 'paid'
+        };
+        describe('when properties valid', function ()
+        {
+            beforeEach(function ()
+            {
+                return invoiceDAO.updateInvoice(mockedInvoice, 1).then(() =>
+                {
+                    return invoiceDAO.getInvoiceById(1).then(invoice =>
+                    {
+                        invoiceById = invoice;
+                    })
+                })
+            });
+            it('should set new invoice', function ()
+            {
+                expect(invoiceById).eql(data.afterUpdateInvoice);
+            });
+        });
+
+        describe('when invoiceNr is invalid', function ()
+        {
+            let invalidInvoice = _.omit(mockedInvoice, ['invoiceNr']);
+            beforeEach(function ()
+            {
+                return invoiceDAO.updateInvoice(invalidInvoice, 1).catch(error =>
+                {
+                    errorMock = error;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(errorMock.error).eql({message: 'ERROR', code: 500})
+            });
         });
     });
 });

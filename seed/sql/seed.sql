@@ -17,19 +17,19 @@ INSERT INTO address
 
 INSERT INTO
   company
-(name, nip, regon,address_id) VALUES
-  ( 'Firma 1',1234567890,6789567,1),
-  ( 'Firma BUDEX',1224567890,6189567,2),
-  ( 'FHU "MELEX"',4567123456,null,5),
-  ( 'FHU "SPOŁEM"',2345678901,null,6),
-  ( 'FHU "LEŚ"',3456789012,null,7),
-  ( 'MotoZbyt',4567890123,null,8),
-  ( 'RWD',5678901234,null,9),
-  ( 'COMARCH',6789012345,null,10),
-  ( 'Insoft',7890123456,null,11),
-  ( 'Amiga',8901234567,null,12),
-  ( 'Microsoft',9012345678,null,13),
-  ( 'FHU "MET-TRANS"',5432109876,null,14);
+(name, nip, regon,address_id, bank_account) VALUES
+  ( 'Firma 1',1234567890,6789567,1,'15647685898580460345809120'),
+  ( 'Firma BUDEX',1224567890,6189567,2,'98753091857947708385263947'),
+  ( 'FHU "MELEX"',4567123456,null,5,'64478371424814467740695217'),
+  ( 'FHU "SPOŁEM"',2345678901,null,6,'97063267383625340587221473'),
+  ( 'FHU "LEŚ"',3456789012,null,7,'48267775933055254614440210'),
+  ( 'MotoZbyt',4567890123,null,8,'41700706833986492292424559'),
+  ( 'RWD',5678901234,null,9,'57453449672847994899683173'),
+  ( 'COMARCH',6789012345,null,10,'07873196443437446029217904'),
+  ( 'Insoft',7890123456,null,11,'39763604096188368847402158'),
+  ( 'Amiga',8901234567,null,12,'82878288125682842816258781'),
+  ( 'Microsoft',9012345678,null,13,'54386429351041128035060875'),
+  ( 'FHU "MET-TRANS"',5432109876,null,14,'22068903623586048228853407');
 
 INSERT INTO
   person
@@ -46,9 +46,12 @@ INSERT INTO
   ('FV/10/02/22' ,'buy' ,  '2010-02-08',  '2010-02-25', 3230.45, 4145.89, 'paid', 'url4',1,2,null,null),
   ('FV/14/05/123' ,'sell' ,  '2014-05-18',  '2014-05-23', 2230.45,2845.89, 'paid', 'url5',null,null,2,1);
 
+INSERT INTO product
+(name,netto_value,vat,brutto_value,quantity,invoice_id) VALUES
+('Usługa nr 1',230.45,23,345.89,1,1),
+('Usługa oprogramowania',330.45,23,475.89,1,2);
+
 INSERT INTO
   users
 (email, password,company_id ) VALUES
-('biel@gmail.com','pass123456',null),
-('kot@hungry.com', 'kot21kot12',null),
 ('admin@gmail.com','$2a$10$IyqupLdOhOdp/DhQHpJgBuMXNawbABO7BF/Emc2.DswWYwRR9gFfC',2);
