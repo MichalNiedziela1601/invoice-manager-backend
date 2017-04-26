@@ -5,6 +5,7 @@ const Joi = require('joi');
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
+const applicationException = require('../services/applicationException');
 
 function convertToObject(data)
 {
@@ -21,110 +22,112 @@ function convertToObject(data)
     return invoice;
 }
 
-module.exports = function (server)
-{
+module.exports = {
+    register: function (server)
+    {
 
-    server.route({
-        method: 'GET',
-        path: '/api/invoice',
-        config: {auth: 'token', validate: {query: joiSchema.schema.invoiceType}},
-        handler: function (request, reply)
-        {
-            invoiceManager.getInvoices(request.query).then(result =>
+        server.route({
+            method: 'GET',
+            path: '/api/invoice',
+            config: {validate: {query: joiSchema.schema.invoiceType}},
+            handler: function (request, reply)
             {
-                reply(result);
-            }).catch(error =>
-            {
-                reply(error.message).code(404);
-            });
-        }
-    });
-    server.route({
-        method: 'POST',
-        path: '/api/invoice',
-        config: {
-            auth: 'token',
-            payload: {
-                output: 'stream',
-                parse: true,
-                allow: 'multipart/form-data'
-            }
-        },
-        handler: function (request, reply)
-        {
-            let data = request.payload;
-            if (data.file) {
-                let invoice = convertToObject(data);
-
-                Joi.validate(invoice, joiSchema.schema.invoice, function (err)
+                invoiceManager.getInvoices(request.query).then(result =>
                 {
-                    if (err) {
-                        reply(err.message).code(400);
-                    } else {
-                        let name = data.file.hapi.filename;
-                        try {
-                            fs.mkdirSync(path.join(__dirname, '/uploads/'));
-                        } catch (error) {
-                            if (error.code !== 'EEXIST') {
-                                throw error;
-                            }
-                        }
-                        let filepath = path.join(__dirname, '/uploads/', name);
-                        let file = fs.createWriteStream(filepath);
-
-                        file.on('error', function (err)
-                        {
-                            console.error(err);
-                        });
-
-                        data.file.pipe(file);
-
-                        data.file.on('end', function (err)
-                        {
-                            if (err) {
-                                throw err;
-                            }
-                            invoiceManager.addInvoice(name, invoice).then(() =>
-                            {
-                                reply('invoice add');
-                            }).catch(error =>
-                            {
-                                reply(error.message || error).code(500);
-                            });
-                        })
-                    }
+                    reply(result);
+                }).catch(error =>
+                {
+                    applicationException.errorHandler(error, reply);
                 });
             }
-        }
-    });
-    server.route({
-        method: 'GET',
-        path: '/api/invoice/{id}',
-        config: {auth: 'token', validate: {params: joiSchema.schema.invoiceById}},
-        handler: function (request, reply)
-        {
-            invoiceManager.getInvoiceById(request.params.id).then(invoice =>
-            {
-                reply(invoice);
-            }).catch(error =>
-            {
-                reply(error.message).code(404);
-            });
-        }
-    });
+        });
+        server.route({
+            method: 'POST',
+            path: '/api/invoice',
+            config: {
 
-    server.route({
-        method: 'PUT',
-        path: '/api/invoice/{id}',
-        handler: function (request, reply)
-        {
-            invoiceManager.updateInvoice(request.payload, request.params.id).then(() =>
+                payload: {
+                    output: 'stream',
+                    parse: true,
+                    allow: 'multipart/form-data'
+                }
+            },
+            handler: function (request, reply)
             {
-                reply();
-            }).catch(error =>
+                let data = request.payload;
+                if (data.file) {
+                    let invoice = convertToObject(data);
+
+                    Joi.validate(invoice, joiSchema.schema.invoice, function (err)
+                    {
+                        if (err) {
+                            applicationException.errorHandler(err,reply);
+                        } else {
+                            let name = data.file.hapi.filename;
+                            try {
+                                fs.mkdirSync(path.join(__dirname, '/uploads/'));
+                            } catch (error) {
+                                if (error.code !== 'EEXIST') {
+                                    throw error;
+                                }
+                            }
+                            let filepath = path.join(__dirname, '/uploads/', name);
+                            let file = fs.createWriteStream(filepath);
+
+                            file.on('error', function (err)
+                            {
+                                applicationException.errorHandler(err,reply);
+                            });
+
+                            data.file.pipe(file);
+
+                            data.file.on('end', function (err)
+                            {
+                                if (err) {
+                                    throw err;
+                                }
+                                invoiceManager.addInvoice(name, invoice).then(() =>
+                                {
+                                    reply('invoice add');
+                                }).catch(error =>
+                                {
+                                    applicationException.errorHandler(error, reply);
+                                });
+                            })
+                        }
+                    });
+                }
+            }
+        });
+        server.route({
+            method: 'GET',
+            path: '/api/invoice/{id}',
+            config: {validate: {params: joiSchema.schema.invoiceById}},
+            handler: function (request, reply)
             {
-                reply(error.message).code(400);
-            })
-        }
-    })
+                invoiceManager.getInvoiceById(request.params.id).then(invoice =>
+                {
+                    reply(invoice);
+                }).catch(error =>
+                {
+                    applicationException.errorHandler(error, reply)
+                });
+            }
+        });
+
+        server.route({
+            method: 'PUT',
+            path: '/api/invoice/{id}',
+            handler: function (request, reply)
+            {
+                invoiceManager.updateInvoice(request.payload, request.params.id).then(() =>
+                {
+                    reply();
+                }).catch(error =>
+                {
+                    applicationException.errorHandler(error, reply)
+                })
+            }
+        })
+    }
 };

@@ -1,11 +1,9 @@
 'use strict';
 const loginDAO = require('../dao/login.dao');
 const bcrypt = require('bcrypt');
-const token = require('../services/token');
 const companyDAO = require('../dao/company.dao');
 const userDAO = require('../dao/user.dao');
-
-//TODO rename this file to userManager
+const applicationException = require('../services/applicationException');
 
 function getUser(email)
 {
@@ -33,26 +31,23 @@ function checkPassword(email, password)
     });
 }
 
-function login(person)
+function authenticate(credentials)
 {
-    return getUser(person.email).then(result =>
+    return getUser(credentials.email).then(result =>
     {
-        return checkPassword(person.email, person.password).then(hash =>
+        return checkPassword(credentials.email, credentials.password).then(hash =>
         {
             if (hash) {
-                return token(result);
+                return result;
             } else {
-                throw new Error('Password not match')
+                throw applicationException.new(applicationException.PRECONDITION_FAILED,'Password not match');
             }
         })
 
     }, () =>
     {
-        throw new Error('user not found');
-    }).catch(error =>
-    {
-        throw error;
-    });
+        throw applicationException.new(applicationException.NOT_FOUND,'User not found');
+    })
 }
 
 function getUserInformation(email)
@@ -73,13 +68,10 @@ function getUserInformation(email)
                 {
                     return company;
                 })
-            })
-            .catch(error =>
-            {
-                console.log(error);
-            })
+            });
+
 }
 
 module.exports = {
-    getUser, checkPassword, login, getUserInformation
+    getUser, checkPassword, authenticate, getUserInformation
 };

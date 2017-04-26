@@ -2,6 +2,7 @@
 const companyDao = require('../dao/company.dao.js');
 const addressDAO = require('../dao/address.dao');
 const Promise = require('bluebird');
+const applicationException = require('../services/applicationException');
 
 function getCompanies()
 {
@@ -19,7 +20,10 @@ function getCompanies()
                 return company;
             }
         })
-    });
+    })
+            .catch(error => {
+                throw applicationException.new(applicationException.NOT_FOUND,error)
+            });
 }
 
 function getCompanyDetails(nip)
@@ -35,7 +39,7 @@ function addCompany(company)
 {
     return getCompanyDetails(company.nip).then(() =>
     {
-        throw new Error('Company with this nip exist in database');
+        throw applicationException.new(applicationException.CONFLICT,'Company with this nip exist in database');
     }, () =>
     {
         return addAddress(company.address).then(function (addressId)
