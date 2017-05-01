@@ -94,6 +94,7 @@ CREATE TABLE "invoice" (
 	"google_year_folder_id" TEXT,
 	"google_month_folder_id" TEXT,
 	"description" TEXT,
+	"products" json,
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -113,23 +114,6 @@ CREATE TABLE "person" (
   OIDS=FALSE
 );
 
-
-
-CREATE TABLE "product" (
-	"id" serial NOT NULL,
-	"name" TEXT NOT NULL,
-	"netto_value" DECIMAL(12,2) NOT NULL,
-	"vat" int NOT NULL,
-	"brutto_value" DECIMAL(12,2) NOT NULL,
-	"quantity" DECIMAL NOT NULL,
-	"invoice_id" bigint,
-	CONSTRAINT product_pk PRIMARY KEY ("id")
-) WITH (
-  OIDS=FALSE
-);
-
-
-
 ALTER TABLE "company" ADD CONSTRAINT "company_fk0" FOREIGN KEY ("address_id") REFERENCES "address"("id");
 
 
@@ -141,5 +125,3 @@ ALTER TABLE "invoice" ADD CONSTRAINT "invoice_fk2" FOREIGN KEY ("person_dealer")
 ALTER TABLE "invoice" ADD CONSTRAINT "invoice_fk3" FOREIGN KEY ("person_recipent") REFERENCES "person"("id");
 
 ALTER TABLE "person" ADD CONSTRAINT "person_fk0" FOREIGN KEY ("address_id") REFERENCES "address"("id");
-
-ALTER TABLE "product" ADD CONSTRAINT "product_fk0" FOREIGN KEY ("invoice_id") REFERENCES "invoice"("id") ON DELETE CASCADE ON UPDATE CASCADE;
