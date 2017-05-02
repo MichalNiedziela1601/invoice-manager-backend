@@ -1,6 +1,9 @@
 const invoices = [
     {
         id: 1,
+        year: 2012,
+        month: 2,
+        number: 2,
         invoiceNr: 'FV/12/02/02',
         type: 'Buy',
         createDate: new Date('2012-02-07T23:00:00.000Z'),
@@ -19,6 +22,9 @@ const invoices = [
     },
     {
         id: 2,
+        year: 2012,
+        month: 4,
+        number: 2,
         invoiceNr: 'FV/12/04/02',
         type: 'Sale',
         createDate: new Date('2012-04-07T22:00:00.000Z'),
@@ -37,6 +43,9 @@ const invoices = [
     },
     {
         id: 3,
+        year: 2014,
+        month: 5,
+        number: 123,
         invoiceNr: 'FV/14/05/123',
         type: 'Sale',
         createDate: new Date('2014-05-17T22:00:00.000Z'),
@@ -57,6 +66,9 @@ const invoices = [
 
 const afterUpdateInvoice = {
     id: 1,
+    year: 2012,
+    month: 2,
+    number: 2,
     invoiceNr: 'FV/14/05/111',
     type: 'Sale',
     createDate: new Date('2012-05-07T22:00:00.000Z'),

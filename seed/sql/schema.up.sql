@@ -76,6 +76,9 @@ CREATE TABLE "users" (
 
 CREATE TABLE "invoice" (
 	"id"  bigint DEFAULT nextval('invoice_id_seq'::regclass) NOT NULL,
+	"year" integer NOT NULL,
+	"month" integer NOT NULL,
+	"number" bigint NOT NULL,
 	"invoice_nr" TEXT NOT NULL,
 	"type" TEXT NOT NULL,
 	"create_date" DATE NOT NULL,

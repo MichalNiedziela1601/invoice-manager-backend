@@ -4,15 +4,21 @@
 ```
 docker-compose up
 ```
+
+### Install dependencies
+```
+npm install
+```
+### Run seed 
+```
+npm run seed
+```
 ### Run server 
 ```
 npm start
 ```
 
-### Run seed 
-```
-npm run seed
-```
+
 
 ### Run eslint task
 ```

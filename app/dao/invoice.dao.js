@@ -25,7 +25,7 @@ function addInvoice(invoice)
     {
         return db.any(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
                               invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
-                              invoice.googleYearFolderId, invoice.googleMonthFolderId])
+                              invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.year, invoice.month, invoice.number])
                 .then(result =>
                 {
                     return result;
@@ -58,6 +58,18 @@ function updateInvoice(invoice, id)
     });
 }
 
+function getInvoiceNumber(year,month){
+    return db.one('SELECT max(number) as number from invoice WHERE year=$1 and month=$2',[year,month]);
+}
+
+function getInvoiceFullNumber(year,month,number)
+{
+    return db.none('SELECT id FROM invoice WHERE year=$1 and month=$2 and number=$3',[year,month,number])
+            .catch(() => {
+                throw applicationException.new(applicationException.CONFLICT,'This invoice number exists. Try another!');
+            });
+}
+
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice
+    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, getInvoiceFullNumber
 };
