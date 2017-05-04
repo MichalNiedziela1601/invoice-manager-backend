@@ -61,7 +61,7 @@ module.exports = {
                     Joi.validate(invoice, joiSchema.schema.invoice, function (err)
                     {
                         if (err) {
-                            applicationException.errorHandler(err,reply);
+                            applicationException.errorHandler(err, reply);
                         } else {
                             let name = data.file.hapi.filename;
                             try {
@@ -76,7 +76,7 @@ module.exports = {
 
                             file.on('error', function (err)
                             {
-                                applicationException.errorHandler(err,reply);
+                                applicationException.errorHandler(err, reply);
                             });
 
                             data.file.pipe(file);
@@ -134,13 +134,36 @@ module.exports = {
             method: 'GET',
             path: '/api/invoice/number',
             config: {auth: false, validate: {query: joiSchema.schema.invoiceGetNumber}},
-            handler: function(request,reply){
-                const year = _.get(request,'query.year');
-                const month = _.get(request,'query.month');
-                invoiceManager.getInvoiceNumber(year,month).then(number => {
+            handler: function (request, reply)
+            {
+                const year = _.get(request, 'query.year');
+                const month = _.get(request, 'query.month');
+                invoiceManager.getInvoiceNumber(year, month).then(number =>
+                {
                     reply(number);
                 })
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply)
+                        })
 
+            }
+        });
+
+        server.route({
+            method: 'POST',
+            path: '/api/invoice/issues',
+            handler: function (request, reply)
+            {
+                const invoice = request.payload;
+                invoiceManager.issueInvoice(invoice).then(() =>
+                {
+                    reply();
+                })
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply)
+                        });
             }
         })
     }

@@ -35,6 +35,20 @@ describe('invoice.dao', function ()
         });
     }
 
+    function issueInvalidInvoiceHelper(invalidInvoice)
+    {
+        return invoiceDAO.issueInvoice(invalidInvoice).then(function ()
+        {
+            throw new Error('function then should not be served')
+        }).catch(function ()
+        {
+            return invoiceDAO.getInvoices().then(function (result)
+            {
+                invoices = result;
+            })
+        });
+    }
+
     describe('getInvoices', function ()
     {
         let invoices = [];
@@ -105,7 +119,8 @@ describe('invoice.dao', function ()
             description: null,
             year: 2014,
             month: 5,
-            number: 111
+            number: 111,
+            products: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -378,8 +393,8 @@ describe('invoice.dao', function ()
             it('should throw error', function ()
             {
                 expect(error).eql({
-                    error: {message: 'CONFLICT', code: 409 },
-                    message: 'This invoice number exists. Try another!' });
+                    error: {message: 'CONFLICT', code: 409},
+                    message: 'This invoice number exists. Try another!'});
             });
         });
         describe('when not find invoice', function ()
@@ -396,5 +411,178 @@ describe('invoice.dao', function ()
                 expect(id).eql(null);
             });
         });
+    });
+
+    describe('issueInvoice', function ()
+    {
+        let mockedInvoice = {
+            invoiceNr: 'FV/14/05/111',
+            type: 'Sale',
+            createDate: new Date('2012-05-07T22:00:00.000Z'),
+            executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+            nettoValue: '2330.45',
+            bruttoValue: '3475.89',
+            status: 'paid',
+            url: 'url6',
+            companyDealer: null,
+            companyRecipent: null,
+            personDealer: 1,
+            personRecipent: 2,
+            googleMonthFolderId: null,
+            googleYearFolderId: null,
+            description: null,
+            year: 2014,
+            month: 5,
+            number: 111,
+            products: {'0': {
+                name: 'Service',
+                amount: 1,
+                netto: 10000,
+                vat: 23,
+                brutto: 12300
+            }}
+        };
+
+        let mockedInvoiceId = {id: 4};
+        _.assign(mockedInvoiceId, mockedInvoice);
+
+        describe('properties are valid', function ()
+        {
+            beforeEach(function ()
+            {
+                return invoiceDAO.issueInvoice(mockedInvoice).then(function ()
+                {
+                    return invoiceDAO.getInvoices().then(function (result)
+                    {
+                        invoices = result;
+                    })
+                });
+            });
+            it('should add new invoice', function ()
+            {
+                expect(invoices[3]).to.eql(mockedInvoiceId)
+            });
+        });
+
+        describe('properties is invalid', function ()
+        {
+            describe('invoice number is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['invoiceNr']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if type is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('type is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['type']);
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if type is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('createDate is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['createDate']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if createDate is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('executionEndDate is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['executionEndDate']);
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if executionEndDate is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('nettoValue is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['nettoValue']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if nettoValue is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('bruttoValue is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['bruttoValue']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if bruttoValue is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('status is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['status']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if status is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+
+            describe('url is null', function ()
+            {
+                let invalidInvoice = _.omit(mockedInvoice, ['url']);
+
+                beforeEach(function ()
+                {
+                    return issueInvalidInvoiceHelper(invalidInvoice);
+                });
+
+                it('should not add invoice if url is invalid', function ()
+                {
+                    expect(invoices).to.eql(data.invoices)
+                });
+            });
+        })
     });
 });

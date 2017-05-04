@@ -21,7 +21,8 @@ let invoiceDAOMock = {
     getInvoiceById: sinon.stub().resolves(),
     getInvoiceFullNumber: sinon.stub(),
     getInvoiceNumber: sinon.stub(),
-    updateInvoice: sinon.spy()
+    updateInvoice: sinon.spy(),
+    issueInvoice: sinon.spy()
 };
 
 let companyDaoMock = {
@@ -510,6 +511,52 @@ describe('invoice.manager', function ()
             {
                 expect(number).eql({number: 1});
             });
+        });
+    });
+
+    describe('issueInvoice', function ()
+    {
+        before(() =>
+        {
+            invoiceMock = {
+                invoiceNr: 'FV 14/05/111',
+                type: 'Sale',
+                createDate: new Date('2012-05-07T22:00:00.000Z'),
+                executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                nettoValue: '$2,330.45',
+                bruttoValue: '$3,475.89',
+                status: 'paid',
+                url: 'url6',
+                personDealer: 1,
+                personRecipent: 2,
+                companyDealer: null,
+                companyRecipent: null,
+                products: {
+                    name: 'Service',
+                    amount: 1,
+                    netto: 1000,
+                    vat: 5,
+                    brutto: 1050
+                }
+            };
+            invoiceManager.issueInvoice(invoiceMock);
+        });
+        it('should set year', function ()
+        {
+            expect(invoiceMock.year).eql(2012);
+        });
+        it('should set month', function ()
+        {
+            expect(invoiceMock.month).eql(5);
+        });
+        it('should set number', function ()
+        {
+            expect(invoiceMock.number).eql(111);
+        });
+        it('should call invoiceDAO.issueInvoice', function ()
+        {
+            expect(invoiceDAOMock.issueInvoice).callCount(1);
+            expect(invoiceDAOMock.issueInvoice).calledWith(invoiceMock);
         });
     });
 });

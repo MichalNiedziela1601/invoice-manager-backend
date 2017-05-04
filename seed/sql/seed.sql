@@ -46,11 +46,6 @@ INSERT INTO
   (2010,2,22,'FV/10/02/22' ,'buy' ,  '2010-02-08',  '2010-02-25', 3230.45, 4145.89, 'paid', 'url4',1,2,null,null),
   (2014,5,123,'FV/14/05/123' ,'sell' ,  '2014-05-18',  '2014-05-23', 2230.45,2845.89, 'paid', 'url5',null,null,2,1);
 
-INSERT INTO product
-(name,netto_value,vat,brutto_value,quantity,invoice_id) VALUES
-('Usługa nr 1',230.45,23,345.89,1,1),
-('Usługa oprogramowania',330.45,23,475.89,1,2);
-
 INSERT INTO
   users
 (email, password,company_id ) VALUES

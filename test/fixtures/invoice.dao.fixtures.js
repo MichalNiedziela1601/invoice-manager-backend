@@ -18,7 +18,8 @@ const invoices = [
         personRecipent: null,
         googleMonthFolderId: null,
         googleYearFolderId: null,
-        description: null
+        description: null,
+        products: null
     },
     {
         id: 2,
@@ -39,7 +40,8 @@ const invoices = [
         personRecipent: null,
         googleMonthFolderId: null,
         googleYearFolderId: null,
-        description: null
+        description: null,
+        products: null
     },
     {
         id: 3,
@@ -60,7 +62,8 @@ const invoices = [
         personRecipent: 1,
         googleMonthFolderId: null,
         googleYearFolderId: null,
-        description: null
+        description: null,
+        products: null
     }
 ];
 
@@ -83,7 +86,8 @@ const afterUpdateInvoice = {
     personRecipent: null,
     googleMonthFolderId: null,
     googleYearFolderId: null,
-    description: null
+    description: null,
+    products: null
 };
 
 
