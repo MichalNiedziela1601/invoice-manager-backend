@@ -95,6 +95,8 @@ CREATE TABLE "invoice" (
 	"google_month_folder_id" TEXT,
 	"description" TEXT,
 	"products" json,
+	"payment_method" TEXT,
+	"advance" DECIMAL(12,2),
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

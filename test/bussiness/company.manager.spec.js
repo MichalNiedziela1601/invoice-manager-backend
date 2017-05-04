@@ -12,6 +12,8 @@ const companies = [{
     addressId: 2, id: 1, name: 'Kuba', nip: 1029384756, regon: 243124,
 }, {
     addressId: 1, id: 2, name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367,
+}, {
+    addressId: null, id: 3, name: 'Firma test', nip: 8967452310, regon: null
 }];
 const address = [{
     id: 1, street: 'Spokojna', buildNr: 4, flatNr: 3, postCode: '33-199', city: 'Tarnow'
@@ -23,12 +25,14 @@ const address = [{
 let companyMock = {id: 1, name: 'Firma Test', addressId: 1};
 
 let companyDAOMock = {
-    getCompanies: sinon.stub().resolves(companies),
+    getCompanies: sinon.stub(),
     addAddress: sinon.stub().resolves(),
     addCompany: sinon.stub().resolves(),
     getNips: sinon.stub().resolves(),
     getCompanyById: sinon.stub().resolves(companyMock),
-    updateCompanyAddress: sinon.stub().resolves()
+    updateCompanyAddress: sinon.stub().resolves(),
+    getCompanyDetails: sinon.stub().rejects(),
+    addFolderId: sinon.spy(),
 };
 let addressDAOMock = {
     getAddressById: sinon.stub().resolves(address),
@@ -46,28 +50,46 @@ describe('company.manager', function ()
 {
     describe('getCompanies', function ()
     {
-        before(function ()
-        {
-            return companyManager.getCompanies();
-        });
-        it('should call getCompanies on companyDao', function ()
-        {
-            expect(companyDAOMock.getCompanies).to.have.callCount(1);
-        });
-        describe('getAddressById on addressDAO', function ()
+        describe('when companies exists', function ()
         {
             before(function ()
             {
-                return addressDAOMock.getAddressById({addressId: 1});
+                companyDAOMock.getCompanies.resolves(companies);
+                return companyManager.getCompanies();
             });
-            it('should call getAddressById on addressDAO ', function ()
+            it('should call getCompanies on companyDao', function ()
             {
-                expect(addressDAOMock.getAddressById).to.have.callCount(1);
+                expect(companyDAOMock.getCompanies).to.have.callCount(1);
             });
-            it('should call getAddressById with company.addressId', function ()
+            describe('getAddressById on addressDAO', function ()
             {
-                expect(addressDAOMock.getAddressById).to.have.been.calledWith({addressId: 1});
+                before(function ()
+                {
+                    return addressDAOMock.getAddressById({addressId: 1});
+                });
+                it('should call getAddressById on addressDAO ', function ()
+                {
+                    expect(addressDAOMock.getAddressById).to.have.callCount(1);
+                });
+                it('should call getAddressById with company.addressId', function ()
+                {
+                    expect(addressDAOMock.getAddressById).to.have.been.calledWith({addressId: 1});
 
+                });
+            });
+        });
+        describe('when table is empty', function ()
+        {
+            before(() =>
+            {
+                companyDAOMock.getCompanies.rejects();
+            });
+            it('should throw error', function ()
+            {
+                companyManager.getCompanies().catch(error =>
+                {
+                    expect(error.error).eql({message: 'NOT_FOUND', code: 404});
+                });
             });
         });
     });
@@ -139,6 +161,29 @@ describe('company.manager', function ()
                 });
             });
         });
+        describe('when company with nip exist in database', function ()
+        {
+            let result = {};
+            before(() =>
+            {
+                companyMock = {
+                    name: 'bla', nip: 1234567890, addressId: null, id: 1
+                };
+                companyDAOMock.getCompanyDetails.resolves({name: 'sdfsdf', nip: 1234567890})
+                result = companyManager.addCompany(companyMock);
+
+            });
+            it('should throw error', function ()
+            {
+                result.catch(error =>
+                {
+                    expect(error).eql({
+                        error: {message: 'CONFLICT', code: 409},
+                        message: 'Company with this nip exist in database'
+                    })
+                })
+            });
+        });
     });
 
     describe('getNips', function ()
@@ -171,10 +216,12 @@ describe('company.manager', function ()
             city: 'City 1'
         };
 
+
         describe('when address exists', function ()
         {
             before(function ()
             {
+                companyMock = {id: 1, name: 'Firma Test', addressId: 1};
                 companyDAOMock.getCompanyById.withArgs(companyMock.id).resolves(companyMock);
                 addressDAOMock.updateAddress.withArgs(addressChange, companyMock.addressId).resolves();
                 companyManager.updateCompanyAddress(addressChange, companyMock.id);
@@ -245,8 +292,52 @@ describe('company.manager', function ()
             });
             it('should call companyDao.updateCompanyAddress with addressId and companyId', function ()
             {
-                expect(companyDAOMock.updateCompanyAddress).calledWith(2,companyMock.id);
+                expect(companyDAOMock.updateCompanyAddress).calledWith(2, companyMock.id);
             });
         });
+    });
+
+    describe('addFolderId', function ()
+    {
+        before(() =>
+        {
+            return companyManager.addFolderId(2, 12345);
+        });
+        it('should call companyDao.addFolderId', function ()
+        {
+            expect(companyDAOMock.addFolderId).callCount(1);
+        });
+        it('should called with id and nip', function ()
+        {
+            expect(companyDAOMock.addFolderId).calledWith(2, 12345);
+        });
+    });
+    describe('getCompanyId', function ()
+    {
+        let addressMock = {};
+        let companyDetails = {};
+        before(() =>
+        {
+            companyDAOMock.getCompanyById.reset();
+            addressDAOMock.getAddressById.reset();
+            companyMock = {name: 'sdfhsdjf', nip: 1234567890, addressId: 1, id: 1};
+            addressMock = {id: 1, street: 'Lwowska', buildNr: '34', postCode: '33-100', ciity: 'Tarnów'};
+            companyDAOMock.getCompanyById.resolves(companyMock);
+            addressDAOMock.getAddressById.resolves(addressMock);
+
+            return companyManager.getCompanyById(1).then(result => {
+                companyDetails = result;
+            });
+        });
+        it('should call companyDao.getCompanyById', function ()
+        {
+            expect(companyDAOMock.getCompanyById).callCount(1);
+            expect(companyDAOMock.getCompanyById).calledWith(1);
+        });
+        // it('should call addressDAO.getAddressById', function ()
+        // {
+        //     expect(addressDAOMock.getAddressById).callCount(1);
+        //     expect(addressDAOMock.getAddressById).calledWith(1);
+        // });
     });
 });
