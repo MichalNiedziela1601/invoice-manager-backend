@@ -90,8 +90,8 @@ describe('invoice.dao', function ()
         let mockedInvoice = {
             invoiceNr: 'FV 2014/05/111',
             type: 'Sale',
-            createDate: new Date('2012-05-07T22:00:00.000Z'),
-            executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+            createDate: new Date('2012-05-08'),
+            executionEndDate: new Date('2012-01-18'),
             nettoValue: '2330.45',
             bruttoValue: '3475.89',
             status: 'paid',
@@ -108,7 +108,10 @@ describe('invoice.dao', function ()
             number: 111,
             products: null,
             paymentMethod: 'transfer',
-            advance: null
+            advance: null,
+            currency: null,
+            fileId: null,
+            language: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -294,11 +297,28 @@ describe('invoice.dao', function ()
         let mockedInvoice = {
             invoiceNr: 'FV 2014/05/111',
             type: 'Sale',
-            createDate: new Date('2012-05-07T22:00:00.000Z'),
-            executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+            createDate: new Date('2012-05-08'),
+            executionEndDate: new Date('2012-01-18'),
             nettoValue: '2430.45',
             bruttoValue: '3675.89',
-            status: 'paid'
+            status: 'paid',
+            year: 2012,
+            month: 2,
+            number: 2,
+            url: 'url1',
+            companyDealer: 1,
+            companyRecipent: 2,
+            personDealer: null,
+            personRecipent: null,
+            googleMonthFolderId: null,
+            googleYearFolderId: null,
+            description: null,
+            products: null,
+            paymentMethod: 'bank transfer',
+            advance: null,
+            currency: null,
+            fileId: null,
+            language: null
         };
         describe('when properties valid', function ()
         {
@@ -398,6 +418,23 @@ describe('invoice.dao', function ()
             {
                 expect(id).eql(null);
             });
+        });
+    });
+
+    describe('changeStatus', function ()
+    {
+        let result = {};
+        beforeEach(function ()
+        {
+            return invoiceDAO.changeStatus(1,'paid').then(() => {
+                return invoiceDAO.getInvoiceById(1).then(invoice => {
+                    result = invoice;
+                })
+            })
+        });
+        it('should change status to paid', function ()
+        {
+            expect(result.status).eql('paid');
         });
     });
 });

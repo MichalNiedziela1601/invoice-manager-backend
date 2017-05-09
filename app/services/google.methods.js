@@ -144,11 +144,30 @@ function findFolderByName(auth, name, parentId)
     })
 }
 
+function deleteFile(auth,invoice){
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        service.files.delete({
+
+            fileId: invoice.fileId
+        }, (err, file) =>
+        {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(file);
+            }
+        });
+    })
+}
+
 module.exports = {
     saveFile,
     shareFile,
     createFolder,
     createChildFolder,
     checkFolderExists,
-    findFolderByName
+    findFolderByName,
+    deleteFile
 };

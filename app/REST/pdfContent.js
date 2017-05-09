@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const companyManager = require('../business/company.manager');
+const translate = require('./translationInvoice');
 
 function pdfContent(invoice, seller, recipient)
 {
@@ -17,94 +18,104 @@ function pdfContent(invoice, seller, recipient)
     let products = {};
     let i = 1;
     let invoiceNr = '';
+    let lang = invoice.language;
+
     let description = !_.isUndefined(invoice.description) ?
-            [{text: 'Notes: ', bold: true}, {text: invoice.description}] :
+            [{text: translate[lang].notes + ': ', bold: true}, {text: invoice.description}] :
             '';
 
     if (_.some(invoice.products, {'vat': 'N/A'})) {
-        invoiceNr = [{text: 'Invoice ' + invoice.invoiceNr}, {text: '\n(reverse charge)', fontSize: 8}];
-        listProduct = [[{text: 'Lp', style: 'subheader'}, {text: 'Name', style: 'subheader'}, {text: 'Unit', style: 'subheader'},
-            {text: 'Amount', style: 'subheader'}, {text: 'Netto', style: 'subheader'},
-            {text: 'Netto Value', style: 'subheader'}]];
-        _.forEach(invoice.products, function (product)
-        {
-            item = [{text: i, alignment: 'center'}, product.name, 'szt', {text: product.amount, style: 'number'},
-                {text: parseFloat(product.netto).toFixed(2), style: 'number'},
-                {text: (product.netto * product.amount).toFixed(2), style: 'number'}
-            ];
-            listProduct.push(item);
-            netto += product.netto * product.amount;
-            brutto += product.brutto;
-            i += 1;
-        });
+        invoiceNr = [
+            {text: translate[lang].invoice + ('pl' === lang ? ' (' + translate['en'].invoice + ') ' : ' ') + invoice.invoiceNr + ''},
+            {
+                text: '\n(' + translate[lang].reverseCharge + ('pl' === lang ? ' (' + translate['en'].reverseCharge + ') )' : ')'),
+                fontSize: 8
+            }];
+        if (invoice.products[0].amount) {
+            listProduct = [
+                [
+                    {text: translate[lang].no, style: 'subheader'},
+                    {text: translate[lang].serviceName + ('pl' === lang ? '\n(' + translate['en'].serviceName + ')' : ''), style: 'subheader'},
+                    {text: translate[lang].amount + ('pl' === lang ? '\n(' + translate['en'].amount + ')' : ''), style: 'subheader'},
+                    {text: translate[lang].unit + ('pl' === lang ? '\n(' + translate['en'].unit + ')' : ''), style: 'subheader'},
+                    {text: translate[lang].unitPrice + ('pl' === lang ? '\n(' + translate['en'].unitPrice : ''), style: 'subheader'},
+                    {text: translate[lang].value + ('pl' === lang ? '\n(' + translate['en'].value + ')' : ''), style: 'subheader'}]];
+            _.forEach(invoice.products, function (product)
+            {
+                item = [{text: i, alignment: 'center'}, product.name, product.amount, product.unit, {text: Number(product.netto).toFixed(2), style: 'number'},
+                    {text: (product.netto * (product.amount || 1)).toFixed(2), style: 'number'}
+                ];
+                listProduct.push(item);
+                netto += product.netto * (product.amount || 1);
+                brutto += product.brutto;
+                i += 1;
+            });
+            products = {
 
-        products = {
+                table: {
+                    headerRows: 1,
+                    widths: ['auto', 240, '*', '*', '*', '*'],
 
-            table: {
-                headerRows: 1,
-                widths: ['auto', 160, 'auto', 'auto', '*', '*'],
+                    body: listProduct
+                }
 
-                body: listProduct
-            }
+            };
+        } else {
+            listProduct = [
+                [
+                    {text: translate[lang].no, style: 'subheader'},
+                    {text: translate[lang].serviceName + ('pl' === lang ? '\n(' + translate['en'].serviceName + ')' : ''), style: 'subheader'},
+                    {text: translate[lang].value + ('pl' === lang ? '\n(' + translate['en'].value + ')' : ''), style: 'subheader'}]];
+            _.forEach(invoice.products, function (product)
+            {
+                item = [{text: i, alignment: 'center'}, product.name,
+                    {text: (product.netto * (product.amount || 1)).toFixed(2), style: 'number'}
+                ];
+                listProduct.push(item);
+                netto += product.netto * (product.amount || 1);
+                brutto += product.brutto;
+                i += 1;
+            });
+            products = {
 
-        };
+                table: {
+                    headerRows: 1,
+                    widths: ['auto', 250, '*'],
 
-        sum = [[{text: 'Total', style: 'subTotalHeader'},
-            {text: brutto.toFixed(2), style: 'number'}]];
+                    body: listProduct
+                }
+
+            };
+        }
+
+        sum = [[{text: translate[lang].total + ('pl' === lang ? '(' + translate['en'].total + ')' : ''), style: 'subTotalHeader'},
+            {text: brutto.toFixed(2) + ' ' + invoice.currency, style: 'number'}]];
 
 
         subtotal =
         {
             columns: [
+                {text: '', width: '*'},
                 {
-                    width: '40%',
-                    table: {
-                        headerRows: 1,
-                        widths: ['*', '*'],
-                        body: [
-                            [
-                                {
-                                    text: 'Payment Mode',
-                                    style: 'subTotalHeader1',
-                                    border: [false, false, false, false]
-                                },
-                                {
-                                    text: 'Due Date',
-                                    style: 'subTotalHeader1',
-                                    border: [false, false, false, false]
-                                }],
-
-                            [
-                                {
-                                    text: invoice.paymentMethod,
-                                    border: [false, false, false, false]
-                                },
-                                {
-                                    text: invoice.executionEndDate,
-                                    border: [false, false, false, false]
-                                }]
-                        ]
-                    },
-                    margin: [0, 10, 0, 0]
-                },
-                {
-                    width: '*',
+                    width: 240,
                     table: {
                         headerRows: 1,
                         widths: ['*', '*'],
                         body: sum
                     },
 
-                    margin: [80, 10, 0, 0]
+                    margin: [0, 10, 0, 10]
                 }
             ]
 
         }
     } else {
-        invoiceNr = 'Invoice ' + invoice.invoiceNr;
-        listProduct = [[{text: 'Lp', style: 'subheader'}, {text: 'Name', style: 'subheader'}, {text: 'Unit', style: 'subheader'},
-            {text: 'Amount', style: 'subheader'}, {text: 'Vat [%]', style: 'subheader'}, {text: 'Netto', style: 'subheader'},
-            {text: 'Netto Value', style: 'subheader'}]];
+        invoiceNr = translate[lang].invoice + ' ' + invoice.invoiceNr;
+        listProduct = [[{text: translate[lang].no, style: 'subheader'}, {text: translate[lang].serviceName, style: 'subheader'},
+            {text: translate[lang].unit, style: 'subheader'},
+            {text: translate[lang].amount, style: 'subheader'}, {text: 'Vat [%]', style: 'subheader'},
+            {text: translate[lang].unitPrice, style: 'subheader'},
+            {text: translate[lang].value, style: 'subheader'}]];
 
         _.forEach(invoice.products, function (product)
         {
@@ -138,16 +149,17 @@ function pdfContent(invoice, seller, recipient)
 
         sum = [
             [{text: '', style: 'subTotalHeader'}, {text: 'Vat %', style: 'subTotalHeader'}, {text: 'Netto', style: 'subTotalHeader'},
-                {text: 'Vat Value', style: 'subTotalHeader'}, {text: 'Brutto', style: 'subTotalHeader'}],
-            [{text: 'Total', style: 'subTotalHeader'}, '', {text: netto.toFixed(2), style: 'number'}, {text: vatValue.toFixed(2), style: 'number'},
-                {text: brutto.toFixed(2), style: 'number'}]];
+                {text: translate[lang].vatValue, style: 'subTotalHeader'}, {text: 'Brutto', style: 'subTotalHeader'}],
+            [{text: translate[lang].total, style: 'subTotalHeader'}, '', {text: netto.toFixed(2), style: 'number'},
+                {text: vatValue.toFixed(2), style: 'number'},
+                {text: brutto.toFixed(2) + ' ' + invoice.currency, style: 'number'}]];
 
         _.forEach(subTotal, (value, key) =>
         {
             nettoValue = 0;
             vatValue = 0;
             bruttoValue = 0;
-            summary = [{text: 'including', style: 'subTotalHeader'}, {text: key}];
+            summary = [{text: translate[lang].including, style: 'subTotalHeader'}, {text: key}];
             _.forEach(value, val =>
             {
                 nettoValue += val.netto * val.amount;
@@ -163,43 +175,14 @@ function pdfContent(invoice, seller, recipient)
 
         subtotal =
         {
-            columns: [
-                {
-                    width: '40%',
-                    table: {
-                        headerRows: 1,
-                        widths: ['*', '*'],
-                        body: [
-                            [
-                                {
-                                    text: 'Payment Mode',
-                                    style: 'subTotalHeader1',
-                                    border: [false, false, false]
-                                },
-                                {
-                                    text: 'Due Date',
-                                    style: 'subTotalHeader1',
-                                    border: [false, false, false]
-                                }],
 
-                            [
-                                {
-                                    text: invoice.paymentMethod,
-                                    border: [false, false, false]
-                                },
-                                {
-                                    text: invoice.executionEndDate,
-                                    border: [false, false, false]
-                                }]
-                        ]
-                    },
-                    margin: [0, 10, 0, 0]
-                },
+            columns: [
+                {text: '', width: '30%'},
                 {
                     width: '*',
                     table: {
                         headerRows: 2,
-                        widths: ['*', '*', '*', '*', '*'],
+                        widths: ['auto', 'auto', '*', '*', '*'],
                         body: sum
                     },
                     layout: {
@@ -208,11 +191,10 @@ function pdfContent(invoice, seller, recipient)
                             return i === 2 ? 2 : 0
                         }
                     },
-                    margin: [0, 10, 0, 0]
+                    margin: [0, 10, 0, 10]
                 }
             ]
         }
-
     }
 
 
@@ -224,7 +206,7 @@ function pdfContent(invoice, seller, recipient)
                 },
                 columns: [
                     {
-                        width: 350,
+                        width: 300,
                         text: [
                             {text: seller.name + '\n', bold: true, fillColor: '#eaeaea'},
                             {
@@ -243,9 +225,11 @@ function pdfContent(invoice, seller, recipient)
                             headerRows: 1,
                             widths: ['*'],
                             body: [
-                                [{text: 'Create Date', style: 'header'}],
+                                [{text: translate[lang].issuePlace, style: 'header'}],
+                                [{text: seller.address.city, style: 'noBorder', alignment: 'center'}],
+                                [{text: translate[lang].issueDate, style: 'header'}],
                                 [{text: invoice.createDate, alignment: 'center', style: 'noBorder'}],
-                                [{text: 'Due Date', style: 'header'}],
+                                [{text: translate[lang].payDue, style: 'header'}],
                                 [{text: invoice.executionEndDate, alignment: 'center'}]
                             ]
                         },
@@ -270,8 +254,8 @@ function pdfContent(invoice, seller, recipient)
                             widths: ['*'],
                             body: [
                                 [
-                                    {text: 'Seller', alignment: 'center', fontSize: 11, fillColor: '#CCCCCC', margin: [10, 0, 0, 0]}],
-                                [{text: seller.name}],
+                                    {text: translate[lang].seller, alignment: 'center', fontSize: 11, fillColor: '#CCCCCC', margin: [10, 0, 0, 0]}],
+                                [{text: translate[lang].name + ': ' + seller.name}],
                                 [{
                                     text: seller.address.street + ' ' + seller.address.buildNr +
                                     '' + (seller.address.flatNr ?
@@ -294,8 +278,8 @@ function pdfContent(invoice, seller, recipient)
                             headerRows: 1,
                             widths: ['*'],
                             body: [
-                                [{text: 'Buyer', alignment: 'center', fillColor: '#CCCCCC', fontSize: 11, margin: [10, 0, 0, 0]}],
-                                [{text: recipient.name}],
+                                [{text: translate[lang].buyer, alignment: 'center', fillColor: '#CCCCCC', fontSize: 11, margin: [10, 0, 0, 0]}],
+                                [{text: translate[lang].name + ': ' + recipient.name}],
                                 [{
                                     text: recipient.address.street + ' ' + recipient.address.buildNr +
                                     '' + (recipient.address.flatNr ?
@@ -318,9 +302,7 @@ function pdfContent(invoice, seller, recipient)
                 }
             },
             {text: invoiceNr, fontSize: 18, alignment: 'center', margin: [0, 10, 0, 10]},
-            {
-                text: description
-            },
+
             {
                 style: {
                     fontSize: 11
@@ -336,10 +318,30 @@ function pdfContent(invoice, seller, recipient)
                 },
                 margin: [0, 5, 0, 0]
             },
+            subtotal,
             {
-                columns: subtotal.columns
-            },
+                columns: [{
+                    width: '40%',
 
+                    text: [{text: translate[lang].paymentType + ':\n', bold: true},
+                        {text: translate[lang].payDue + '\n', bold: true},
+                        {text: translate[lang].bankAccount + '\n', bold: true},
+                        {text: translate[lang].swift, bold: true}
+                    ]
+
+
+                }, {
+                    width: '*',
+                    text: [('bank transfer' === invoice.paymentMethod ? translate[lang].bankTransfer : translate[lang].cash) + '\n',
+                           invoice.executionEndDate + '\n',
+                           seller.bankAccount + '\n',
+                           seller.swift]
+                }
+                ],
+            },
+            {
+                text: description
+            },
             {
                 style: 'noBorder',
                 table: {
@@ -347,22 +349,27 @@ function pdfContent(invoice, seller, recipient)
                     body: [
                         [
                             {
-                                text: 'Total to pay',
+                                text: translate[lang].total + ('pl' === lang ? '(' + translate['en'].total + ')' : ''),
                                 border: [false, false, false, false],
                                 bold: true,
                                 margin: [10, 0, 0, 0]
                             },
                             {
-                                text: brutto.toFixed(2),
+                                text: brutto.toFixed(2) + ' ' + invoice.currency,
                                 style: 'number',
                                 bold: true,
                                 border: [false, false, false, false],
                                 margin: [0, 0, 10, 0]
                             }],
                         [
-                            {text: 'Paid: ' + (invoice.advance || 0).toFixed(2), border: [false, false, false, true], bold: true, margin: [10, 0, 0, 0]},
                             {
-                                text: 'Rest to pay: ' + (brutto - (invoice.advance || 0)).toFixed(2),
+                                text: translate[lang].advance + ': ' + (invoice.advance || 0).toFixed(2) + ' ' + invoice.currency,
+                                border: [false, false, false, true],
+                                bold: true,
+                                margin: [10, 0, 0, 0]
+                            },
+                            {
+                                text: translate[lang].amountDue + ': ' + (brutto - (invoice.advance || 0)).toFixed(2) + ' ' + invoice.currency,
                                 margin: [0, 0, 10, 0],
                                 border: [false, false, false, true],
                                 style: 'number',
@@ -434,7 +441,11 @@ function generate(invoice)
     }).then(companyRecipient =>
     {
         recipient = companyRecipient;
-        return pdfContent(invoice, seller, recipient);
+        try {
+            return pdfContent(invoice, seller, recipient);
+        } catch (error) {
+            throw error;
+        }
     });
 }
 

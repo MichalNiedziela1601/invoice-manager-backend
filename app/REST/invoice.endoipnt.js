@@ -131,13 +131,41 @@ module.exports = {
             path: '/api/invoice/{id}',
             handler: function (request, reply)
             {
-                invoiceManager.updateInvoice(request.payload, request.params.id).then(() =>
-                {
-                    reply();
-                }).catch(error =>
-                {
-                    applicationException.errorHandler(error, reply)
-                })
+                const invoice = request.payload;
+                const id = request.params.id;
+                if ('sell' === invoice.type) {
+                    pdfGenerator(invoice).then(content =>
+                    {
+                        try {
+                            fs.mkdirSync(path.join(__dirname, '/uploads/'));
+                        } catch (error) {
+                            if (error.code !== 'EEXIST') {
+                                throw error;
+                            }
+                        }
+                        const printer = new PdfMakePrinter(fonts);
+                        let pdfDoc = printer.createPdfKitDocument(content);
+                        const name = invoice.invoiceNr.replace(/\//g, '_') + '.pdf';
+                        let filepath = path.join(__dirname, '/uploads/', name);
+                        pdfDoc.pipe(fs.createWriteStream(filepath)).on('finish', function ()
+                        {
+                            invoiceManager.updateSellInvoice(invoice, id, name).then(() =>
+                            {
+                                reply();
+                            })
+                                    .catch(error =>
+                                    {
+                                        applicationException.errorHandler(error, reply);
+                                    })
+                        });
+                        pdfDoc.end();
+                    })
+                } else {
+                    invoiceManager.updateBuyInvoice(invoice,id).then(reply)
+                            .catch(error => {
+                                applicationException.errorHandler(error,reply);
+                            })
+                }
             }
         });
 
@@ -182,8 +210,13 @@ module.exports = {
                         }
                     }
                     const printer = new PdfMakePrinter(fonts);
-                    let pdfDoc = printer.createPdfKitDocument(content);
-                    const name = 'invoice.pdf';
+                    let pdfDoc = {};
+                    try {
+                        pdfDoc = printer.createPdfKitDocument(content);
+                    } catch (error) {
+                        applicationException.errorHandler(error, reply);
+                    }
+                    const name = invoice.invoiceNr.replace(/\//g, '_') + '.pdf';
                     let filepath = path.join(__dirname, '/uploads/', name);
                     pdfDoc.pipe(fs.createWriteStream(filepath)).on('finish', function ()
                     {
@@ -198,8 +231,20 @@ module.exports = {
                     });
                     pdfDoc.end();
                 });
+            }
+        });
 
-
+        server.route({
+            method: 'PUT',
+            path: '/api/invoice/{id}/status',
+            handler: function(request,reply)
+            {
+                const id = request.params.id;
+                const status = request.payload;
+                invoiceManager.changeStatus(id,status.status).then(reply)
+                        .catch(error => {
+                            applicationException.errorHandler(error,reply);
+                        })
             }
         })
     }

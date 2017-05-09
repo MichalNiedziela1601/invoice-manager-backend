@@ -6,8 +6,8 @@ const invoices = [
         number: 2,
         invoiceNr: 'FV 2012/02/02',
         type: 'Buy',
-        createDate: new Date('2012-02-07T23:00:00.000Z'),
-        executionEndDate: new Date('2012-02-14T23:00:00.000Z'),
+        createDate: new Date('2012-02-08'),
+        executionEndDate: new Date('2012-02-15'),
         nettoValue: '230.45',
         bruttoValue: '345.89',
         status: 'unpaid',
@@ -20,8 +20,11 @@ const invoices = [
         googleYearFolderId: null,
         description: null,
         products: null,
-        paymentMethod: 'transfer',
-        advance: null
+        paymentMethod: 'bank transfer',
+        advance: null,
+        currency: null,
+        fileId: null,
+        language: null
     },
     {
         id: 2,
@@ -30,8 +33,8 @@ const invoices = [
         number: 2,
         invoiceNr: 'FV 2012/04/02',
         type: 'Sale',
-        createDate: new Date('2012-04-07T22:00:00.000Z'),
-        executionEndDate: new Date('2012-04-14T22:00:00.000Z'),
+        createDate: new Date('2012-04-08'),
+        executionEndDate: new Date('2012-04-15'),
         nettoValue: '330.45',
         bruttoValue: '475.89',
         status: 'paid',
@@ -44,8 +47,11 @@ const invoices = [
         googleYearFolderId: null,
         description: null,
         products: null,
-        paymentMethod: 'transfer',
-        advance: null
+        paymentMethod: 'bank transfer',
+        advance: null,
+        currency: null,
+        fileId: null,
+        language: null
     },
     {
         id: 3,
@@ -54,8 +60,8 @@ const invoices = [
         number: 123,
         invoiceNr: 'FV 2014/05/123',
         type: 'Sale',
-        createDate: new Date('2014-05-17T22:00:00.000Z'),
-        executionEndDate: new Date('2014-05-22T22:00:00.000Z'),
+        createDate: new Date('2014-05-18'),
+        executionEndDate: new Date('2014-05-23'),
         nettoValue: '2230.45',
         bruttoValue: '2845.89',
         status: 'paid',
@@ -68,8 +74,11 @@ const invoices = [
         googleYearFolderId: null,
         description: null,
         products: null,
-        paymentMethod: 'transfer',
-        advance: null
+        paymentMethod: 'bank transfer',
+        advance: null,
+        currency: null,
+        fileId: null,
+        language: null
     }
 ];
 
@@ -80,8 +89,8 @@ const afterUpdateInvoice = {
     number: 2,
     invoiceNr: 'FV 2014/05/111',
     type: 'Sale',
-    createDate: new Date('2012-05-07T22:00:00.000Z'),
-    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+    createDate: new Date('2012-05-08'),
+    executionEndDate: new Date('2012-01-18'),
     nettoValue: '2430.45',
     bruttoValue: '3675.89',
     status: 'paid',
@@ -94,10 +103,12 @@ const afterUpdateInvoice = {
     googleYearFolderId: null,
     description: null,
     products: null,
-    paymentMethod: 'transfer',
-    advance: null
+    paymentMethod: 'bank transfer',
+    advance: null,
+    currency: null,
+    fileId: null,
+    language: null
 };
-
 
 module.exports = {
     invoices, afterUpdateInvoice

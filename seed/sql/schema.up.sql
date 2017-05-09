@@ -41,6 +41,7 @@ CREATE TABLE "company" (
 	"address_id" bigint,
 	"google_company_id" TEXT UNIQUE,
 	"bank_account" TEXT,
+	"swift" TEXT,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -97,9 +98,10 @@ CREATE TABLE "invoice" (
 	"products" json,
 	"payment_method" TEXT,
 	"advance" DECIMAL(12,2),
+	"file_id" TEXT,
+	"currency" TEXT,
+	"language" TEXT,
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
-) WITH (
-  OIDS=FALSE
 );
 
 
