@@ -77,6 +77,17 @@ function addFolderId(folderId, nip)
     return companyDao.addFolderId(folderId, nip);
 }
 
+function getCompanyById(id){
+    let companyDetails = {};
+    return companyDao.getCompanyById(id).then(company => {
+        companyDetails = company;
+        return addressDAO.getAddressById(id);
+    }).then(address => {
+        companyDetails.address = address;
+        return companyDetails;
+    })
+}
+
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId
+    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId,getCompanyById
 };

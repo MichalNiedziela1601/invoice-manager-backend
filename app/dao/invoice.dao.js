@@ -27,7 +27,7 @@ function addInvoice(invoice)
         return db.any(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
                               invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
                               invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.year, invoice.month, invoice.number, invoice.products,
-                              invoice.description])
+                              invoice.description, invoice.paymentMethod, invoice.advance])
                 .then(result =>
                 {
                     return result;
@@ -72,23 +72,6 @@ function getInvoiceFullNumber(year,month,number)
             });
 }
 
-function issueInvoice(invoice){
-    return readSqlFile(path.join(__dirname, '/sql/addInvoice.sql')).then(query =>
-    {
-        return db.any(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
-                              invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
-                              invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.year, invoice.month, invoice.number, invoice.products,
-                              invoice.description])
-                .then(result =>
-                {
-                    return result;
-                })
-    }).catch(error =>
-    {
-        throw applicationException.new(applicationException.ERROR, error);
-    });
-}
-
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, getInvoiceFullNumber, issueInvoice
+    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, getInvoiceFullNumber
 };

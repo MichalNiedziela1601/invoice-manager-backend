@@ -6,6 +6,17 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const applicationException = require('../services/applicationException');
+const pdfGenerator = require('./pdfContent');
+const PdfMakePrinter = require('pdfmake/src/printer');
+
+const fonts = {
+    Roboto: {
+        normal: './fonts/Roboto-Regular.ttf',
+        bold: './fonts/Roboto-Medium.ttf',
+        italics: './fonts/Roboto-Italic.ttf',
+        bolditalics: './fonts/Roboto-Italic.ttf'
+    }
+};
 
 function convertToObject(data)
 {
@@ -43,7 +54,7 @@ module.exports = {
         });
         server.route({
             method: 'POST',
-            path: '/api/invoice',
+            path: '/api/invoice/upload',
             config: {
 
                 payload: {
@@ -150,20 +161,45 @@ module.exports = {
             }
         });
 
+
         server.route({
             method: 'POST',
-            path: '/api/invoice/issues',
+            path: '/api/invoice/issue',
+            config: {
+                auth: false
+
+            },
             handler: function (request, reply)
             {
-                const invoice = request.payload;
-                invoiceManager.issueInvoice(invoice).then(() =>
+                let invoice = request.payload;
+                pdfGenerator(invoice).then(content =>
                 {
-                    reply();
-                })
-                        .catch(error =>
+                    try {
+                        fs.mkdirSync(path.join(__dirname, '/uploads/'));
+                    } catch (error) {
+                        if (error.code !== 'EEXIST') {
+                            throw error;
+                        }
+                    }
+                    const printer = new PdfMakePrinter(fonts);
+                    let pdfDoc = printer.createPdfKitDocument(content);
+                    const name = 'invoice.pdf';
+                    let filepath = path.join(__dirname, '/uploads/', name);
+                    pdfDoc.pipe(fs.createWriteStream(filepath)).on('finish', function ()
+                    {
+                        invoiceManager.addInvoice(name, invoice).then(() =>
                         {
-                            applicationException.errorHandler(error, reply)
-                        });
+                            reply();
+                        })
+                                .catch(error =>
+                                {
+                                    applicationException.errorHandler(error, reply);
+                                })
+                    });
+                    pdfDoc.end();
+                });
+
+
             }
         })
     }

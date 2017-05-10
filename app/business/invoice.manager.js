@@ -37,6 +37,7 @@ function addInvoice(filename, invoice)
             })
             .then(invoice =>
             {
+
                 return googleMethods.saveFile(auth, filename, invoice);
             })
             .then(response =>
@@ -147,14 +148,7 @@ function getInvoiceNumber(year, month)
     });
 }
 
-function issueInvoice(invoice)
-{
-    invoice.year = new Date(invoice.createDate).getFullYear();
-    invoice.month = new Date(invoice.createDate).getMonth() + 1;
-    invoice.number = parseInt(_.split(invoice.invoiceNr, '/')[2],10);
-    return invoiceDao.issueInvoice(invoice);
-}
 
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, issueInvoice
+    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber
 };
