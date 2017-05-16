@@ -20,8 +20,7 @@ module.exports = {
     ERROR: {message: 'ERROR', code: 500},
     is: function (error, errorCode)
     {
-        return error instanceof
-                ApplicationException &&
+        return error instanceof ApplicationException &&
                 (null == errorCode || error.error === errorCode.code || error.error && error.error.code === errorCode.code);
     },
     new: function (code, message)

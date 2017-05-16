@@ -58,8 +58,9 @@ module.exports = {
                 const credentials = req.payload;
                 userManager.authenticate(credentials).then(result =>
                 {
-                    const token = jwt.sign({id: result.id, email: result.email, nip: result.company.nip, companyId: result.company.id},
-                                           config.secret, {algorithm: 'HS256', expiresIn: '1h'});
+                    const token = jwt.sign(
+                            {email: result.email, companyId: result.companyId},
+                            config.secret, {algorithm: 'HS256', expiresIn: '1h'});
                     res({token: token});
                 }).catch(error =>
                 {
@@ -76,6 +77,7 @@ module.exports = {
                 const email = _.get(request, 'auth.credentials.email');
                 userManager.getUserInformation(email).then(userInfo =>
                 {
+                    _.assign(userInfo, {email: email});
                     reply(userInfo);
                 }).catch(error => applicationException.errorHandler(error, reply))
             }

@@ -43,7 +43,8 @@ module.exports = {
             config: {validate: {query: joiSchema.schema.invoiceType}},
             handler: function (request, reply)
             {
-                invoiceManager.getInvoices(request.query).then(result =>
+                const companyId = _.get(request, 'auth.credentials.companyId');
+                invoiceManager.getInvoices(request.query, companyId).then(result =>
                 {
                     reply(result);
                 }).catch(error =>
@@ -161,9 +162,10 @@ module.exports = {
                         pdfDoc.end();
                     })
                 } else {
-                    invoiceManager.updateBuyInvoice(invoice,id).then(reply)
-                            .catch(error => {
-                                applicationException.errorHandler(error,reply);
+                    invoiceManager.updateBuyInvoice(invoice, id).then(reply)
+                            .catch(error =>
+                            {
+                                applicationException.errorHandler(error, reply);
                             })
                 }
             }
@@ -237,13 +239,14 @@ module.exports = {
         server.route({
             method: 'PUT',
             path: '/api/invoice/{id}/status',
-            handler: function(request,reply)
+            handler: function (request, reply)
             {
                 const id = request.params.id;
                 const status = request.payload;
-                invoiceManager.changeStatus(id,status.status).then(reply)
-                        .catch(error => {
-                            applicationException.errorHandler(error,reply);
+                invoiceManager.changeStatus(id, status.status).then(reply)
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
                         })
             }
         })

@@ -17,12 +17,12 @@ function registerCompany(person)
     let userTemp = {};
     return userDAO.getUserByEmail(person.email).then(() =>
     {
-        throw applicationException.new(applicationException.CONFLICT,'Email exist in database');
+        throw applicationException.new(applicationException.CONFLICT, 'Email exist in database');
     }, () =>
     {
         return companyDAO.getCompanyByNip(person.nip).then(() =>
         {
-            throw applicationException.new(applicationException.CONFLICT,'Nip exist in database');
+            throw applicationException.new(applicationException.CONFLICT, 'Nip exist in database');
         }, () =>
         {
             return hashPassword(person, person.password, 10)
@@ -38,7 +38,7 @@ function registerCompany(person)
                     })
                     .catch(error =>
                     {
-                        throw applicationException.new(applicationException.ERROR,error);
+                        throw applicationException.new(applicationException.ERROR, error);
                     });
         })
     })

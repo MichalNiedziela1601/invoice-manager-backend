@@ -8,8 +8,9 @@ function getUserByEmail(email)
     return db.one('SELECT email,company_id FROM users WHERE email = $1', [email]).then(result =>
     {
         return parser.parseObj(result);
-    }).catch(() => {
-        throw applicationException.new(applicationException.NOT_FOUND,'User not found');
+    }).catch(() =>
+    {
+        throw applicationException.new(applicationException.NOT_FOUND, 'User not found');
     })
 }
 
@@ -23,7 +24,7 @@ function addUser(person)
     }).catch(error =>
     {
         db.none('DELETE FROM company WHERE id = $1', [person.companyId]);
-        throw applicationException.new(applicationException.ERROR,error);
+        throw applicationException.new(applicationException.ERROR, error);
     });
 }
 

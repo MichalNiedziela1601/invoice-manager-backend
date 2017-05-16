@@ -5,8 +5,9 @@ const applicationException = require('../services/applicationException');
 function getAddressById(id)
 {
     return db.one('SELECT * FROM address WHERE id = $1', [id]).then(address => parser.parseObj(address))
-            .catch(() => {
-                throw applicationException.new(applicationException.NOT_FOUND,'Address not found');
+            .catch(() =>
+            {
+                throw applicationException.new(applicationException.NOT_FOUND, 'Address not found');
             });
 }
 

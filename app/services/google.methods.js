@@ -144,7 +144,8 @@ function findFolderByName(auth, name, parentId)
     })
 }
 
-function deleteFile(auth,invoice){
+function deleteFile(auth, invoice)
+{
     let service = google.drive({version: 'v3', auth: auth});
     return new Promise((resolve, reject) =>
     {

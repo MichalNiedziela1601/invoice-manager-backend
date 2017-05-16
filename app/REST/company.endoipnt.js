@@ -17,7 +17,7 @@ module.exports = {
                     reply(result);
                 }).catch(error =>
                 {
-                    applicationException.errorHandler(error,reply);
+                    applicationException.errorHandler(error, reply);
                 });
             }
         });
@@ -32,7 +32,7 @@ module.exports = {
                     reply();
                 }).catch(error =>
                 {
-                    applicationException.errorHandler(error,reply);
+                    applicationException.errorHandler(error, reply);
                 });
             }
         });
@@ -46,7 +46,7 @@ module.exports = {
                     reply()
                 }).catch(error =>
                 {
-                    applicationException.errorHandler(error,reply);
+                    applicationException.errorHandler(error, reply);
                 });
             }
         });
@@ -61,7 +61,7 @@ module.exports = {
                     reply(company);
                 }).catch(error =>
                 {
-                    applicationException.errorHandler(error,reply);
+                    applicationException.errorHandler(error, reply);
                 });
             }
         });
@@ -77,7 +77,7 @@ module.exports = {
                     reply(company);
                 }).catch(error =>
                 {
-                    applicationException.errorHandler(error,reply);
+                    applicationException.errorHandler(error, reply);
                 });
             }
         })

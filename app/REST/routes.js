@@ -11,7 +11,7 @@ function validate(request, dekodeToken, callback)
 {
     loginManager.getUser(dekodeToken.email)
             .then(result => callback(null, true, result))
-            .catch(error => callback(null,false,error));
+            .catch(error => callback(null, false, error));
 }
 
 
@@ -33,7 +33,8 @@ module.exports =
         });
 
     },
-    register: function(server){
+    register: function (server)
+    {
         companyEndpoint.register(server);
         invoiceEndpoint.register(server);
         userEndpoint.register(server);
