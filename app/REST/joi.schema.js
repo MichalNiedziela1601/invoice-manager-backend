@@ -37,9 +37,10 @@ module.exports = {
             address: {
                 street: Joi.string().required(),
                 buildNr: Joi.string().required(),
-                flatNr: Joi.string().optional(),
+                flatNr: Joi.any().optional(),
                 postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
-                city: Joi.string().required()
+                city: Joi.string().required(),
+                id: Joi.number().optional()
             }
         },
         registerCompany: {
@@ -47,6 +48,19 @@ module.exports = {
             nip: Joi.number().required(),
             email: Joi.string().email(),
             password: Joi.string().min(4).required()
+        },
+        address: {
+            street: Joi.string().required(),
+            buildNr: Joi.string().required(),
+            flatNr: Joi.any().optional(),
+            postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
+            city: Joi.string().required(),
+            id: Joi.number()
+        },
+        account: {
+            bankName: Joi.string().required(),
+            bankAccount: Joi.string().required(),
+            swift: Joi.string().optional()
         }
     }
 };

@@ -13,8 +13,8 @@ function getCompanies()
 }
 function addCompany(company)
 {
-    let sql = 'INSERT INTO company (name,nip, regon, address_id) VALUES ($1,$2,$3,$4)';
-    return db.any(sql, [company.name, company.nip, company.regon, company.addressId]).catch(error =>
+    let sql = 'INSERT INTO company (name,nip, regon, address_id, bank_account,bank_name) VALUES ($1,$2,$3,$4,$5,$6)';
+    return db.any(sql, [company.name, company.nip, company.regon, company.addressId, company.bankAccount, company.bankName]).catch(error =>
     {
         throw applicationException.new(applicationException.ERROR, error);
     });
@@ -97,7 +97,22 @@ function addFolderId(folderId, nip)
     });
 }
 
+function updateAccount(account, companyId)
+{
+    return db.none('UPDATE company SET bank_name = $1, bank_account = $2, swift = $3 WHERE id = $4',
+            [account.bankName, account.bankAccount, account.swift, companyId])
+}
 
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getCompanyByNip, addCompanyRegister, getCompanyById, getNips, updateCompanyAddress, addFolderId
+    getCompanies,
+    addCompany,
+    addAddress,
+    getCompanyDetails,
+    getCompanyByNip,
+    addCompanyRegister,
+    getCompanyById,
+    getNips,
+    updateCompanyAddress,
+    addFolderId,
+    updateAccount
 };

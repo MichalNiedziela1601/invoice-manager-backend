@@ -14,17 +14,17 @@ function getUserByEmail(email)
     })
 }
 
-function addUser(person)
+function addUser(user)
 {
-    let user = 'INSERT INTO users (email, password,company_id) values ($1,$2,$3)';
+    let sql = 'INSERT INTO users (email, password,company_id) values ($1,$2,$3)';
 
-    return db.none(user, [person.email, person.password, person.companyId]).then(() =>
+    return db.none(sql, [user.email, user.password, user.companyId]).then(() =>
     {
 
     }).catch(error =>
     {
-        db.none('DELETE FROM company WHERE id = $1', [person.companyId]);
-        throw applicationException.new(applicationException.ERROR, error);
+        db.none('DELETE FROM company WHERE id = $1', [user.companyId]);
+        throw applicationException.new(applicationException.ERROR,error);
     });
 }
 

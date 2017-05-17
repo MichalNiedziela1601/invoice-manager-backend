@@ -6,6 +6,7 @@ const companies = [{
     regon: 243124,
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
+    bankName: 'Alior Bank',
     swift: null
 }, {
     addressId: null,
@@ -15,6 +16,7 @@ const companies = [{
     regon: null,
     googleCompanyId: null,
     bankAccount: '22068903623586048228853408',
+    bankName: 'ING',
     swift: null
 }, {
     addressId: 2,
@@ -23,6 +25,7 @@ const companies = [{
     nip: 176543330,
     regon: 55343367,
     googleCompanyId: null,
+    bankName: null,
     bankAccount: null,
     swift: null
 }];
@@ -34,6 +37,7 @@ const findCompany = {
     regon: 243124,
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
+    bankName: 'Alior Bank',
     swift: null
 };
 
@@ -46,6 +50,7 @@ const afterRegisterCompany = [
         regon: 243124,
         googleCompanyId: null,
         bankAccount: '22068903623586048228853407',
+        bankName: 'Alior Bank',
         swift: null
     },
     {
@@ -56,6 +61,7 @@ const afterRegisterCompany = [
         regon: null,
         googleCompanyId: null,
         bankAccount: '22068903623586048228853408',
+        bankName: 'ING',
         swift: null
     },
     {
@@ -66,6 +72,7 @@ const afterRegisterCompany = [
         addressId: null,
         googleCompanyId: null,
         bankAccount: null,
+        bankName: null,
         swift: null
     }
 ];
@@ -91,6 +98,7 @@ const nothing = {
     regon: 243124,
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
+    bankName: 'Alior Bank',
     swift: null
 
 };
@@ -103,6 +111,7 @@ const updateAddress = {
     regon: 243124,
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
+    bankName: 'Alior Bank',
     swift: null
 };
 
@@ -114,6 +123,7 @@ const afterAddFolderId = {
     addressId: 1,
     googleCompanyId: 'sdfhshf',
     bankAccount: '22068903623586048228853407',
+    bankName: 'Alior Bank',
     swift: null
 };
 
@@ -130,8 +140,20 @@ const getCompanyDetails = {
 
 };
 
+const updateAccount = {
+    addressId: 1,
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+    googleCompanyId: null,
+    bankAccount: '98789768768768768',
+    bankName: 'MBANK',
+    swift: 'MBPLNG'
+};
+
 
 module.exports = {
-    companies, findCompany, nothing, address, afterRegisterCompany, updateAddress, afterAddFolderId,getCompanyDetails
+    companies, findCompany, nothing, address, afterRegisterCompany, updateAddress, afterAddFolderId, getCompanyDetails, updateAccount
 };
 

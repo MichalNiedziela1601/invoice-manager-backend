@@ -9,14 +9,16 @@ chai.use(sinonChai);
 const expect = chai.expect;
 
 const companies = [{
-    addressId: 2, id: 1, name: 'Kuba', nip: 1029384756, regon: 243124,
+    addressId: 1, id: 1, name: 'Kuba', nip: 1029384756, regon: 243124,
+},{
+    addressId: 2, id: 2, name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367,
 }, {
-    addressId: 1, id: 2, name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367,
-}, {
-    addressId: null, id: 3, name: 'Firma test', nip: 8967452310, regon: null
+    addressId: 3, id: 3, name: 'Firma test', nip: 8967452310, regon: null
 }];
 const address = [{
     id: 1, street: 'Spokojna', buildNr: 4, flatNr: 3, postCode: '33-199', city: 'Tarnow'
+}, {
+    id: 2, street: 'Krakowska', buildNr: 8, flatNr: 7, postCode: '33-159', city: 'Kakow'
 }, {
     id: 3, street: 'Krakowska', buildNr: 8, flatNr: 7, postCode: '33-159', city: 'Kakow'
 
@@ -35,13 +37,12 @@ let companyDAOMock = {
     addFolderId: sinon.spy(),
 };
 let addressDAOMock = {
-    getAddressById: sinon.stub().resolves(address),
-    updateAddress: sinon.stub().resolves(),
-    updateCompanyAddress: sinon.stub().resolves
+    getAddressById: sinon.stub().resolves(),
+    updateAddress: sinon.stub().resolves()
 };
 
 let companyManager = proxyquire('../../app/business/company.manager', {
-    '../dao/company.dao.js': companyDAOMock, '../dao/address.dao.js': addressDAOMock
+    '../dao/company.dao.js': companyDAOMock, '../dao/address.dao': addressDAOMock
 });
 
 companyManager.catch = sinon.stub();
@@ -52,32 +53,28 @@ describe('company.manager', function ()
     {
         describe('when companies exists', function ()
         {
-            let promise = {};
+
             before(function ()
             {
                 companyDAOMock.getCompanies.resolves(companies);
                 addressDAOMock.getAddressById.withArgs(1).resolves(address[0]);
                 addressDAOMock.getAddressById.withArgs(2).resolves(address[1]);
                 addressDAOMock.getAddressById.withArgs(3).resolves(address[2]);
-                promise = companyManager.getCompanies();
+                return companyManager.getCompanies();
             });
             it('should call getCompanies on companyDao', function ()
             {
-                expect(companyDAOMock.getCompanies).to.have.callCount(1);
+                expect(companyDAOMock.getCompanies).callCount(1);
             });
             it('should call getAddressById on addressDAO ', function ()
             {
-                promise.then(() =>
-                {
-                    expect(addressDAOMock.getAddressById).to.have.callCount(1);
-                })
+                expect(addressDAOMock.getAddressById).callCount(3);
             });
             it('should call getAddressById with company.addressId', function ()
             {
-                promise.then(() => {
-                    expect(addressDAOMock.getAddressById).to.have.been.calledWith(1);
-                });
-
+                expect(addressDAOMock.getAddressById).calledWith(1);
+                expect(addressDAOMock.getAddressById).calledWith(2);
+                expect(addressDAOMock.getAddressById).calledWith(3);
             });
         });
         describe('when table is empty', function ()
@@ -171,7 +168,7 @@ describe('company.manager', function ()
                 companyMock = {
                     name: 'bla', nip: 1234567890, addressId: null, id: 1
                 };
-                companyDAOMock.getCompanyDetails.resolves({name: 'sdfsdf', nip: 1234567890})
+                companyDAOMock.getCompanyDetails.resolves({name: 'sdfsdf', nip: 1234567890});
                 result = companyManager.addCompany(companyMock);
 
             });
@@ -217,7 +214,6 @@ describe('company.manager', function ()
             postCode: '33-100',
             city: 'City 1'
         };
-
 
         describe('when address exists', function ()
         {
@@ -317,7 +313,6 @@ describe('company.manager', function ()
     describe('getCompanyId', function ()
     {
         let addressMock = {};
-        let companyDetails = {};
         before(() =>
         {
             companyDAOMock.getCompanyById.reset();
@@ -325,17 +320,19 @@ describe('company.manager', function ()
             companyMock = {name: 'sdfhsdjf', nip: 1234567890, addressId: 1, id: 1};
             addressMock = {id: 1, street: 'Lwowska', buildNr: '34', postCode: '33-100', ciity: 'Tarnów'};
             companyDAOMock.getCompanyById.resolves(companyMock);
-            addressDAOMock.getAddressById.resolves(addressMock);
+            addressDAOMock.getAddressById.withArgs(1).resolves(addressMock);
 
-            return companyManager.getCompanyById(1).then(result => {
-                companyDetails = result;
-            });
+            return companyManager.getCompanyById(1);
         });
         it('should call companyDao.getCompanyById', function ()
         {
             expect(companyDAOMock.getCompanyById).callCount(1);
             expect(companyDAOMock.getCompanyById).calledWith(1);
         });
-
+        it('should call addressDAO.getAddressById', function ()
+        {
+            expect(addressDAOMock.getAddressById).callCount(1);
+            expect(addressDAOMock.getAddressById).calledWith(1);
+        });
     });
 });

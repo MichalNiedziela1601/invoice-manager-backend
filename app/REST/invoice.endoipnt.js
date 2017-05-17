@@ -44,7 +44,7 @@ module.exports = {
             handler: function (request, reply)
             {
                 const companyId = _.get(request, 'auth.credentials.companyId');
-                invoiceManager.getInvoices(request.query, companyId).then(result =>
+                invoiceManager.getInvoices(request.query,companyId).then(result =>
                 {
                     reply(result);
                 }).catch(error =>
