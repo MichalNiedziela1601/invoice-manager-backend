@@ -10,6 +10,7 @@ let filesCreateFunc = sinon.spy();
 let permissionsCreateFun = sinon.spy();
 let filesGetFunc = sinon.spy();
 let filesListFunc = sinon.spy();
+let filesDelete = sinon.spy();
 let googleMock = {
     drive: sinon.stub()
 };
@@ -526,6 +527,81 @@ describe('Google Methods', function ()
             });
         });
 
+    });
+
+    describe('deleteFile', function ()
+    {
+        let invoice = {
+            fileId: 'sdfjssg89s79sdgs9df7'
+        } ;
+        before(function(){
+            googleMock.drive = sinon.stub();
+            googleMock.drive.returns(
+                    {
+                        files: {delete: filesDelete}
+                    }
+            );
+            googleMethodsMock.deleteFile('auth',invoice);
+        });
+        it('should call google.drive', function ()
+        {
+            expect(googleMock.drive).callCount(1);
+            expect(googleMock.drive).calledWith({version: 'v3', auth: 'auth'})
+        });
+        it('should call files.delete', function ()
+        {
+            expect(filesDelete).callCount(1);
+            expect(filesDelete).calledWith({fileId: invoice.fileId}, sinon.match.func);
+        });
+        describe('when call callback', function ()
+        {
+            describe('when callback return error', function ()
+            {
+                before(() => {
+                    filesDelete = function(obj,callback){
+                        callback(errorMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {delete: filesDelete}
+                            }
+                    );
+                });
+                it('should rejects error', function ()
+                {
+                    return googleMethodsMock.deleteFile('auth',invoice).catch(error => {
+                        expect(error).eql(errorMock);
+                    })
+                });
+
+            });
+
+            describe('when callback not return error', function ()
+            {
+                let fileMock = { name: 'blabla'};
+                before(() => {
+                    filesDelete = function (obj, callback)
+                    {
+                        callback(0,fileMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {delete: filesDelete}
+                            }
+                    );
+                });
+
+                it('should resolve', function ()
+                {
+                    return googleMethodsMock.deleteFile('auth',invoice).then(file =>
+                    {
+                        expect(file).eql(fileMock);
+                    });
+
+                });
+
+            });
+        });
     });
 
 });

@@ -5,7 +5,8 @@ const companies = [{
     nip: 1029384756,
     regon: 243124,
     googleCompanyId: null,
-    bankAccount: '22068903623586048228853407'
+    bankAccount: '22068903623586048228853407',
+    swift: null
 }, {
     addressId: null,
     id: 2,
@@ -13,7 +14,8 @@ const companies = [{
     nip: 1029456789,
     regon: null,
     googleCompanyId: null,
-    bankAccount: '22068903623586048228853408'
+    bankAccount: '22068903623586048228853408',
+    swift: null
 }, {
     addressId: 2,
     id: 3,
@@ -21,7 +23,8 @@ const companies = [{
     nip: 176543330,
     regon: 55343367,
     googleCompanyId: null,
-    bankAccount: null
+    bankAccount: null,
+    swift: null
 }];
 const findCompany = {
     addressId: 1,
@@ -30,7 +33,8 @@ const findCompany = {
     nip: 1029384756,
     regon: 243124,
     googleCompanyId: null,
-    bankAccount: '22068903623586048228853407'
+    bankAccount: '22068903623586048228853407',
+    swift: null
 };
 
 const afterRegisterCompany = [
@@ -41,7 +45,8 @@ const afterRegisterCompany = [
         nip: 1029384756,
         regon: 243124,
         googleCompanyId: null,
-        bankAccount: '22068903623586048228853407'
+        bankAccount: '22068903623586048228853407',
+        swift: null
     },
     {
         addressId: null,
@@ -50,7 +55,8 @@ const afterRegisterCompany = [
         nip: 1029456789,
         regon: null,
         googleCompanyId: null,
-        bankAccount: '22068903623586048228853408'
+        bankAccount: '22068903623586048228853408',
+        swift: null
     },
     {
         id: 3,
@@ -59,7 +65,8 @@ const afterRegisterCompany = [
         regon: null,
         addressId: null,
         googleCompanyId: null,
-        bankAccount: null
+        bankAccount: null,
+        swift: null
     }
 ];
 
@@ -83,7 +90,8 @@ const nothing = {
     nip: 1029384756,
     regon: 243124,
     googleCompanyId: null,
-    bankAccount: '22068903623586048228853407'
+    bankAccount: '22068903623586048228853407',
+    swift: null
 
 };
 
@@ -94,7 +102,8 @@ const updateAddress = {
     nip: 1029384756,
     regon: 243124,
     googleCompanyId: null,
-    bankAccount: '22068903623586048228853407'
+    bankAccount: '22068903623586048228853407',
+    swift: null
 };
 
 const afterAddFolderId = {
@@ -104,7 +113,8 @@ const afterAddFolderId = {
     regon: 243124,
     addressId: 1,
     googleCompanyId: 'sdfhshf',
-    bankAccount: '22068903623586048228853407'
+    bankAccount: '22068903623586048228853407',
+    swift: null
 };
 
 const getCompanyDetails = {
@@ -117,6 +127,7 @@ const getCompanyDetails = {
     flatNr: '8',
     postCode: '33-100',
     city: 'tutaj'
+
 };
 
 

@@ -21,7 +21,8 @@ let invoiceDAOMock = {
     getInvoiceById: sinon.stub().resolves(),
     getInvoiceFullNumber: sinon.stub(),
     getInvoiceNumber: sinon.stub(),
-    updateInvoice: sinon.spy()
+    updateInvoice: sinon.spy(),
+    changeStatus: sinon.spy()
 };
 
 let companyDaoMock = {
@@ -41,7 +42,8 @@ let googleMethodsMock = {
     createFolder: sinon.stub().resolves(),
     createChildFolder: sinon.stub().resolves(),
     saveFile: sinon.stub(),
-    shareFile: sinon.stub()
+    shareFile: sinon.stub(),
+    deleteFile: sinon.stub()
 };
 
 let createFoldersGoogleMock = {
@@ -459,7 +461,7 @@ describe('invoice.manager', function ()
         });
     });
 
-    describe('updateInvoice', function ()
+    describe('updateBuyInvoice', function ()
     {
         before(() =>
         {
@@ -467,7 +469,7 @@ describe('invoice.manager', function ()
                 invoiceNr: 'FV 2012/5/33'
             };
 
-            invoiceManager.updateInvoice(invoiceMock, 2);
+            invoiceManager.updateBuyInvoice(invoiceMock, 2);
         });
         it('should call invoiceDao.updateInvoice', function ()
         {
@@ -490,7 +492,7 @@ describe('invoice.manager', function ()
                 })
 
             });
-            it('should return number incrased by 1', function ()
+            it('should return number increased by 1', function ()
             {
                 expect(number).to.deep.equal({number: 2});
             });
@@ -510,6 +512,129 @@ describe('invoice.manager', function ()
             {
                 expect(number).eql({number: 1});
             });
+        });
+    });
+
+    describe('updateSellInvoice', function ()
+    {
+        invoiceMock = {
+            invoiceNr: 'FV 12/05/111',
+            type: 'Sale',
+            createDate: new Date('2012-05-08'),
+            executionEndDate: new Date('2012-01-18'),
+            nettoValue: '$2,330.45',
+            bruttoValue: '$3,475.89',
+            status: 'paid',
+            companyDealer: 1,
+            companyRecipent: 2,
+            personDealer: null,
+            personRecipent: null
+        };
+        describe('when success', function ()
+        {
+            let yearId = 'sdf897sfdsk';
+            let monthId = 'hku4h5uik4';
+            let response = {
+                id: 'sdfhshs45j3h',
+                webViewLink: 'https://google/sdfksdjfskfhs4j5jk'
+            };
+            before(() =>
+            {
+
+                oauthTokenMock.reset();
+                oauthTokenMock.resolves('token');
+                googleMethodsMock.saveFile.reset();
+                googleMethodsMock.shareFile.reset();
+                createFoldersGoogleMock.createFolderCompany.reset();
+                createFoldersGoogleMock.createYearMonthFolder.reset();
+                invoiceDAOMock.updateInvoice.reset();
+                googleMethodsMock.shareFile.resolves();
+                googleMethodsMock.saveFile.resolves(response);
+                createFoldersGoogleMock.createFolderCompany.withArgs('token', invoiceMock.companyRecipent).resolves(yearId);
+                createFoldersGoogleMock.createYearMonthFolder.withArgs('token', invoiceMock, yearId).resolves(monthId);
+
+                invoiceManager.updateSellInvoice(invoiceMock, 1, 'file.pdf');
+
+            });
+            it('should call oauthToken', function ()
+            {
+                expect(oauthTokenMock).callCount(1);
+            });
+            it('should call deleteFile', function ()
+            {
+                expect(googleMethodsMock.deleteFile).callCount(1);
+                expect(googleMethodsMock.deleteFile).calledWith('token', invoiceMock);
+            });
+            it('should call createFolderCompany', function ()
+            {
+                expect(createFoldersGoogleMock.createFolderCompany).callCount(1);
+                expect(createFoldersGoogleMock.createFolderCompany).calledWith('token', invoiceMock.companyRecipent);
+            });
+            it('should call createFolderYearMonthFolder', function ()
+            {
+                expect(createFoldersGoogleMock.createYearMonthFolder).callCount(1);
+                expect(createFoldersGoogleMock.createYearMonthFolder).calledWith('token', invoiceMock, yearId);
+            });
+            it('should call saveFile', function ()
+            {
+                expect(googleMethodsMock.saveFile).callCount(1);
+            });
+            it('should call shareFile', function ()
+            {
+
+                expect(googleMethodsMock.shareFile).callCount(1);
+                expect(googleMethodsMock.shareFile).calledWith('token', response.id);
+            });
+            it('should call updateInvoice', function ()
+            {
+                expect(invoiceDAOMock.updateInvoice).callCount(1);
+                expect(invoiceDAOMock.updateInvoice).calledWith(invoiceMock, 1);
+            });
+        });
+
+        describe('when unknown error occurred', function ()
+        {
+            let update = {};
+            before(() =>
+            {
+                googleMethodsMock.deleteFile.rejects();
+                return invoiceManager.updateSellInvoice(invoiceMock, 1, 'file.pdf')
+                        .catch(error =>
+                        {
+                            update = error;
+                        });
+
+            });
+            it('should throw error', function ()
+            {
+                expect(update.error).eql({message: 'ERROR', code: 500})
+            });
+        });
+        describe('when known error occured', function ()
+        {
+            let update = {};
+            before(() => {
+                googleMethodsMock.deleteFile.rejects(applicationException.new(404,'FILE NOT FOUND'));
+                return invoiceManager.updateSellInvoice(invoiceMock,1,'file.pdf').catch(error => {
+                    update = error;
+                })
+            });
+            it('should throw error', function ()
+            {
+                expect(update).eql({ error: 404, message: 'FILE NOT FOUND' });
+            });
+        });
+    });
+
+    describe('changeStatus', function ()
+    {
+        before(() => {
+            invoiceManager.changeStatus(1,'paid');
+        });
+        it('should call changeStatus', function ()
+        {
+            expect(invoiceDAOMock.changeStatus).callCount(1);
+            expect(invoiceDAOMock.changeStatus).calledWith(1,'paid');
         });
     });
 

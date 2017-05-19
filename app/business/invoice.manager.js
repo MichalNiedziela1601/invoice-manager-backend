@@ -18,7 +18,7 @@ function addInvoice(filename, invoice)
 {
     invoice.year = new Date(invoice.createDate).getFullYear();
     invoice.month = new Date(invoice.createDate).getMonth() + 1;
-    invoice.number = parseInt(_.split(invoice.invoiceNr, '/')[2],10);
+    invoice.number = parseInt(_.split(invoice.invoiceNr, '/')[2], 10);
 
     let auth = null;
     return invoiceDao.getInvoiceFullNumber(invoice.year, invoice.month, invoice.number).then(() =>
@@ -43,6 +43,7 @@ function addInvoice(filename, invoice)
             .then(response =>
             {
                 invoice.url = response.webViewLink;
+                invoice.fileId = response.id;
                 return googleMethods.shareFile(auth, response.id);
             })
             .then(() =>
@@ -130,9 +131,57 @@ function getInvoiceById(id)
             });
 }
 
-function updateInvoice(invoice, id)
+function updateSellInvoice(invoice, id, filename)
 {
-    return invoiceDao.updateInvoice(invoice, id);
+    invoice.year = new Date(invoice.createDate).getFullYear();
+    invoice.month = new Date(invoice.createDate).getMonth() + 1;
+    invoice.number = parseInt(_.split(invoice.invoiceNr, '/')[2], 10);
+
+    let auth = null;
+
+    return oauthToken()
+            .then(token =>
+            {
+                auth = token;
+                return googleMethods.deleteFile(auth, invoice);
+            })
+
+            .then(() =>
+            {
+                return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
+            })
+            .then(companyFolderId =>
+            {
+                return folderMethods.createYearMonthFolder(auth, invoice, companyFolderId);
+            })
+            .then(invoice =>
+            {
+
+                return googleMethods.saveFile(auth, filename, invoice);
+            })
+            .then(response =>
+            {
+                invoice.url = response.webViewLink;
+                invoice.fileId = response.id;
+                return googleMethods.shareFile(auth, response.id);
+            })
+            .then(() =>
+            {
+                return invoiceDao.updateInvoice(invoice, id);
+            })
+            .catch(error =>
+            {
+                if (applicationException.is(error)) {
+                    throw error;
+                } else {
+                    throw applicationException.new(applicationException.ERROR, error);
+                }
+            });
+
+}
+
+function updateBuyInvoice(invoice,id){
+    return invoiceDao.updateInvoice(invoice,id);
 }
 
 function getInvoiceNumber(year, month)
@@ -148,7 +197,12 @@ function getInvoiceNumber(year, month)
     });
 }
 
+function changeStatus(id, status)
+{
+    return invoiceDao.changeStatus(id,status);
+}
+
 
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber
+    getInvoices, addInvoice, getInvoiceById, updateSellInvoice, getInvoiceNumber, updateBuyInvoice, changeStatus
 };
