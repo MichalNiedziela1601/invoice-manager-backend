@@ -12,6 +12,24 @@ function getPersonById(id)
             });
 }
 
+function findPersonBySurname(lastName)
+{
+    return db.any('SELECT id, first_name,last_name FROM person WHERE last_name like \'%$1#%\'', [ lastName])
+            .then(companies =>
+            {
+                return parser.parseArrayOfObject(companies);
+            });
+}
+
+function addFolderId(folderId, id)
+{
+    return db.none('UPDATE person SET google_person_id = $1 WHERE id = $2', [folderId, id]).then(() =>
+    {
+        return folderId;
+    });
+}
+
+
 module.exports = {
-    getPersonById
+    getPersonById,findPersonBySurname, addFolderId
 };

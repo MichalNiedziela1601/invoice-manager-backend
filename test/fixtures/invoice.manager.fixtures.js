@@ -39,9 +39,9 @@ const getInvoicesBuy = [
         bruttoValue: '3391.97',
         status: 'paid',
         url: 'url4',
-        companyDealer: 1,
+        companyDealer: null,
         companyRecipent: 2,
-        personDealer: null,
+        personDealer: 3,
         personRecipent: null,
         googleYearFolderId: null,
         googleMonthFolderId: null,
@@ -110,7 +110,62 @@ const getInvoicesSell = [
         language: null
     }
 ];
-
+const getInvoicesSell2 = [
+    {
+        id: 1,
+        year: 2012,
+        month: 2,
+        number: 2,
+        invoiceNr: 'FV 2012/02/02',
+        type: 'sell',
+        createDate: '2012-02-08T00:00:00.000Z',
+        executionEndDate: '2012-02-15T00:00:00.000Z',
+        nettoValue: '230.45',
+        bruttoValue: '283.45',
+        status: 'unpaid',
+        url: 'url1',
+        companyDealer: 2,
+        companyRecipent: null,
+        personDealer: null,
+        personRecipent: 3,
+        googleYearFolderId: null,
+        googleMonthFolderId: null,
+        description: null,
+        products: {'0': {name: 'Service', netto: 5000, vat: 'N/A', brutto: 5000}},
+        paymentMethod: 'transfer',
+        advance: null,
+        fileId: null,
+        currency: null,
+        language: null
+    },
+    {
+        id: 4,
+        year: 2010,
+        month: 2,
+        number: 22,
+        invoiceNr: 'FV 2010/02/22',
+        type: 'sell',
+        createDate: '2010-02-08T00:00:00.000Z',
+        executionEndDate: '2010-02-25T00:00:00.000Z',
+        nettoValue: '3230.45',
+        bruttoValue: '3391.97',
+        status: 'paid',
+        url: 'url4',
+        companyDealer: 2,
+        companyRecipent: 1,
+        personDealer: null,
+        personRecipent: null,
+        googleYearFolderId: null,
+        googleMonthFolderId: null,
+        description: null,
+        products: {'0': {name: 'Service', netto: 70000, vat: 'N/A', brutto: 70000}},
+        paymentMethod: 'cash',
+        advance: '100.00',
+        fileId: null,
+        currency: null,
+        language: null
+    }
+];
 const getCompanyById = [
     {
         id: 1,
@@ -125,6 +180,14 @@ const getCompanyById = [
 
 ];
 
+const getPersonById = [
+    {
+        id: 3,
+        firstName: 'Jan',
+        lastName: 'Kowalski'
+    }
+];
+
 module.exports = {
-    getInvoicesBuy, getInvoicesSell,getCompanyById
+    getInvoicesBuy, getInvoicesSell, getCompanyById, getPersonById, getInvoicesSell2
 }

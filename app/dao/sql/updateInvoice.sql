@@ -22,6 +22,7 @@ payment_method = $21,
 advance = $22,
 file_id = $23,
 currency = $24,
-language = $25
+language = $25,
+reverse_charge = $26
 WHERE
 id = $1;

@@ -15,13 +15,18 @@ module.exports = {
             companyDealer: [Joi.number().integer(), Joi.allow(null)],
             companyRecipent: [Joi.number().integer(), Joi.allow(null)],
             personDealer: [Joi.number().integer(), Joi.allow(null)],
-            personRecipent: [Joi.number().integer(), Joi.allow(null)]
+            personRecipent: [Joi.number().integer(), Joi.allow(null)],
+            contractorType: Joi.string(),
+            products: Joi.required(),
+            reverseCharge: Joi.boolean(),
+            paymentMethod: Joi.string(),
+            currency: Joi.string()
         },
         invoiceById: {
             id: Joi.number().min(1).required()
         },
         companyByNip: {
-            nip: Joi.number().required()
+            nip: Joi.string().required()
         },
         invoiceType: {
             type: Joi.valid('buy', 'sell').required()

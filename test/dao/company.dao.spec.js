@@ -40,7 +40,7 @@ describe('company.dao', function ()
     describe('addCompany', function ()
     {
         let company = {
-            name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367, addressId: 2
+            name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367, addressId: 2, shortcut: 'TEST'
         };
         let companyValidId = {id: 3};
         _.assign(companyValidId, company);
@@ -235,7 +235,7 @@ describe('company.dao', function ()
 
     describe('addCompanyRegister', function ()
     {
-        let company = {name: 'Firma test', nip: 7890123456};
+        let company = {name: 'Firma test', nip: 7890123456, shortcut: 'TEST'};
         describe('when company data is valid', function ()
         {
             let id = null;
@@ -490,6 +490,21 @@ describe('company.dao', function ()
         it('should set new account', function ()
         {
             expect(companies).eql(data.updateAccount);
+        });
+    });
+
+    describe('findShortcut', function ()
+    {
+        let result = {};
+        beforeEach(function ()
+        {
+            return companyDAO.findShortcut({shortcut: 'kuba'}).then(company => {
+                result = company;
+            });
+        });
+        it('should return id', function ()
+        {
+            expect(result).eql([{id: 1}]);
         });
     });
 });

@@ -8,7 +8,7 @@ module.exports = {
         host: 'localhost'
     },
     port: process.env.PORT || 3000,
-    secret: 'zaq!@wsxCDE#',
+    secret: process.env.SECRET_JWT || 'zaq!@wsxCDE#',
     googleDrive: {
         credentials: {
             'client_id': process.env.GOOGLE_DRIVE_CLIENT_ID || '282763231357-17qupkomnva4aba5gl2i9glres64au0m.apps.googleusercontent.com',

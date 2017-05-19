@@ -3,6 +3,7 @@
 const companyEndpoint = require('./company.endoipnt.js');
 const invoiceEndpoint = require('./invoice.endoipnt');
 const userEndpoint = require('./user.endpoint');
+const personEndpoint = require('./person.endpoint');
 const config = require('../config');
 const loginManager = require('../business/user.manager.js');
 const hapiAuthJwt = require('hapi-auth-jwt');
@@ -38,5 +39,6 @@ module.exports =
         companyEndpoint.register(server);
         invoiceEndpoint.register(server);
         userEndpoint.register(server);
+        personEndpoint.register(server);
     }
 };

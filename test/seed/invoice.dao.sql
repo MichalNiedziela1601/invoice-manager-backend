@@ -4,16 +4,16 @@ INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES
 ('Krakowska',4,null,'33-120','City 1');
 
 --companies
-INSERT INTO company (name, nip,regon,address_id) VALUES
-  ( 'ABC Company',12345,10,2),
-  ( 'CDE Company',99999, null,null);
+INSERT INTO company (name, nip,regon,address_id, shortcut) VALUES
+  ( 'ABC Company',12345,10,2,'ABC'),
+  ( 'CDE Company',99999, null,null, 'CDE');
 
 --people
 INSERT INTO
   person
-(first_name, last_name, nip,address_id) VALUES
-  ( 'Jan','Kowalski',1234527890,1),
-  ( 'Marian','Zalewski',null,2);
+(first_name, last_name, nip,address_id,shortcut) VALUES
+  ( 'Jan','Kowalski',1234527890,1,'KOWALJAN'),
+  ( 'Marian','Zalewski',null,2,'ZALEWMARIAN');
 
 --invoices
 INSERT INTO invoice (year,month,number,invoice_nr, type, create_date, execution_end_date, netto_value, brutto_value, status, url, company_dealer, company_recipent, person_dealer, person_recipent, payment_method ) VALUES

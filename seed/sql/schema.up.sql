@@ -36,6 +36,7 @@ CREATE SEQUENCE person_id_seq
 CREATE TABLE "company" (
 	"id"  INTEGER DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
+	"shortcut" TEXT NOT NULL UNIQUE,
 	"nip" bigint NOT NULL UNIQUE,
 	"regon" bigint UNIQUE,
 	"address_id" bigint,
@@ -88,7 +89,7 @@ CREATE TABLE "invoice" (
 	"netto_value" DECIMAL(12,2) NOT NULL,
 	"brutto_value" DECIMAL(12,2) NOT NULL,
 	"status" TEXT NOT NULL,
-	"url" TEXT NOT NULL,
+	"url" TEXT ,
 	"company_dealer" bigint,
 	"company_recipent" bigint,
 	"person_dealer" bigint,
@@ -102,6 +103,8 @@ CREATE TABLE "invoice" (
 	"file_id" TEXT,
 	"currency" TEXT,
 	"language" TEXT,
+	"contractor_type" TEXT,
+	"reverse_charge" boolean,
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 );
 
@@ -109,9 +112,10 @@ CREATE TABLE "person" (
 	"id"  bigint DEFAULT nextval('person_id_seq'::regclass) NOT NULL,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
+	"shortcut" TEXT NOT NULL UNIQUE,
 	"nip" bigint UNIQUE,
 	"address_id" bigint NOT NULL,
-	"google_company_id" TEXT UNIQUE,
+	"google_person_id" TEXT UNIQUE,
     "bank_account" TEXT,
     "swift" TEXT,
 	CONSTRAINT person_pk PRIMARY KEY ("id")

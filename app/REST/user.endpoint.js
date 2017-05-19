@@ -18,10 +18,7 @@ module.exports = {
             {
                 const companyId = _.get(request, 'auth.credentials.company.id');
                 const address = request.payload;
-                companyManager.updateCompanyAddress(address, companyId).then(() =>
-                {
-                    reply();
-                })
+                companyManager.updateCompanyAddress(address, companyId).then(reply)
                         .catch(error =>
                         {
                             applicationException.errorHandler(error, reply);

@@ -25,7 +25,17 @@ function getCompanies()
 
 function getCompanyDetails(nip)
 {
-    return companyDao.getCompanyDetails(nip);
+    let companyDetails = {};
+    return companyDao.getCompanyByNip(nip).then(company =>
+    {
+        companyDetails = company;
+        return addressDAO.getAddressById(companyDetails.addressId);
+    })
+            .then(address =>
+            {
+                companyDetails.address = address;
+                return companyDetails;
+            });
 }
 
 function addAddress(address)
@@ -88,6 +98,11 @@ function getCompanyById(id)
     })
 }
 
+function findShortcut(filter)
+{
+    return companyDao.findShortcut(filter);
+}
+
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById
+    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut
 };

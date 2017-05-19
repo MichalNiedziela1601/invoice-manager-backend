@@ -1,6 +1,8 @@
 const _ = require('lodash');
-const companyManager = require('../business/company.manager');
-const translate = require('./translationInvoice');
+const companyManager = require('./company.manager.js');
+const translate = require('./../REST/translationInvoice');
+const personManager = require('./person.manager.js');
+const appException = require('../services/applicationException');
 
 function pdfContent(invoice, seller, recipient)
 {
@@ -24,14 +26,14 @@ function pdfContent(invoice, seller, recipient)
             [{text: translate[lang].notes + ': ', bold: true}, {text: invoice.description}] :
             '';
 
-    if (_.some(invoice.products, {'vat': 'N/A'})) {
+    if (invoice.reverseCharge) {
         invoiceNr = [
             {text: translate[lang].invoice + ('pl' === lang ? ' (' + translate['en'].invoice + ') ' : ' ') + invoice.invoiceNr + ''},
             {
                 text: '\n(' + translate[lang].reverseCharge + ('pl' === lang ? ' (' + translate['en'].reverseCharge + ') )' : ')'),
                 fontSize: 8
             }];
-        if (invoice.products[0].amount) {
+        if (invoice.showAmount) {
             listProduct = [
                 [
                     {text: translate[lang].no, style: 'subheader'},
@@ -265,7 +267,7 @@ function pdfContent(invoice, seller, recipient)
                                 [{text: seller.address.postCode + ' ' + seller.address.city}],
                                 [
                                     {
-                                        text: [{text: 'NIP: ', bold: true}, {text: seller.nip}],
+                                        text: [{text: (seller.nip ? 'NIP: ' : ''), bold: true}, {text: seller.nip}],
                                         margin: [0, 0, 0, 20]
                                     }]
                             ]
@@ -279,7 +281,11 @@ function pdfContent(invoice, seller, recipient)
                             widths: ['*'],
                             body: [
                                 [{text: translate[lang].buyer, alignment: 'center', fillColor: '#CCCCCC', fontSize: 11, margin: [10, 0, 0, 0]}],
-                                [{text: translate[lang].name + ': ' + recipient.name}],
+                                [{
+                                    text: translate[lang].name +
+                                    ': ' +
+                                    ('company' === invoice.contractorType ? recipient.name : recipient.firstName + ' ' + recipient.lastName)
+                                }],
                                 [{
                                     text: recipient.address.street + ' ' + recipient.address.buildNr +
                                     '' + (recipient.address.flatNr ?
@@ -288,7 +294,7 @@ function pdfContent(invoice, seller, recipient)
                                 }],
                                 [{text: recipient.address.postCode + ' ' + recipient.address.city}],
                                 [{
-                                    text: [{text: 'NIP: ', bold: true}, {text: recipient.nip}],
+                                    text: [{text: (recipient.nip ? 'NIP: ' : ''), bold: true}, {text: recipient.nip}],
                                     margin: [0, 0, 0, 20]
                                 }]
                             ]
@@ -437,14 +443,18 @@ function generate(invoice)
     return companyManager.getCompanyById(invoice.companyDealer).then(dealer =>
     {
         seller = dealer;
-        return companyManager.getCompanyById(invoice.companyRecipent);
+        if ('company' === invoice.contractorType) {
+            return companyManager.getCompanyById(invoice.companyRecipent);
+        } else if ('person' === invoice.contractorType) {
+            return personManager.getPersonById(invoice.personRecipent);
+        }
     }).then(companyRecipient =>
     {
         recipient = companyRecipient;
         try {
             return pdfContent(invoice, seller, recipient);
         } catch (error) {
-            throw error;
+            throw appException.new(appException.ERROR,'Something wrong in pdfContent');
         }
     });
 }
