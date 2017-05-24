@@ -8,12 +8,13 @@ const DATE_OID = 1082;
 let pgp = require('pg-promise')(options);
 pgp.pg.types.setTypeParser(20, function (value)
 {
-    return parseInt(value,10);
+    return parseInt(value, 10);
 });
-function time(val){
+function time(val)
+{
     return new Date(val);
 }
-pgp.pg.types.setTypeParser(DATE_OID,time);
+pgp.pg.types.setTypeParser(DATE_OID, time);
 
 let configFile = require('../config');
 const config = {

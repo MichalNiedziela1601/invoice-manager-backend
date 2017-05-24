@@ -5,12 +5,13 @@ const readSqlFile = require('../services/readSqlFile');
 const path = require('path');
 const applicationException = require('../services/applicationException');
 
-function getInvoices(filter)
+function getInvoices(filter, id)
 {
     let sql = 'SELECT * FROM invoice';
 
     if (filter && filter.type) {
-        sql += ' WHERE type =\'' + filter.type + '\'';
+        sql += ' WHERE type =\'' + filter.type + '\' AND ' +
+                ('sell' === filter.type ? 'company_dealer = ' + id : 'company_recipent = ' + id);
     }
     return db.any(sql).then(result =>
     {
@@ -82,7 +83,7 @@ function getInvoiceFullNumber(year, month, number)
 
 function changeStatus(id, status)
 {
-    return db.none('UPDATE invoice SET status = $2 WHERE id = $1', [id,status]);
+    return db.none('UPDATE invoice SET status = $2 WHERE id = $1', [id, status]);
 }
 
 module.exports = {

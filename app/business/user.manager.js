@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const companyDAO = require('../dao/company.dao');
 const userDAO = require('../dao/user.dao');
 const applicationException = require('../services/applicationException');
+const companyManager = require('./company.manager');
 
 function getUser(email)
 {
@@ -40,13 +41,13 @@ function authenticate(credentials)
             if (hash) {
                 return result;
             } else {
-                throw applicationException.new(applicationException.PRECONDITION_FAILED,'Password not match');
+                throw applicationException.new(applicationException.PRECONDITION_FAILED, 'Password not match');
             }
         })
 
     }, () =>
     {
-        throw applicationException.new(applicationException.NOT_FOUND,'User not found');
+        throw applicationException.new(applicationException.NOT_FOUND, 'User not found');
     })
 }
 
@@ -57,18 +58,8 @@ function getUserInformation(email)
         return result.companyId;
     }).then(companyId =>
     {
-        return companyDAO.getCompanyById(companyId).then(company =>
-        {
-            return company.nip;
-        })
-    })
-            .then(nip =>
-            {
-                return companyDAO.getCompanyDetails(nip).then(company =>
-                {
-                    return company;
-                })
-            });
+        return companyManager.getCompanyById(companyId);
+    });
 
 }
 

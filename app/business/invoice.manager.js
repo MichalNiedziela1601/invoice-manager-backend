@@ -8,10 +8,38 @@ const googleMethods = require('../services/google.methods');
 const folderMethods = require('../services/createFoldersGoogle');
 const applicationException = require('../services/applicationException');
 const _ = require('lodash');
+const Promise = require('bluebird');
 
-function getInvoices(filter)
+function getInvoices(filter, id)
 {
-    return invoiceDao.getInvoices(filter);
+    return invoiceDao.getInvoices(filter, id).then(invoices =>
+    {
+        if ('sell' === filter.type) {
+            return Promise.map(invoices, invoice =>
+            {
+                if (invoice.companyRecipent) {
+                    return companyDao.getCompanyById(invoice.companyRecipent)
+                            .then(company =>
+                            {
+                                invoice.companyRecipent = company;
+                                return invoice;
+                            })
+                }
+            })
+        } else {
+            return Promise.map(invoices, invoice =>
+            {
+                if (invoice.companyDealer) {
+                    return companyDao.getCompanyById(invoice.companyDealer)
+                            .then(company =>
+                            {
+                                invoice.companyDealer = company;
+                                return invoice;
+                            })
+                }
+            })
+        }
+    });
 }
 
 function addInvoice(filename, invoice)
@@ -29,7 +57,12 @@ function addInvoice(filename, invoice)
             .then(token =>
             {
                 auth = token;
-                return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
+                if ('sell' === invoice.type) {
+
+                    return folderMethods.createFolderCompany(auth, invoice.companyRecipent);
+                } else {
+                    return folderMethods.createFolderCompany(auth, invoice.companyDealer);
+                }
             })
             .then(companyFolderId =>
             {
@@ -180,8 +213,9 @@ function updateSellInvoice(invoice, id, filename)
 
 }
 
-function updateBuyInvoice(invoice,id){
-    return invoiceDao.updateInvoice(invoice,id);
+function updateBuyInvoice(invoice, id)
+{
+    return invoiceDao.updateInvoice(invoice, id);
 }
 
 function getInvoiceNumber(year, month)
@@ -199,7 +233,7 @@ function getInvoiceNumber(year, month)
 
 function changeStatus(id, status)
 {
-    return invoiceDao.changeStatus(id,status);
+    return invoiceDao.changeStatus(id, status);
 }
 
 

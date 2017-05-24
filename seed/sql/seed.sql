@@ -33,9 +33,9 @@ INSERT INTO
 
 INSERT INTO
   person
-(first_name, last_name, nip, pesel,address_id) VALUES
-  ( 'Jan','Kowalski',1234527890,84030434567,3),
-  ( 'Marian','Zalewski',null,null,4);
+(first_name, last_name, nip, address_id) VALUES
+  ( 'Jan','Kowalski',1234527890,3),
+  ( 'Marian','Zalewski',null,4);
 
 INSERT INTO
   invoice

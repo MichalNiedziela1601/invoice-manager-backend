@@ -104,15 +104,15 @@ CREATE TABLE "invoice" (
 	CONSTRAINT invoice_pk PRIMARY KEY ("id")
 );
 
-
-
 CREATE TABLE "person" (
 	"id"  bigint DEFAULT nextval('person_id_seq'::regclass) NOT NULL,
 	"first_name" TEXT NOT NULL,
 	"last_name" TEXT NOT NULL,
 	"nip" bigint UNIQUE,
-	"pesel" bigint UNIQUE,
 	"address_id" bigint NOT NULL,
+	"google_company_id" TEXT UNIQUE,
+    "bank_account" TEXT,
+    "swift" TEXT,
 	CONSTRAINT person_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

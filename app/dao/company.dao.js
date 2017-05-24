@@ -27,7 +27,7 @@ function addCompanyRegister(person)
         return data.id
     }).catch(error =>
     {
-        throw applicationException.new(applicationException.PRECONDITION_FAILED,error);
+        throw applicationException.new(applicationException.PRECONDITION_FAILED, error);
     });
 
 }
@@ -39,7 +39,7 @@ function addAddress(address)
         return result[0].id;
     }).catch(error =>
     {
-        throw applicationException.new(applicationException.PRECONDITION_FAILED,error);
+        throw applicationException.new(applicationException.PRECONDITION_FAILED, error);
     });
 }
 function getCompanyDetails(nip)

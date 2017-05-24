@@ -52,30 +52,32 @@ describe('company.manager', function ()
     {
         describe('when companies exists', function ()
         {
+            let promise = {};
             before(function ()
             {
                 companyDAOMock.getCompanies.resolves(companies);
-                return companyManager.getCompanies();
+                addressDAOMock.getAddressById.withArgs(1).resolves(address[0]);
+                addressDAOMock.getAddressById.withArgs(2).resolves(address[1]);
+                addressDAOMock.getAddressById.withArgs(3).resolves(address[2]);
+                promise = companyManager.getCompanies();
             });
             it('should call getCompanies on companyDao', function ()
             {
                 expect(companyDAOMock.getCompanies).to.have.callCount(1);
             });
-            describe('getAddressById on addressDAO', function ()
+            it('should call getAddressById on addressDAO ', function ()
             {
-                before(function ()
-                {
-                    return addressDAOMock.getAddressById({addressId: 1});
-                });
-                it('should call getAddressById on addressDAO ', function ()
+                promise.then(() =>
                 {
                     expect(addressDAOMock.getAddressById).to.have.callCount(1);
+                })
+            });
+            it('should call getAddressById with company.addressId', function ()
+            {
+                promise.then(() => {
+                    expect(addressDAOMock.getAddressById).to.have.been.calledWith(1);
                 });
-                it('should call getAddressById with company.addressId', function ()
-                {
-                    expect(addressDAOMock.getAddressById).to.have.been.calledWith({addressId: 1});
 
-                });
             });
         });
         describe('when table is empty', function ()
@@ -334,10 +336,6 @@ describe('company.manager', function ()
             expect(companyDAOMock.getCompanyById).callCount(1);
             expect(companyDAOMock.getCompanyById).calledWith(1);
         });
-        // it('should call addressDAO.getAddressById', function ()
-        // {
-        //     expect(addressDAOMock.getAddressById).callCount(1);
-        //     expect(addressDAOMock.getAddressById).calledWith(1);
-        // });
+
     });
 });

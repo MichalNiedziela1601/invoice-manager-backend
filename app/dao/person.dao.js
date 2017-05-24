@@ -6,7 +6,8 @@ const applicationException = require('../services/applicationException');
 function getPersonById(id)
 {
     return db.one('SELECT * FROM person WHERE id = $1', [id]).then(person => parser.parseObj(person))
-            .catch(() => {
+            .catch(() =>
+            {
                 throw applicationException.new(applicationException.NOT_FOUND, 'Person not found')
             });
 }

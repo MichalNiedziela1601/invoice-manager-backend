@@ -5,6 +5,8 @@ const sinonChai = require('sinon-chai');
 const sinon = require('sinon');
 chai.use(sinonChai);
 const applicationException = require('../../app/services/applicationException');
+const invoceFixtures = require('../fixtures/invoice.manager.fixtures');
+const _ = require('lodash');
 
 const expect = chai.expect;
 let invoiceMock = {};
@@ -16,7 +18,7 @@ let addressDealer = {};
 let addressRecipent = {};
 
 let invoiceDAOMock = {
-    getInvoices: sinon.spy(),
+    getInvoices: sinon.stub(),
     addInvoice: sinon.spy(),
     getInvoiceById: sinon.stub().resolves(),
     getInvoiceFullNumber: sinon.stub(),
@@ -69,17 +71,77 @@ describe('invoice.manager', function ()
 {
     describe('getInvoices', function ()
     {
-        before(function ()
+        let filter = {};
+        let invoices = [];
+        describe('when type is sell', function ()
         {
-            return invoiceManager.getInvoices('filter');
+            before(function ()
+            {
+                invoiceDAOMock.getInvoices.resolves(invoceFixtures.getInvoicesSell);
+                companyDaoMock.getCompanyById.resolves(invoceFixtures.getCompanyById);
+                filter.type = 'sell';
+                return invoiceManager.getInvoices(filter,2).then(result => {
+                    invoices = result;
+                });
+            });
+            it('should call getInvoices on invoiceDao', function ()
+            {
+                expect(invoiceDAOMock.getInvoices).callCount(1);
+            });
+            it('should call getInvoices with filter', function ()
+            {
+                expect(invoiceDAOMock.getInvoices).calledWith(filter,2);
+            });
+            it('should call getCompanyById', function ()
+            {
+                expect(companyDaoMock.getCompanyById).callCount(2);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
+                expect(companyDaoMock.getCompanyById).calledWith(3);
+            });
+            it('should return invoices', function ()
+            {
+                let result = invoceFixtures.getInvoicesSell;
+                _.each(result, value => {
+                    value.companyRecipent = invoceFixtures.getCompanyById;
+                });
+                expect(invoices).eql(result);
+            });
         });
-        it('should call getInvoices on invoiceDao', function ()
+        describe('when type is buy', function ()
         {
-            expect(invoiceDAOMock.getInvoices).callCount(1);
-        });
-        it('should call getInvoices with filter', function ()
-        {
-            expect(invoiceDAOMock.getInvoices).calledWith('filter');
+            before(function ()
+            {
+                invoiceDAOMock.getInvoices.reset();
+                companyDaoMock.getCompanyById.reset();
+                invoiceDAOMock.getInvoices.resolves(invoceFixtures.getInvoicesBuy);
+                companyDaoMock.getCompanyById.resolves(invoceFixtures.getCompanyById);
+                filter.type = 'buy';
+                return invoiceManager.getInvoices(filter,2).then(result => {
+                    invoices = result;
+                });
+            });
+            it('should call getInvoices on invoiceDao', function ()
+            {
+                expect(invoiceDAOMock.getInvoices).callCount(1);
+            });
+            it('should call getInvoices with filter', function ()
+            {
+                expect(invoiceDAOMock.getInvoices).calledWith(filter,2);
+            });
+            it('should call getCompanyById', function ()
+            {
+                expect(companyDaoMock.getCompanyById).callCount(2);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
+                expect(companyDaoMock.getCompanyById).calledWith(3);
+            });
+            it('should return invoices', function ()
+            {
+                let result = invoceFixtures.getInvoicesBuy;
+                _.each(result, value => {
+                    value.companyDealer = invoceFixtures.getCompanyById;
+                });
+                expect(invoices).eql(result);
+            });
         });
     });
 
@@ -99,7 +161,7 @@ describe('invoice.manager', function ()
 
                 invoiceMock = {
                     invoiceNr: 'FV 12/05/111',
-                    type: 'Sale',
+                    type: 'sell',
                     createDate: new Date('2012-05-07T22:00:00.000Z'),
                     executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
                     nettoValue: '$2,330.45',
@@ -163,7 +225,7 @@ describe('invoice.manager', function ()
             {
                 invoiceMock = {
                     invoiceNr: 'FV 12/05/111',
-                    type: 'Sale',
+                    type: 'buy',
                     createDate: new Date('2012-05-07T22:00:00.000Z'),
                     executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
                     nettoValue: '$2,330.45',
@@ -189,6 +251,45 @@ describe('invoice.manager', function ()
                         message: 'This invoice number exists. Try another!'
                     })
                 })
+            });
+        });
+
+        describe('when upload invoice', function ()
+        {
+            let yearId = 'sdf897sfdsk';
+            let monthId = 'hku4h5uik4';
+            let response = {
+                id: 'sdfhshs45j3h',
+                webViewLink: 'https://google/sdfksdjfskfhs4j5jk'
+            };
+            before(() => {
+                companyDaoMock.getCompanyById.reset();
+
+                invoiceMock = {
+                    invoiceNr: 'FV 12/05/111',
+                    type: 'buy',
+                    createDate: new Date('2012-05-07T22:00:00.000Z'),
+                    executionEndDate: new Date('2012-01-17T23:00:00.000Z'),
+                    nettoValue: '$2,330.45',
+                    bruttoValue: '$3,475.89',
+                    status: 'paid',
+                    url: 'url6',
+                    companyDealer: 1,
+                    companyRecipent: 2,
+                    personDealer: null,
+                    personRecipent: null
+                };
+                invoiceDAOMock.getInvoiceFullNumber.resolves();
+                googleMethodsMock.shareFile.resolves();
+                googleMethodsMock.saveFile.resolves(response);
+                createFoldersGoogleMock.createFolderCompany.withArgs('token', invoiceMock.companyDealer).resolves(yearId);
+                createFoldersGoogleMock.createYearMonthFolder.withArgs('token', invoiceMock, yearId).resolves(monthId);
+
+                invoiceManager.addInvoice('filename', invoiceMock)
+            });
+            it('should call createFolderCompany with args', function ()
+            {
+                expect(createFoldersGoogleMock.createFolderCompany).calledWith('token',1);
             });
         });
 

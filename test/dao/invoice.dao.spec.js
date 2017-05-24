@@ -58,21 +58,21 @@ describe('invoice.dao', function ()
             {
                 beforeEach(function ()
                 {
-                    return invoiceDAO.getInvoices({type: 'Sale'}).then(function (result)
+                    return invoiceDAO.getInvoices({type: 'sell'},2).then(function (result)
                     {
                         invoices = result;
                     })
                 });
                 it('should return sell invoices', function ()
                 {
-                    expect(invoices).to.eql([data.invoices[1], data.invoices[2]]);
+                    expect(invoices).to.eql([data.invoices[1]]);
                 });
             });
             describe('buy', function ()
             {
                 beforeEach(function ()
                 {
-                    return invoiceDAO.getInvoices({type: 'Buy'}).then(function (result)
+                    return invoiceDAO.getInvoices({type: 'buy'},2).then(function (result)
                     {
                         invoices = result;
                     })
@@ -89,7 +89,7 @@ describe('invoice.dao', function ()
     {
         let mockedInvoice = {
             invoiceNr: 'FV 2014/05/111',
-            type: 'Sale',
+            type: 'sell',
             createDate: new Date('2012-05-08'),
             executionEndDate: new Date('2012-01-18'),
             nettoValue: '2330.45',
@@ -296,7 +296,7 @@ describe('invoice.dao', function ()
     {
         let mockedInvoice = {
             invoiceNr: 'FV 2014/05/111',
-            type: 'Sale',
+            type: 'sell',
             createDate: new Date('2012-05-08'),
             executionEndDate: new Date('2012-01-18'),
             nettoValue: '2430.45',
