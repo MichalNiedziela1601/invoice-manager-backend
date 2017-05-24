@@ -10,15 +10,11 @@ function getCompanies()
     {
         return Promise.map(result, function (company)
         {
-            if (company.addressId) {
-                return addressDAO.getAddressById(company.addressId).then(address =>
-                {
-                    company.address = address;
-                    return company;
-                })
-            } else {
+            return addressDAO.getAddressById(company.addressId).then(address =>
+            {
+                company.address = address;
                 return company;
-            }
+            })
         })
     })
             .catch(error =>

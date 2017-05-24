@@ -81,6 +81,52 @@ module.exports = {
                     reply(userInfo);
                 }).catch(error => applicationException.errorHandler(error, reply))
             }
+        });
+
+        server.route({
+            method: 'POST',
+            path: '/api/user/newUser',
+            handler: function (request, reply)
+            {
+                const payload = request.payload;
+                userManager.addNewUser(payload).then(reply)
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
+                        });
+            }
+        });
+
+        server.route({
+            method: 'PUT',
+            path: '/api/user/address',
+            config: {validate: {payload: joiSchema.schema.address}},
+            handler: function (request, reply)
+            {
+                const address = request.payload;
+                companyManager.updateCompanyAddress(address, address.id).then(reply)
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
+                        })
+            }
+        });
+
+        server.route({
+            method: 'PUT',
+            path: '/api/user/account',
+            config: { validate: {payload: joiSchema.schema.account}},
+            handler: function (request, reply)
+            {
+                const account = request.payload;
+                const companyId = _.get(request, 'auth.credentials.companyId');
+                userManager.updateAccount(account, companyId)
+                        .then(reply)
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
+                        })
+            }
         })
     }
 };

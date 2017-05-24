@@ -472,4 +472,24 @@ describe('company.dao', function ()
             });
         });
     });
+    describe('updateAccount', function ()
+    {
+        let account = {
+            bankName: 'MBANK',
+            bankAccount: '98789768768768768',
+            swift: 'MBPLNG'
+        };
+        beforeEach(function ()
+        {
+            return companyDAO.updateAccount(account,1).then(() => {
+                return companyDAO.getCompanyById(1).then(result => {
+                    companies = result;
+                })
+            });
+        });
+        it('should set new account', function ()
+        {
+            expect(companies).eql(data.updateAccount);
+        });
+    });
 });

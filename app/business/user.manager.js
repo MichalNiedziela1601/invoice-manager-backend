@@ -6,6 +6,15 @@ const userDAO = require('../dao/user.dao');
 const applicationException = require('../services/applicationException');
 const companyManager = require('./company.manager');
 
+function hashPassword(obj, password, salt)
+{
+    return bcrypt.hash(password, salt).then(hash =>
+    {
+        obj.password = hash;
+        return obj;
+    })
+}
+
 function getUser(email)
 {
     let userInfo = {};
@@ -25,7 +34,7 @@ function checkPassword(email, password)
 {
     return loginDAO.checkPassword(email).then(hash =>
     {
-        return bcrypt.compare(password.toString(), hash.password.toString()).then(res =>
+        return bcrypt.compare(password, hash.password).then(res =>
         {
             return res;
         });
@@ -63,6 +72,31 @@ function getUserInformation(email)
 
 }
 
+function addNewUser(credentials)
+{
+    return userDAO.getUserByEmail(credentials.email).then(() =>
+    {
+        throw applicationException.new(applicationException.CONFLICT, 'Email exist in database');
+    }, () =>
+    {
+
+        return hashPassword(credentials, credentials.password, 10)
+                .then(user =>
+                {
+                    return userDAO.addUser(user);
+                })
+                .catch(error =>
+                {
+                    throw applicationException.new(applicationException.ERROR, error);
+                });
+    })
+}
+
+function updateAccount(account,companyId)
+{
+    return companyDAO.updateAccount(account,companyId);
+}
+
 module.exports = {
-    getUser, checkPassword, authenticate, getUserInformation
+    getUser, checkPassword, authenticate, getUserInformation, addNewUser,updateAccount
 };

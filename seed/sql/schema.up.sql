@@ -42,6 +42,7 @@ CREATE TABLE "company" (
 	"google_company_id" TEXT UNIQUE,
 	"bank_account" TEXT,
 	"swift" TEXT,
+	"bank_name" TEXT,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -67,7 +68,7 @@ CREATE TABLE "users" (
 	"id"  bigint DEFAULT nextval('users_id_seq'::regclass) NOT NULL,
 	"email" TEXT NOT NULL UNIQUE,
 	"password" TEXT NOT NULL,
-	"company_id" bigint UNIQUE,
+	"company_id" bigint ,
 	CONSTRAINT users_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
