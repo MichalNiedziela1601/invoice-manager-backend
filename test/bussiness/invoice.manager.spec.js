@@ -1079,6 +1079,7 @@ describe('invoice.manager', function ()
                     id: 2,
                     shortcut: 'FIRMA_RKR'
                 };
+                invoiceDAOMock.getInvoiceById.reset();
                 invoiceDAOMock.updateInvoice.reset();
                 invoiceDAOMock.updateInvoice.resolves();
                 companyDaoMock.getCompanyById.reset();
@@ -1086,6 +1087,8 @@ describe('invoice.manager', function ()
                 companyDaoMock.getCompanyById.resolves(company);
                 oauthTokenMock.resolves('token');
                 googleMethodsMock.renameFile.resolves();
+                invoiceDAOMock.getInvoiceById.resolves(invoice);
+                invoiceDAOMock.getInvoiceFullNumber.resolves();
 
                 invoiceManager.updateBuyInvoice(invoice, 1);
             });
@@ -1097,7 +1100,7 @@ describe('invoice.manager', function ()
             it('should call companyDao.getCompanyById', function ()
             {
                 expect(companyDaoMock.getCompanyById).callCount(1);
-                expect(companyDaoMock.getCompanyById).calledWith(1);
+                expect(companyDaoMock.getCompanyById).calledWith(2);
             });
             it('should call googleMethod.renameFile', function ()
             {
@@ -1111,8 +1114,13 @@ describe('invoice.manager', function ()
             before(() =>
             {
 
+
                 invoice = _.cloneDeep(invoiceMock);
                 invoice.contractorType = 'person';
+                let invoiceDB = _.cloneDeep(invoice);
+                invoiceDB.year = 2017;
+                invoiceDB.month = 10;
+                invoiceDB.number = 12;
                 company = {
                     firstName: 'Jan',
                     lastName: 'Kowalski',
@@ -1120,14 +1128,17 @@ describe('invoice.manager', function ()
                     id: 2,
                     shortcut: 'KOWAL1_TRN'
                 };
+                invoiceDAOMock.getInvoiceById.reset();
                 invoiceDAOMock.updateInvoice.reset();
                 googleMethodsMock.renameFile.reset();
                 invoiceDAOMock.updateInvoice.resolves();
                 personDaoMock.getPersonById.reset();
                 oauthTokenMock.reset();
                 personDaoMock.getPersonById.resolves(company);
+                invoiceDAOMock.getInvoiceById.resolves(invoiceDB);
                 oauthTokenMock.resolves('token');
                 googleMethodsMock.renameFile.resolves();
+                invoiceDAOMock.getInvoiceFullNumber.resolves();
 
                 invoiceManager.updateBuyInvoice(invoice, 1);
             });
@@ -1139,7 +1150,7 @@ describe('invoice.manager', function ()
             it('should call companyDao.getCompanyById', function ()
             {
                 expect(companyDaoMock.getCompanyById).callCount(1);
-                expect(companyDaoMock.getCompanyById).calledWith(1);
+                expect(companyDaoMock.getCompanyById).calledWith(2);
             });
             it('should call googleMethod.renameFile', function ()
             {
@@ -1258,6 +1269,8 @@ describe('invoice.manager', function ()
                 pipeMock.returns({on: sinon.stub().yields()});
                 invoiceDAOMock.updateInvoice.resolves();
                 googleMethodsMock.deleteFile.resolves();
+                invoiceDAOMock.getInvoiceById.resolves(invoice);
+                invoiceDAOMock.getInvoiceFullNumber.resolves();
 
                 invoiceManager.updateSellInvoice(invoice, 1, 1);
 
@@ -1350,6 +1363,7 @@ describe('invoice.manager', function ()
                 pipeMock.returns({on: sinon.stub().yields()});
                 invoiceDAOMock.updateInvoice.resolves();
                 googleMethodsMock.deleteFile.resolves();
+                invoiceDAOMock.getInvoiceById.resolves(invoice);
 
                 invoiceManager.updateSellInvoice(invoice, 1, 1);
 

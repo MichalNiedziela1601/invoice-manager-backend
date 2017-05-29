@@ -90,7 +90,7 @@ function getCompanyById(id)
     return companyDao.getCompanyById(id).then(company =>
     {
         companyDetails = company;
-        return addressDAO.getAddressById(id);
+        return addressDAO.getAddressById(company.addressId);
     }).then(address =>
     {
         companyDetails.address = address;
@@ -103,6 +103,14 @@ function findShortcut(filter)
     return companyDao.findShortcut(filter);
 }
 
+function updateCompany(company)
+{
+    return companyDao.updateCompany(company).then(() =>
+    {
+        return addressDAO.updateAddress(company.address, company.addressId);
+    })
+}
+
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut
+    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut, updateCompany
 };

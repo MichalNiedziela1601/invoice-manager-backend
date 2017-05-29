@@ -179,7 +179,8 @@ function addInvoice(data, invoice, companyId)
             })
             .catch(error =>
             {
-                return invoiceDao.deleteInvoice(invoiceId).then(() => {
+                return invoiceDao.deleteInvoice(invoiceId).then(() =>
+                {
                     if (applicationException.is(error)) {
                         throw error;
                     }
@@ -261,6 +262,18 @@ function getInvoiceById(id)
             });
 }
 
+function checkInvoiceNumber(updatedInvoice, id)
+{
+    return invoiceDao.getInvoiceById(id).then(invoice =>
+    {
+        if (updatedInvoice.year === invoice.year && updatedInvoice.month === invoice.month && updatedInvoice.number === invoice.number) {
+            return 0;
+        } else {
+            return invoiceDao.getInvoiceFullNumber(updatedInvoice.year, updatedInvoice.month, updatedInvoice.number);
+        }
+    })
+}
+
 function updateSellInvoice(invoice, id, companyId)
 {
     invoice.year = new Date(invoice.createDate).getFullYear();
@@ -269,8 +282,10 @@ function updateSellInvoice(invoice, id, companyId)
 
     let auth = null;
     let filename = null;
-
-    return invoiceDao.updateInvoice(invoice, id)
+    return checkInvoiceNumber(invoice, id).then(() =>
+    {
+        return invoiceDao.updateInvoice(invoice, id)
+    })
             .then(() =>
             {
                 return oauthToken();
@@ -364,7 +379,10 @@ function updateBuyInvoice(invoice, id)
 
     let auth = null;
     let filename = null;
-    return invoiceDao.updateInvoice(invoice, id)
+    return checkInvoiceNumber(invoice, id).then(() =>
+    {
+        return invoiceDao.updateInvoice(invoice, id)
+    })
             .then(() =>
             {
                 return oauthToken();
@@ -373,9 +391,9 @@ function updateBuyInvoice(invoice, id)
             {
                 auth = token;
                 if ('company' === invoice.contractorType) {
-                    return companyDao.getCompanyById(invoice.companyDealer);
+                    return companyDao.getCompanyById(invoice.companyRecipent);
                 } else if ('person' === invoice.contractorType) {
-                    return personDao.getPersonById(invoice.personDealer);
+                    return personDao.getPersonById(invoice.personRecipent);
                 }
 
             })

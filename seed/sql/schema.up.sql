@@ -116,7 +116,8 @@ CREATE TABLE "person" (
 	"nip" bigint UNIQUE,
 	"address_id" bigint NOT NULL,
 	"google_person_id" TEXT UNIQUE,
-    "bank_account" TEXT,
+	"bank_name" TEXT,
+    "bank_account" TEXT UNIQUE,
     "swift" TEXT,
 	CONSTRAINT person_pk PRIMARY KEY ("id")
 ) WITH (

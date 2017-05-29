@@ -38,12 +38,15 @@ module.exports = {
         company: {
             name: Joi.string().min(2).required(),
             nip: Joi.number().required(),
-            regon: Joi.number(),
+            regon: [Joi.number(),Joi.allow(null)],
+            shortcut: Joi.string(),
+            bankName: Joi.string(),
+            bankAccount: Joi.string(),
             address: {
                 street: Joi.string().required(),
                 buildNr: Joi.string().required(),
                 flatNr: Joi.any().optional(),
-                postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
+                postCode: Joi.string().required(),
                 city: Joi.string().required(),
                 id: Joi.number().optional()
             }
@@ -53,6 +56,26 @@ module.exports = {
             nip: Joi.number().required(),
             email: Joi.string().email(),
             password: Joi.string().min(4).required()
+        },
+        updatedCompany: {
+            name: Joi.string().min(2).required(),
+            nip: Joi.number().required(),
+            regon: [Joi.number(),Joi.allow(null)],
+            shortcut: Joi.string(),
+            bankName: Joi.string(),
+            bankAccount: Joi.string(),
+            id: Joi.number(),
+            addressId: Joi.number(),
+            googleCompanyId: [Joi.string(),Joi.allow(null)],
+            swift: [Joi.string(),Joi.allow(null)],
+            address: {
+                street: Joi.string().required(),
+                buildNr: Joi.string().required(),
+                flatNr: Joi.any().optional(),
+                postCode: Joi.string().required(),
+                city: Joi.string().required(),
+                id: Joi.number().optional()
+            }
         },
         address: {
             street: Joi.string().required(),
@@ -66,6 +89,42 @@ module.exports = {
             bankName: Joi.string().required(),
             bankAccount: Joi.string().required(),
             swift: Joi.string().optional()
-        }
+        },
+        person: {
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
+            nip: [Joi.number(), Joi.allow(null)],
+            shortcut: Joi.string(),
+            bankName: Joi.string(),
+            bankAccount: Joi.string(),
+            address: {
+                street: Joi.string().required(),
+                buildNr: Joi.string().required(),
+                flatNr: Joi.any().optional(),
+                postCode: Joi.string().required(),
+                city: Joi.string().required(),
+                id: Joi.number().optional()
+            }
+        },
+        updatedPerson: {
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
+            nip: [Joi.number(), Joi.allow(null)],
+            shortcut: Joi.string(),
+            bankName: Joi.string(),
+            bankAccount: Joi.string(),
+            id: Joi.number(),
+            addressId: Joi.number(),
+            googlePersonId: [Joi.string(),Joi.allow(null)],
+            swift: [Joi.string(),Joi.allow(null)],
+            address: {
+                street: Joi.string().required(),
+                buildNr: Joi.string().required(),
+                flatNr: Joi.any().optional(),
+                postCode: Joi.string().required(),
+                city: Joi.string().required(),
+                id: Joi.number().optional()
+            }
+        },
     }
 };

@@ -14,7 +14,8 @@ function getPersonById(id)
 
 function findPersonBySurname(lastName)
 {
-    return db.any('SELECT id, first_name,last_name FROM person WHERE last_name like \'%$1#%\'', [ lastName])
+    lastName = lastName[0].toUpperCase() + lastName.slice(1);
+    return db.any('SELECT id, first_name,last_name FROM person WHERE last_name like \'%$1#%\' OR shortcut like upper(\'%$1#%\')', [lastName])
             .then(companies =>
             {
                 return parser.parseArrayOfObject(companies);
@@ -29,7 +30,48 @@ function addFolderId(folderId, id)
     });
 }
 
+function addPerson(person)
+{
+    person.lastName = person.lastName[0].toUpperCase() + person.lastName.slice(1);
+    person.shortcut = person.shortcut.toUpperCase();
+    return db.one('INSERT INTO person (first_name,last_name,shortcut,address_id, nip, bank_name, bank_account) VALUES ($1,$2,$3,$4,$5,$6,$7) returning id',
+            [person.firstName, person.lastName, person.shortcut, person.addressId, person.nip, person.bankName, person.bankAccount]);
+}
+
+function findShortcut(filter)
+{
+    return db.any('SELECT id FROM person WHERE shortcut = $1', [filter.shortcut.toUpperCase()]);
+}
+
+function findByNip(nip)
+{
+    return db.one('SELECT * FROM person WHERE nip = $1', [nip])
+            .then(person =>
+            {
+                return parser.parseObj(person);
+            }).catch(error =>
+            {
+                if (error.received === 0) {
+                    throw applicationException.new(applicationException.NOT_FOUND, error)
+                }
+            });
+}
+
+function getPersons()
+{
+    let sql = 'SELECT * FROM person';
+    return db.any(sql).then(result =>
+    {
+        return parser.parseArrayOfObject(result);
+    });
+}
+
+function updatePerson(person)
+{
+    return db.none('UPDATE person SET first_name = $2, last_name = $3, nip = $4, bank_name = $5, bank_account = $6 WHERE id = $1',
+    [person.id, person.firstName, person.lastName, person.nip, person.bankName, person.bankAccount]);
+}
 
 module.exports = {
-    getPersonById,findPersonBySurname, addFolderId
+    getPersonById, findPersonBySurname, addFolderId, addPerson, findShortcut, findByNip, getPersons, updatePerson
 };

@@ -1,6 +1,5 @@
 const companyDao = require('../dao/company.dao');
 const googleMethods = require('./google.methods');
-const personDao = require('../dao/person.dao');
 const appException = require('../services/applicationException');
 
 function createFolderCompany(auth, id)
@@ -31,30 +30,6 @@ function createFolderCompany(auth, id)
             .catch(function (error)
             {
                 throw appException.new(appException.ERROR, 'Something bad with createFolderCompany: ' + error);
-            });
-}
-function createFolderPerson(auth, id)
-{
-    let person = null;
-    return personDao.getPersonById(id)
-            .then(result =>
-            {
-                person = result;
-                return googleMethods.checkFolderExists(auth, person.googlePersonId).then(folderId =>
-                {
-                    return folderId;
-                }, () =>
-                {
-                    return googleMethods.createFolder(auth, person.firstName + ' ' + person.lastName);
-                })
-            })
-            .then(folderId =>
-            {
-                return personDao.addFolderId(folderId, person.id)
-            })
-            .catch(function (error)
-            {
-                throw appException.new(appException.ERROR, 'Something bad with createFolderPerson: ' + error);
             });
 }
 
@@ -96,5 +71,5 @@ function createYearMonthFolder(auth, invoice, companyFolderId)
 }
 
 module.exports = {
-    createFolderCompany, createYearMonthFolder, createFolderPerson
+    createFolderCompany, createYearMonthFolder
 };
