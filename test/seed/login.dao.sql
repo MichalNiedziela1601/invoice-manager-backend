@@ -1,6 +1,6 @@
-INSERT INTO company (name, nip, regon, address_id,bank_account, bank_name) VALUES
-  ( 'Kuba',1029384756, 243124,null,'22068903623586048228853407','Alior Bank'),
-  ('Firma Testowa',1029456789,null,null,'22068903623586048228853408','ING');
+INSERT INTO company (name, nip, regon, address_id,bank_account, bank_name, shortcut) VALUES
+  ( 'Kuba',1029384756, 243124,null,'22068903623586048228853407','Alior Bank','KUBA'),
+  ('Firma Testowa',1029456789,null,null,'22068903623586048228853408','ING','FIRMTEST');
 
 INSERT INTO
   users

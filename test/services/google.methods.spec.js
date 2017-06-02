@@ -11,6 +11,7 @@ let permissionsCreateFun = sinon.spy();
 let filesGetFunc = sinon.spy();
 let filesListFunc = sinon.spy();
 let filesDelete = sinon.spy();
+let filesUpdate = sinon.spy();
 let googleMock = {
     drive: sinon.stub()
 };
@@ -449,14 +450,15 @@ describe('Google Methods', function ()
     {
         let name = 'April';
         let parentId = 'sjdhfsgs9879f9ss';
-        before(function(){
+        before(function ()
+        {
             googleMock.drive = sinon.stub();
             googleMock.drive.returns(
                     {
                         files: {list: filesListFunc}
                     }
             );
-            googleMethodsMock.findFolderByName('auth',name,parentId);
+            googleMethodsMock.findFolderByName('auth', name, parentId);
         });
         it('should call google.drive', function ()
         {
@@ -494,7 +496,7 @@ describe('Google Methods', function ()
                 });
                 it('should reject', function ()
                 {
-                    return googleMethodsMock.findFolderByName('auth',name,parentId).catch(error =>
+                    return googleMethodsMock.findFolderByName('auth', name, parentId).catch(error =>
                     {
                         expect(error).to.be.eql(errorMock);
                     });
@@ -518,7 +520,7 @@ describe('Google Methods', function ()
                 });
                 it('should resolve', function ()
                 {
-                    return googleMethodsMock.findFolderByName('auth',name,parentId).then(file =>
+                    return googleMethodsMock.findFolderByName('auth', name, parentId).then(file =>
                     {
                         expect(file).to.be.eql(fileMock);
                     });
@@ -533,15 +535,16 @@ describe('Google Methods', function ()
     {
         let invoice = {
             fileId: 'sdfjssg89s79sdgs9df7'
-        } ;
-        before(function(){
+        };
+        before(function ()
+        {
             googleMock.drive = sinon.stub();
             googleMock.drive.returns(
                     {
                         files: {delete: filesDelete}
                     }
             );
-            googleMethodsMock.deleteFile('auth',invoice);
+            googleMethodsMock.deleteFile('auth', invoice);
         });
         it('should call google.drive', function ()
         {
@@ -557,8 +560,10 @@ describe('Google Methods', function ()
         {
             describe('when callback return error', function ()
             {
-                before(() => {
-                    filesDelete = function(obj,callback){
+                before(() =>
+                {
+                    filesDelete = function (obj, callback)
+                    {
                         callback(errorMock);
                     };
                     googleMock.drive.returns(
@@ -569,7 +574,8 @@ describe('Google Methods', function ()
                 });
                 it('should rejects error', function ()
                 {
-                    return googleMethodsMock.deleteFile('auth',invoice).catch(error => {
+                    return googleMethodsMock.deleteFile('auth', invoice).catch(error =>
+                    {
                         expect(error).eql(errorMock);
                     })
                 });
@@ -578,11 +584,12 @@ describe('Google Methods', function ()
 
             describe('when callback not return error', function ()
             {
-                let fileMock = { name: 'blabla'};
-                before(() => {
+                let fileMock = {name: 'blabla'};
+                before(() =>
+                {
                     filesDelete = function (obj, callback)
                     {
-                        callback(0,fileMock);
+                        callback(0, fileMock);
                     };
                     googleMock.drive.returns(
                             {
@@ -593,11 +600,88 @@ describe('Google Methods', function ()
 
                 it('should resolve', function ()
                 {
-                    return googleMethodsMock.deleteFile('auth',invoice).then(file =>
+                    return googleMethodsMock.deleteFile('auth', invoice).then(file =>
                     {
                         expect(file).eql(fileMock);
                     });
+                });
+            });
+        });
+    });
 
+    describe('renameFile', function ()
+    {
+        let invoice = {
+            fileId: 'sdfjssg89s79sdgs9df7'
+        };
+
+        before(function ()
+        {
+            googleMock.drive = sinon.stub();
+            googleMock.drive.returns(
+                    {
+                        files: {update: filesUpdate}
+                    }
+            );
+            googleMethodsMock.renameFile('auth', invoice, 'change');
+        });
+        it('should call google.drive', function ()
+        {
+            expect(googleMock.drive).callCount(1);
+            expect(googleMock.drive).calledWith({version: 'v3', auth: 'auth'})
+        });
+        it('should call files.update', function ()
+        {
+            expect(filesUpdate).callCount(1);
+            expect(filesUpdate).calledWith({fileId: invoice.fileId, resource: {name: 'change'}}, sinon.match.func);
+        });
+
+        describe('when call callback', function ()
+        {
+            describe('when callback return error', function ()
+            {
+                before(() =>
+                {
+                    filesUpdate = function (obj, callback)
+                    {
+                        callback(errorMock);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {update: filesUpdate}
+                            }
+                    );
+                });
+                it('should rejects error', function ()
+                {
+                    return googleMethodsMock.renameFile('auth', invoice, 'change').catch(error =>
+                    {
+                        expect(error).eql(errorMock);
+                    })
+                });
+
+            });
+
+            describe('when callback return resolve', function ()
+            {
+                before(() =>
+                {
+                    filesUpdate = function (obj, callback)
+                    {
+                        callback(0);
+                    };
+                    googleMock.drive.returns(
+                            {
+                                files: {update: filesUpdate}
+                            }
+                    );
+                });
+                it('should resolve promise', function ()
+                {
+                    return googleMethodsMock.renameFile('auth', invoice, 'change').then(result =>
+                    {
+                        expect(result).eql();
+                    })
                 });
 
             });

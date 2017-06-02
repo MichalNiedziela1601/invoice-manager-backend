@@ -23,7 +23,6 @@ function addUser(user)
 
     }).catch(error =>
     {
-        db.none('DELETE FROM company WHERE id = $1', [user.companyId]);
         throw applicationException.new(applicationException.ERROR,error);
     });
 }

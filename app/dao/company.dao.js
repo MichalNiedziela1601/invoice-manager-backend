@@ -13,16 +13,17 @@ function getCompanies()
 }
 function addCompany(company)
 {
-    let sql = 'INSERT INTO company (name,nip, regon, address_id, bank_account,bank_name) VALUES ($1,$2,$3,$4,$5,$6)';
-    return db.any(sql, [company.name, company.nip, company.regon, company.addressId, company.bankAccount, company.bankName]).catch(error =>
+    company.shortcut = company.shortcut.toUpperCase();
+    let sql = 'INSERT INTO company (name,nip, regon, address_id, bank_account,bank_name, shortcut) VALUES ($1,$2,$3,$4,$5,$6,$7)';
+    return db.any(sql, [company.name, company.nip, company.regon, company.addressId, company.bankAccount, company.bankName, company.shortcut]).catch(error =>
     {
         throw applicationException.new(applicationException.ERROR, error);
     });
 }
 function addCompanyRegister(person)
 {
-    let company = 'INSERT INTO company (name,nip) values($1,$2) returning id';
-    return db.one(company, [person.name, person.nip]).then(data =>
+    let company = 'INSERT INTO company (name,nip,shortcut) values($1,$2,$3) returning id';
+    return db.one(company, [person.name, person.nip, person.shortcut]).then(data =>
     {
         return data.id
     }).catch(error =>
@@ -44,7 +45,7 @@ function addAddress(address)
 }
 function getCompanyDetails(nip)
 {
-    let query = 'SELECT c.id,c.name,c.nip, c.regon, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
+    let query = 'SELECT c.id,c.name,c.nip, c.regon, c.shortcut, a.street, a.build_nr, a.flat_nr, a.post_code, a.city '
             + 'FROM company AS c LEFT JOIN address AS a ON c.address_id = a.id WHERE c.nip = $1';
     return db.one(query, [nip]).then(result =>
     {
@@ -68,8 +69,8 @@ function getCompanyByNip(nip)
 
 function getNips(nip)
 {
-    nip = nip.toString();
-    return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\'', [nip]).then(companies =>
+    nip = nip.toString().toUpperCase();
+    return db.any('SELECT nip,name FROM company WHERE nip::text like \'%$1#%\' OR shortcut::text like \'%$1#%\'', [nip]).then(companies =>
     {
         return parser.parseArrayOfObject(companies);
     });
@@ -103,6 +104,10 @@ function updateAccount(account, companyId)
             [account.bankName, account.bankAccount, account.swift, companyId])
 }
 
+function findShortcut(filter){
+    return db.any('SELECT id FROM company WHERE shortcut = $1',[filter.shortcut.toUpperCase()]);
+}
+
 module.exports = {
     getCompanies,
     addCompany,
@@ -114,5 +119,6 @@ module.exports = {
     getNips,
     updateCompanyAddress,
     addFolderId,
-    updateAccount
+    updateAccount,
+    findShortcut
 };

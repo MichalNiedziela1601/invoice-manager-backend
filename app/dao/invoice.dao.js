@@ -28,13 +28,15 @@ function addInvoice(invoice)
         return db.any(query, [invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate, invoice.nettoValue, invoice.bruttoValue,
                               invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
                               invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.year, invoice.month, invoice.number, invoice.products,
-                              invoice.description, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language])
+                              invoice.description, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language,
+                              invoice.reverseCharge])
                 .then(result =>
                 {
                     return result;
                 })
     }).catch(error =>
     {
+        console.error(error);
         throw applicationException.new(applicationException.ERROR, error);
     });
 }
@@ -59,7 +61,8 @@ function updateInvoice(invoice, id)
         return db.none(query, [id, invoice.year, invoice.month, invoice.number, invoice.invoiceNr, invoice.type, invoice.createDate, invoice.executionEndDate,
                                invoice.nettoValue, invoice.bruttoValue, invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent,
                                invoice.personDealer, invoice.personRecipent, invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.description,
-                               invoice.products, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language]);
+                               invoice.products, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language,
+                               invoice.reverseCharge]);
     }).catch(error =>
     {
         console.error(error);
@@ -86,6 +89,11 @@ function changeStatus(id, status)
     return db.none('UPDATE invoice SET status = $2 WHERE id = $1', [id, status]);
 }
 
+function deleteInvoice(id)
+{
+    return db.none('DELETE FROM invoice WHERE id = $1',[id]);
+}
+
 module.exports = {
-    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, getInvoiceFullNumber, changeStatus
+    getInvoices, addInvoice, getInvoiceById, updateInvoice, getInvoiceNumber, getInvoiceFullNumber, changeStatus,deleteInvoice
 };

@@ -3,20 +3,7 @@ const invoiceManager = require('../business/invoice.manager');
 const joiSchema = require('./joi.schema.js');
 const Joi = require('joi');
 const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
 const applicationException = require('../services/applicationException');
-const pdfGenerator = require('./pdfContent');
-const PdfMakePrinter = require('pdfmake/src/printer');
-
-const fonts = {
-    Roboto: {
-        normal: './fonts/Roboto-Regular.ttf',
-        bold: './fonts/Roboto-Medium.ttf',
-        italics: './fonts/Roboto-Italic.ttf',
-        bolditalics: './fonts/Roboto-Italic.ttf'
-    }
-};
 
 function convertToObject(data)
 {
@@ -27,9 +14,48 @@ function convertToObject(data)
     let invoice = {};
     _.each(invoiceCompany, function (value, key)
     {
-        let newKey = key.match(/\[(\w+)\]/)[1];
-        invoice[newKey] = value;
+
+        if (key.match(/\[(\w+)\]/)[1] !== 'products') {
+            let newKey = key.match(/\[(\w+)\]/)[1];
+            invoice[newKey] = value;
+        }
     });
+
+    let result = _.reduce(invoiceCompany, (accu, value, key) =>
+    {
+        if (key.match(/^invoice\[products\]\[(\d+)\]/)) {
+            let newKey = key.match(/^invoice\[products\]\[(\d+)\]/)[1];
+
+
+            accu[newKey] = _.reduce(invoiceCompany, (obj, value, key) =>
+            {
+                if (key.match(/^invoice\[products\]\[\d+\]\[(\w+)\]/)) {
+                    if (newKey === key.match(/^invoice\[products\]\[(\d+)\]/)[1]) {
+                        let productKey = key.match(/^invoice\[products\]\[\d+\]\[(\w+)\]/)[1];
+                        obj[productKey] = value;
+                    }
+                }
+                return obj;
+            }, {});
+        }
+        return accu;
+    }, {});
+
+    _.forIn(result, val =>
+    {
+        val.netto = Number(val.netto);
+        val.brutto = Number(val.brutto);
+        if (!_.isNull(val.vat)) {
+            val.vat = Number(val.vat);
+        }
+        if (!_.isNull(val.amount)) {
+            val.amount = Number(val.amount);
+        }
+        val.editMode = false;
+    });
+
+    invoice['products'] = result;
+
     return invoice;
 }
 
@@ -44,7 +70,7 @@ module.exports = {
             handler: function (request, reply)
             {
                 const companyId = _.get(request, 'auth.credentials.companyId');
-                invoiceManager.getInvoices(request.query,companyId).then(result =>
+                invoiceManager.getInvoices(request.query, companyId).then(result =>
                 {
                     reply(result);
                 }).catch(error =>
@@ -69,43 +95,16 @@ module.exports = {
                 let data = request.payload;
                 if (data.file) {
                     let invoice = convertToObject(data);
-
+                    const companyId = _.get(request, 'auth.credentials.companyId');
                     Joi.validate(invoice, joiSchema.schema.invoice, function (err)
                     {
                         if (err) {
                             applicationException.errorHandler(err, reply);
                         } else {
-                            let name = data.file.hapi.filename;
-                            try {
-                                fs.mkdirSync(path.join(__dirname, '/uploads/'));
-                            } catch (error) {
-                                if (error.code !== 'EEXIST') {
-                                    throw error;
-                                }
-                            }
-                            let filepath = path.join(__dirname, '/uploads/', name);
-                            let file = fs.createWriteStream(filepath);
-
-                            file.on('error', function (err)
+                            invoiceManager.addInvoice(data.file, invoice, companyId).then(reply).catch(error =>
                             {
-                                applicationException.errorHandler(err, reply);
+                                applicationException.errorHandler(error, reply);
                             });
-
-                            data.file.pipe(file);
-
-                            data.file.on('end', function (err)
-                            {
-                                if (err) {
-                                    throw err;
-                                }
-                                invoiceManager.addInvoice(name, invoice).then(() =>
-                                {
-                                    reply('invoice add');
-                                }).catch(error =>
-                                {
-                                    applicationException.errorHandler(error, reply);
-                                });
-                            })
                         }
                     });
                 }
@@ -134,34 +133,15 @@ module.exports = {
             {
                 const invoice = request.payload;
                 const id = request.params.id;
+                const companyId = _.get(request, 'auth.credentials.companyId');
                 if ('sell' === invoice.type) {
-                    pdfGenerator(invoice).then(content =>
-                    {
-                        try {
-                            fs.mkdirSync(path.join(__dirname, '/uploads/'));
-                        } catch (error) {
-                            if (error.code !== 'EEXIST') {
-                                throw error;
-                            }
-                        }
-                        const printer = new PdfMakePrinter(fonts);
-                        let pdfDoc = printer.createPdfKitDocument(content);
-                        const name = invoice.invoiceNr.replace(/\//g, '_') + '.pdf';
-                        let filepath = path.join(__dirname, '/uploads/', name);
-                        pdfDoc.pipe(fs.createWriteStream(filepath)).on('finish', function ()
-                        {
-                            invoiceManager.updateSellInvoice(invoice, id, name).then(() =>
+                    invoiceManager.updateSellInvoice(invoice, id, companyId).then(reply)
+                            .catch(error =>
                             {
-                                reply();
+                                applicationException.errorHandler(error, reply);
                             })
-                                    .catch(error =>
-                                    {
-                                        applicationException.errorHandler(error, reply);
-                                    })
-                        });
-                        pdfDoc.end();
-                    })
-                } else {
+
+                } else if ('buy' === invoice.type) {
                     invoiceManager.updateBuyInvoice(invoice, id).then(reply)
                             .catch(error =>
                             {
@@ -195,44 +175,16 @@ module.exports = {
         server.route({
             method: 'POST',
             path: '/api/invoice/issue',
-            config: {
-                auth: false
-
-            },
             handler: function (request, reply)
             {
                 let invoice = request.payload;
-                pdfGenerator(invoice).then(content =>
-                {
-                    try {
-                        fs.mkdirSync(path.join(__dirname, '/uploads/'));
-                    } catch (error) {
-                        if (error.code !== 'EEXIST') {
-                            throw error;
-                        }
-                    }
-                    const printer = new PdfMakePrinter(fonts);
-                    let pdfDoc = {};
-                    try {
-                        pdfDoc = printer.createPdfKitDocument(content);
-                    } catch (error) {
-                        applicationException.errorHandler(error, reply);
-                    }
-                    const name = invoice.invoiceNr.replace(/\//g, '_') + '.pdf';
-                    let filepath = path.join(__dirname, '/uploads/', name);
-                    pdfDoc.pipe(fs.createWriteStream(filepath)).on('finish', function ()
-                    {
-                        invoiceManager.addInvoice(name, invoice).then(() =>
+                const companyId = _.get(request, 'auth.credentials.companyId');
+
+                invoiceManager.addInvoice('', invoice, companyId).then(reply)
+                        .catch(error =>
                         {
-                            reply();
+                            applicationException.errorHandler(error, reply);
                         })
-                                .catch(error =>
-                                {
-                                    applicationException.errorHandler(error, reply);
-                                })
-                    });
-                    pdfDoc.end();
-                });
             }
         });
 

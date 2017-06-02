@@ -24,7 +24,9 @@ const invoices = [
         advance: null,
         currency: null,
         fileId: null,
-        language: null
+        language: null,
+        contractorType: null,
+        reverseCharge: null
     },
     {
         id: 2,
@@ -51,7 +53,9 @@ const invoices = [
         advance: null,
         currency: null,
         fileId: null,
-        language: null
+        language: null,
+        contractorType: null,
+        reverseCharge: null
     },
     {
         id: 3,
@@ -78,7 +82,9 @@ const invoices = [
         advance: null,
         currency: null,
         fileId: null,
-        language: null
+        language: null,
+        contractorType: null,
+        reverseCharge: null
     }
 ];
 
@@ -107,10 +113,75 @@ const afterUpdateInvoice = {
     advance: null,
     currency: null,
     fileId: null,
-    language: null
+    language: null,
+    contractorType: null,
+    reverseCharge: null
 };
 
+const invoicesAfterDelete = [
+
+    {
+        id: 2,
+        year: 2012,
+        month: 4,
+        number: 2,
+        invoiceNr: 'FV 2012/04/02',
+        type: 'sell',
+        createDate: new Date('2012-04-08'),
+        executionEndDate: new Date('2012-04-15'),
+        nettoValue: '330.45',
+        bruttoValue: '475.89',
+        status: 'paid',
+        url: 'url2',
+        companyDealer: 2,
+        companyRecipent: 1,
+        personDealer: null,
+        personRecipent: null,
+        googleMonthFolderId: null,
+        googleYearFolderId: null,
+        description: null,
+        products: null,
+        paymentMethod: 'bank transfer',
+        advance: null,
+        currency: null,
+        fileId: null,
+        language: null,
+        contractorType: null,
+        reverseCharge: null
+    },
+    {
+        id: 3,
+        year: 2014,
+        month: 5,
+        number: 123,
+        invoiceNr: 'FV 2014/05/123',
+        type: 'sell',
+        createDate: new Date('2014-05-18'),
+        executionEndDate: new Date('2014-05-23'),
+        nettoValue: '2230.45',
+        bruttoValue: '2845.89',
+        status: 'paid',
+        url: 'url5',
+        companyDealer: null,
+        companyRecipent: null,
+        personDealer: 2,
+        personRecipent: 1,
+        googleMonthFolderId: null,
+        googleYearFolderId: null,
+        description: null,
+        products: null,
+        paymentMethod: 'bank transfer',
+        advance: null,
+        currency: null,
+        fileId: null,
+        language: null,
+        contractorType: null,
+        reverseCharge: null
+    }
+];
+
+
 module.exports = {
-    invoices, afterUpdateInvoice
+    invoices, afterUpdateInvoice, invoicesAfterDelete
 };
 

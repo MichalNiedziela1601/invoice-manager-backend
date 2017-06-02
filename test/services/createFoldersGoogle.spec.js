@@ -6,7 +6,7 @@ const sinon = require('sinon');
 chai.use(sinonChai);
 
 const expect = chai.expect;
-let companyFolderId = 'uifg7dyfg78';
+let companyFolderId = {company: {shortcut: 'TEST'}, folderId: 'uifg7dyfg78'};
 let yearId = {files: [{id: 'sdfksf'}]};
 let monthId = {files: [{id: 'jskhggu7sdy8'}]};
 let createYearId = 'jsdfhsjkdfhsdkjfh';
@@ -24,13 +24,10 @@ let googleMethods = {
     findFolderByName: sinon.stub()
 };
 
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                    'July', 'August', 'September', 'October', 'November', 'December'
-];
-
 let company = {
     name: 'Firma do testów',
     nip: 1234567890,
+    shortcut: 'TEST',
     googleCompanyId: 'sdfsfashks'
 };
 
@@ -103,6 +100,8 @@ describe('createFoldersGoogle', function ()
 
     describe('createYearMonthFolder', function ()
     {
+        let name1 = '2017-TEST';
+        let name2 = '2017-04-TEST';
         describe('when folder year and month exist', function ()
         {
             before(function ()
@@ -119,11 +118,11 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], yearId.files[0].id);
+                expect(googleMethods.findFolderByName).calledWith('auth',name2, yearId.files[0].id);
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -155,16 +154,16 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], yearId.files[0].id);
+                expect(googleMethods.findFolderByName).calledWith('auth',name2, yearId.files[0].id);
             });
             it('should call createChildFolder', function ()
             {
                 expect(googleMethods.createChildFolder).callCount(1);
-                expect(googleMethods.createChildFolder).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()],yearId.files[0].id)
+                expect(googleMethods.createChildFolder).calledWith('auth',name2,yearId.files[0].id)
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -198,16 +197,16 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], createYearId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name2, createYearId);
             });
             it('should call createChildFolder', function ()
             {
                 expect(googleMethods.createChildFolder).callCount(1);
-                expect(googleMethods.createChildFolder).calledWith('auth',new Date(invoice.createDate).getFullYear(),companyFolderId)
+                expect(googleMethods.createChildFolder).calledWith('auth',name1,companyFolderId.folderId)
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -241,11 +240,11 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',2017,companyFolderId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',monthNames[new Date(invoice.createDate).getMonth()], createYearId);
+                expect(googleMethods.findFolderByName).calledWith('auth',name2, createYearId);
             });
             it('should call createChildFolder', function ()
             {
@@ -253,7 +252,7 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call createChildFolder with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.createChildFolder).calledWith('auth',new Date(invoice.createDate).getFullYear(),companyFolderId)
+                expect(googleMethods.createChildFolder).calledWith('auth',name1,companyFolderId.folderId)
             });
             it('should set invoice googleYearFolderId', function ()
             {

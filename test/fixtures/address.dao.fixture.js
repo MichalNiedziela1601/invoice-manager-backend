@@ -16,6 +16,17 @@ const addresses = [
     }
 ];
 
+const updateAddress = [
+    {
+        id: 1,
+        street: 'Tuchowska',
+        buildNr: '4',
+        flatNr: '5',
+        postCode: '33-100',
+        city: 'Tarnów'
+    }
+];
+
 module.exports = {
-    addresses
+    addresses, updateAddress
 }

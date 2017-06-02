@@ -27,10 +27,7 @@ module.exports = {
             config: {validate: {payload: joiSchema.schema.company}},
             handler: function (request, reply)
             {
-                companyManager.addCompany(request.payload).then(() =>
-                {
-                    reply();
-                }).catch(error =>
+                companyManager.addCompany(request.payload).then(reply).catch(error =>
                 {
                     applicationException.errorHandler(error, reply);
                 });
@@ -41,10 +38,7 @@ module.exports = {
             path: '/api/address',
             handler: function (request, reply)
             {
-                companyManager.addAddress(request.payload).then(() =>
-                {
-                    reply()
-                }).catch(error =>
+                companyManager.addAddress(request.payload).then(reply).catch(error =>
                 {
                     applicationException.errorHandler(error, reply);
                 });
@@ -79,6 +73,19 @@ module.exports = {
                 {
                     applicationException.errorHandler(error, reply);
                 });
+            }
+        });
+
+        server.route({
+            method: 'GET',
+            path: '/api/company/shortcut',
+            handler: function(request, reply){
+                companyManager.findShortcut(request.query).then(result => {
+                    reply(result);
+                })
+                        .catch(error => {
+                            applicationException.errorHandler(error,reply);
+                        })
             }
         })
     }

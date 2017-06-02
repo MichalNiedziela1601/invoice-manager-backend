@@ -35,6 +35,8 @@ let companyDAOMock = {
     updateCompanyAddress: sinon.stub().resolves(),
     getCompanyDetails: sinon.stub().rejects(),
     addFolderId: sinon.spy(),
+    getCompanyByNip: sinon.stub(),
+    findShortcut: sinon.stub()
 };
 let addressDAOMock = {
     getAddressById: sinon.stub().resolves(),
@@ -76,6 +78,7 @@ describe('company.manager', function ()
                 expect(addressDAOMock.getAddressById).calledWith(2);
                 expect(addressDAOMock.getAddressById).calledWith(3);
             });
+
         });
         describe('when table is empty', function ()
         {
@@ -90,6 +93,31 @@ describe('company.manager', function ()
                     expect(error.error).eql({message: 'NOT_FOUND', code: 404});
                 });
             });
+        });
+    });
+
+    describe('getCompanyDetails', function ()
+    {
+        let companyMock = {};
+        let addressMock = {};
+        before(() => {
+            companyDAOMock.getCompanyByNip.reset();
+            addressDAOMock.getAddressById.reset();
+            companyMock = {name: 'Firma', addressId: 1, nip: 1234567777};
+            addressMock = {id: 1, street: 'Test'};
+            companyDAOMock.getCompanyByNip.resolves(companyMock);
+            addressDAOMock.getAddressById.resolves(addressMock);
+            companyManager.getCompanyDetails(1234567777);
+        });
+        it('should call getCompanyByNip', function ()
+        {
+            expect(companyDAOMock.getCompanyByNip).callCount(1);
+            expect(companyDAOMock.getCompanyByNip).calledWith(1234567777);
+        });
+        it('should call getAddressById', function ()
+        {
+            expect(addressDAOMock.getAddressById).callCount(1);
+            expect(addressDAOMock.getAddressById).calledWith(1);
         });
     });
 
@@ -112,6 +140,9 @@ describe('company.manager', function ()
     {
         before(function ()
         {
+            companyDAOMock.getCompanyByNip.reset();
+            addressDAOMock.getAddressById.reset();
+            companyDAOMock.getCompanyByNip.rejects();
             companyDAOMock.addAddress.reset();
             companyDAOMock.addAddress.withArgs({street: 'goodStreet'}).resolves(100);
         });
@@ -165,10 +196,11 @@ describe('company.manager', function ()
             let result = {};
             before(() =>
             {
+                companyDAOMock.getCompanyByNip.reset();
                 companyMock = {
                     name: 'bla', nip: 1234567890, addressId: null, id: 1
                 };
-                companyDAOMock.getCompanyDetails.resolves({name: 'sdfsdf', nip: 1234567890});
+                companyDAOMock.getCompanyByNip.resolves({name: 'sdfsdf', nip: 1234567890});
                 result = companyManager.addCompany(companyMock);
 
             });
@@ -333,6 +365,20 @@ describe('company.manager', function ()
         {
             expect(addressDAOMock.getAddressById).callCount(1);
             expect(addressDAOMock.getAddressById).calledWith(1);
+        });
+    });
+
+    describe('findShortcut', function ()
+    {
+        before(() => {
+            companyDAOMock.findShortcut.reset();
+            companyDAOMock.findShortcut.resolves();
+            companyManager.findShortcut({shortcut: 'FIRMATEST'});
+        });
+        it('should call findShortcut', function ()
+        {
+            expect(companyDAOMock.findShortcut).callCount(1);
+            expect(companyDAOMock.findShortcut).calledWith({shortcut: 'FIRMATEST'});
         });
     });
 });

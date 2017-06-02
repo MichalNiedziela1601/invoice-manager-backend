@@ -7,7 +7,8 @@ const companies = [{
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
     bankName: 'Alior Bank',
-    swift: null
+    swift: null,
+    shortcut: 'KUBA'
 }, {
     addressId: null,
     id: 2,
@@ -17,7 +18,8 @@ const companies = [{
     googleCompanyId: null,
     bankAccount: '22068903623586048228853408',
     bankName: 'ING',
-    swift: null
+    swift: null,
+    shortcut: 'FIRMTEST'
 }, {
     addressId: 2,
     id: 3,
@@ -27,7 +29,8 @@ const companies = [{
     googleCompanyId: null,
     bankName: null,
     bankAccount: null,
-    swift: null
+    swift: null,
+    shortcut: 'TEST'
 }];
 const findCompany = {
     addressId: 1,
@@ -38,7 +41,8 @@ const findCompany = {
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
     bankName: 'Alior Bank',
-    swift: null
+    swift: null,
+    shortcut: 'KUBA'
 };
 
 const afterRegisterCompany = [
@@ -51,7 +55,8 @@ const afterRegisterCompany = [
         googleCompanyId: null,
         bankAccount: '22068903623586048228853407',
         bankName: 'Alior Bank',
-        swift: null
+        swift: null,
+        shortcut: 'KUBA'
     },
     {
         addressId: null,
@@ -62,7 +67,8 @@ const afterRegisterCompany = [
         googleCompanyId: null,
         bankAccount: '22068903623586048228853408',
         bankName: 'ING',
-        swift: null
+        swift: null,
+        shortcut: 'FIRMTEST'
     },
     {
         id: 3,
@@ -73,7 +79,8 @@ const afterRegisterCompany = [
         googleCompanyId: null,
         bankAccount: null,
         bankName: null,
-        swift: null
+        swift: null,
+        shortcut: 'TEST'
     }
 ];
 
@@ -99,7 +106,8 @@ const nothing = {
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
     bankName: 'Alior Bank',
-    swift: null
+    swift: null,
+    shortcut: 'KUBA'
 
 };
 
@@ -112,7 +120,8 @@ const updateAddress = {
     googleCompanyId: null,
     bankAccount: '22068903623586048228853407',
     bankName: 'Alior Bank',
-    swift: null
+    swift: null,
+    shortcut: 'KUBA'
 };
 
 const afterAddFolderId = {
@@ -124,7 +133,8 @@ const afterAddFolderId = {
     googleCompanyId: 'sdfhshf',
     bankAccount: '22068903623586048228853407',
     bankName: 'Alior Bank',
-    swift: null
+    swift: null,
+    shortcut: 'KUBA'
 };
 
 const getCompanyDetails = {
@@ -136,7 +146,8 @@ const getCompanyDetails = {
     buildNr: '8',
     flatNr: '8',
     postCode: '33-100',
-    city: 'tutaj'
+    city: 'tutaj',
+    shortcut: 'KUBA'
 
 };
 
@@ -149,7 +160,8 @@ const updateAccount = {
     googleCompanyId: null,
     bankAccount: '98789768768768768',
     bankName: 'MBANK',
-    swift: 'MBPLNG'
+    swift: 'MBPLNG',
+    shortcut: 'KUBA'
 };
 
 

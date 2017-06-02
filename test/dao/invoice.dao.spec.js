@@ -111,7 +111,9 @@ describe('invoice.dao', function ()
             advance: null,
             currency: null,
             fileId: null,
-            language: null
+            language: null,
+            contractorType: null,
+            reverseCharge: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -240,20 +242,6 @@ describe('invoice.dao', function ()
                 });
             });
 
-            describe('url is null', function ()
-            {
-                let invalidInvoice = _.omit(mockedInvoice, ['url']);
-
-                beforeEach(function ()
-                {
-                    return addInvalidInvoiceHelper(invalidInvoice);
-                });
-
-                it('should not add invoice if url is invalid', function ()
-                {
-                    expect(invoices).to.eql(data.invoices)
-                });
-            });
         })
     });
 
@@ -435,6 +423,23 @@ describe('invoice.dao', function ()
         it('should change status to paid', function ()
         {
             expect(result.status).eql('paid');
+        });
+    });
+
+    describe('deleteInvoice', function ()
+    {
+        let result = {};
+        beforeEach(function ()
+        {
+            return invoiceDAO.deleteInvoice(1).then(() => {
+                return invoiceDAO.getInvoices().then(invoices => {
+                    result = invoices;
+                });
+            });
+        });
+        it('should remove invoice', function ()
+        {
+            expect(result).eql(data.invoicesAfterDelete);
         });
     });
 });

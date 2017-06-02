@@ -163,6 +163,26 @@ function deleteFile(auth, invoice)
     })
 }
 
+function renameFile(auth, invoice, filename)
+{
+    let service = google.drive({version: 'v3', auth: auth});
+    return new Promise((resolve, reject) =>
+    {
+        service.files.update({
+            fileId: invoice.fileId,
+            resource: {
+                name: filename
+            }
+        }, (err) =>
+        {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        })
+    })
+}
+
 module.exports = {
     saveFile,
     shareFile,
@@ -170,5 +190,6 @@ module.exports = {
     createChildFolder,
     checkFolderExists,
     findFolderByName,
-    deleteFile
+    deleteFile,
+    renameFile
 };

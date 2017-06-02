@@ -50,4 +50,31 @@ describe('address.dao', function ()
             });
         });
     });
+
+    describe('updateAddress', function ()
+    {
+        beforeEach(function ()
+        {
+            let updateAddress = {
+                id: 1,
+                street: 'Tuchowska',
+                buildNr: '4',
+                flatNr: '5',
+                postCode: '33-100',
+                city: 'Tarnów'
+            };
+
+            return addressDAO.updateAddress(updateAddress, updateAddress.id).then(() =>
+            {
+                return addressDAO.getAddressById(1).then(address =>
+                {
+                    addresses = address;
+                });
+            });
+        });
+        it('should update address', function ()
+        {
+            expect(addresses).eql(data.updateAddress[0]);
+        });
+    });
 });
