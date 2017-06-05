@@ -101,7 +101,10 @@ module.exports = {
                         if (err) {
                             applicationException.errorHandler(err, reply);
                         } else {
-                            invoiceManager.addInvoice(data.file, invoice, companyId).then(reply).catch(error =>
+                            invoiceManager.addInvoice(data.file, invoice, companyId).then(() =>
+                            {
+                                reply();
+                            }).catch(error =>
                             {
                                 applicationException.errorHandler(error, reply);
                             });
@@ -135,7 +138,10 @@ module.exports = {
                 const id = request.params.id;
                 const companyId = _.get(request, 'auth.credentials.companyId');
                 if ('sell' === invoice.type) {
-                    invoiceManager.updateSellInvoice(invoice, id, companyId).then(reply)
+                    invoiceManager.updateSellInvoice(invoice, id, companyId).then(() =>
+                    {
+                        reply();
+                    })
                             .catch(error =>
                             {
                                 applicationException.errorHandler(error, reply);
@@ -167,7 +173,6 @@ module.exports = {
                         {
                             applicationException.errorHandler(error, reply)
                         })
-
             }
         });
 
@@ -180,7 +185,10 @@ module.exports = {
                 let invoice = request.payload;
                 const companyId = _.get(request, 'auth.credentials.companyId');
 
-                invoiceManager.addInvoice('', invoice, companyId).then(reply)
+                invoiceManager.addInvoice('', invoice, companyId).then(() =>
+                {
+                    reply();
+                })
                         .catch(error =>
                         {
                             applicationException.errorHandler(error, reply);

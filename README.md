@@ -28,7 +28,7 @@ grunt lint
 
 ### Getting new token from Google 
  ```
- npm run token
+ GOOGLE_DRIVE_CLIENT_ID=your_client_id GOOGLE_DRIVE_PROJECT_ID=your_project_id GOOGLE_DRIVE_CLIENT_SECRET=your_secret npm run token
  ```
  After this, please copy url from console to browser and choose account where files will be store. Allow application to get access into
  Google Drive and copy new code into console. Next copy and set environment variables: GOOGLE_DRIVE_ACCESS_TOKEN, GOOGLE_DRIVE_REFRESH_TOKEN,

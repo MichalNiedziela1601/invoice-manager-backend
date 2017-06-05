@@ -507,4 +507,34 @@ describe('company.dao', function ()
             expect(result).eql([{id: 1}]);
         });
     });
+
+    describe('updateCompany', function ()
+    {
+        beforeEach(function ()
+        {
+            companies = {
+                addressId: 1,
+                id: 1,
+                name: 'Kuba',
+                nip: 1029384756,
+                regon: 243124,
+                googleCompanyId: null,
+                bankAccount: '98789768768768768',
+                bankName: 'MBANK',
+                swift: null,
+                shortcut: 'KUBA'
+            };
+
+            return companyDAO.updateCompany(companies).then(() => {
+                return companyDAO.getCompanyById(1).then(company => {
+                    companies = company;
+                });
+            });
+
+        });
+        it('should update company', function ()
+        {
+            expect(companies).eql(data.updateCompany);
+        });
+    });
 });

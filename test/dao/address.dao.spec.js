@@ -4,7 +4,8 @@ const expect = require('chai').expect;
 const addressDAO = require('../../app/dao/address.dao');
 const data = require('../fixtures/address.dao.fixture');
 const testHelper = require('../testHelper');
-
+let result = null;
+const _ = require('lodash');
 describe('address.dao', function ()
 {
     let addresses = [];
@@ -75,6 +76,49 @@ describe('address.dao', function ()
         it('should update address', function ()
         {
             expect(addresses).eql(data.updateAddress[0]);
+        });
+    });
+
+    describe('addAddress', function ()
+    {
+        let addresMock = {
+            street: 'bla',
+            buildNr: '5',
+            flatNr: '5a',
+            postCode: '4498gg',
+            city: 'Where'
+        };
+        describe('when added succesfully', function ()
+        {
+            beforeEach(function ()
+            {
+                return addressDAO.addAddress(addresMock).then(id =>
+                {
+                    return addressDAO.getAddressById(id).then(address =>
+                    {
+                        result = address;
+                    });
+                });
+            });
+            it('should add new address', function ()
+            {
+                expect(result).eql(data.addressAdd);
+            });
+        });
+
+        describe('when something wrong', function ()
+        {
+            beforeEach(function ()
+            {
+                addresMock = _.omit(addresMock,'street');
+                return addressDAO.addAddress(addresMock).catch(error => {
+                    result = error;
+                });
+            });
+            it('should throw error', function ()
+            {
+                expect(result.error.message).eql('PRECONDITION_FAILED');
+            });
         });
     });
 });

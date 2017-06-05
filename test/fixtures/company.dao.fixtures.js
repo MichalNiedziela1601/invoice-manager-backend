@@ -164,8 +164,21 @@ const updateAccount = {
     shortcut: 'KUBA'
 };
 
+const updateCompany = {
+    addressId: 1,
+    id: 1,
+    name: 'Kuba',
+    nip: 1029384756,
+    regon: 243124,
+    googleCompanyId: null,
+    bankAccount: '98789768768768768',
+    bankName: 'MBANK',
+    swift: null,
+    shortcut: 'KUBA'
+};
+
 
 module.exports = {
-    companies, findCompany, nothing, address, afterRegisterCompany, updateAddress, afterAddFolderId, getCompanyDetails, updateAccount
+    companies, findCompany, nothing, address, afterRegisterCompany, updateAddress, afterAddFolderId, getCompanyDetails, updateAccount, updateCompany
 };
 

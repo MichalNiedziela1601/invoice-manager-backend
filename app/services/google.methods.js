@@ -173,7 +173,7 @@ function renameFile(auth, invoice, filename)
             resource: {
                 name: filename
             }
-        }, (err) =>
+        }, err =>
         {
             if (err) {
                 reject(err);

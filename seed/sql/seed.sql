@@ -50,4 +50,6 @@ INSERT INTO
 INSERT INTO
   users
 (email, password,company_id ) VALUES
-('admin@gmail.com','$2a$10$IyqupLdOhOdp/DhQHpJgBuMXNawbABO7BF/Emc2.DswWYwRR9gFfC',2);
+('admin@gmail.com','$2a$10$IyqupLdOhOdp/DhQHpJgBuMXNawbABO7BF/Emc2.DswWYwRR9gFfC',2),
+('user@gmail.com','$2a$10$Fg/NUjm6tF/XlWe7lFB7Vey6Eo78OgPbmevO.yqmujpLmXbJRZn8S',1);
+

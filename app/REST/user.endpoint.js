@@ -13,21 +13,6 @@ module.exports = {
 
         server.route({
             method: 'POST',
-            path: '/api/user/addAddress',
-            handler: function (request, reply)
-            {
-                const companyId = _.get(request, 'auth.credentials.company.id');
-                const address = request.payload;
-                companyManager.updateCompanyAddress(address, companyId).then(reply)
-                        .catch(error =>
-                        {
-                            applicationException.errorHandler(error, reply);
-                        })
-            }
-        });
-
-        server.route({
-            method: 'POST',
             path: '/api/user/registration',
             config: {auth: false, validate: {payload: joiSchema.schema.registerCompany}},
             handler: function (request, reply)
@@ -112,7 +97,7 @@ module.exports = {
         server.route({
             method: 'PUT',
             path: '/api/user/account',
-            config: { validate: {payload: joiSchema.schema.account}},
+            config: {validate: {payload: joiSchema.schema.account}},
             handler: function (request, reply)
             {
                 const account = request.payload;

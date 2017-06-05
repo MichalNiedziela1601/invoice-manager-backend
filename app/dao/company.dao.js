@@ -15,7 +15,7 @@ function addCompany(company)
 {
     company.shortcut = company.shortcut.toUpperCase();
     let sql = 'INSERT INTO company (name,nip, regon, address_id, bank_account,bank_name, shortcut) VALUES ($1,$2,$3,$4,$5,$6,$7)';
-    return db.any(sql, [company.name, company.nip, company.regon, company.addressId, company.bankAccount, company.bankName, company.shortcut]).catch(error =>
+    return db.none(sql, [company.name, company.nip, company.regon, company.addressId, company.bankAccount, company.bankName, company.shortcut]).catch(error =>
     {
         throw applicationException.new(applicationException.ERROR, error);
     });
@@ -104,8 +104,15 @@ function updateAccount(account, companyId)
             [account.bankName, account.bankAccount, account.swift, companyId])
 }
 
-function findShortcut(filter){
-    return db.any('SELECT id FROM company WHERE shortcut = $1',[filter.shortcut.toUpperCase()]);
+function findShortcut(filter)
+{
+    return db.any('SELECT id FROM company WHERE shortcut = $1', [filter.shortcut.toUpperCase()]);
+}
+
+function updateCompany(company)
+{
+    return db.none('UPDATE company SET name = $1, shortcut = $2, nip = $3, regon = $4, bank_name = $5, bank_account = $6 WHERE id = $7',
+            [company.name, company.shortcut, company.nip, company.regon, company.bankName, company.bankAccount, company.id]);
 }
 
 module.exports = {
@@ -120,5 +127,6 @@ module.exports = {
     updateCompanyAddress,
     addFolderId,
     updateAccount,
-    findShortcut
+    findShortcut,
+    updateCompany
 };

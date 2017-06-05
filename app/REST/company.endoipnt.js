@@ -33,17 +33,7 @@ module.exports = {
                 });
             }
         });
-        server.route({
-            method: 'POST',
-            path: '/api/address',
-            handler: function (request, reply)
-            {
-                companyManager.addAddress(request.payload).then(reply).catch(error =>
-                {
-                    applicationException.errorHandler(error, reply);
-                });
-            }
-        });
+
         server.route({
             method: 'GET',
             path: '/api/company/{nip}',
@@ -79,12 +69,47 @@ module.exports = {
         server.route({
             method: 'GET',
             path: '/api/company/shortcut',
-            handler: function(request, reply){
-                companyManager.findShortcut(request.query).then(result => {
+            handler: function (request, reply)
+            {
+                companyManager.findShortcut(request.query).then(result =>
+                {
                     reply(result);
                 })
-                        .catch(error => {
-                            applicationException.errorHandler(error,reply);
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
+                        })
+            }
+        });
+
+        server.route({
+            method: 'GET',
+            path: '/api/company/id',
+            handler: (request, reply) =>
+            {
+                const id = request.query.id;
+                companyManager.getCompanyById(id).then(company =>
+                {
+                    reply(company);
+                })
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
+                        })
+            }
+        });
+
+        server.route({
+            method: 'PUT',
+            path: '/api/company',
+            config: {validate: {payload: joiSchema.schema.updatedCompany}},
+            handler: (request, reply) =>
+            {
+                const company = request.payload;
+                companyManager.updateCompany(company).then(reply)
+                        .catch(error =>
+                        {
+                            applicationException.errorHandler(error, reply);
                         })
             }
         })

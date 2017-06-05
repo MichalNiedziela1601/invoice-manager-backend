@@ -27,6 +27,15 @@ const updateAddress = [
     }
 ];
 
+const addressAdd = {
+    street: 'bla',
+    buildNr: '5',
+    flatNr: '5a',
+    postCode: '4498gg',
+    city: 'Where',
+    id: 3
+};
+
 module.exports = {
-    addresses, updateAddress
+    addresses, updateAddress, addressAdd
 }

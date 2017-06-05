@@ -10,7 +10,7 @@ const expect = chai.expect;
 
 const companies = [{
     addressId: 1, id: 1, name: 'Kuba', nip: 1029384756, regon: 243124,
-},{
+}, {
     addressId: 2, id: 2, name: 'Firma badfghjklrtek', nip: 176543330, regon: 55343367,
 }, {
     addressId: 3, id: 3, name: 'Firma test', nip: 8967452310, regon: null
@@ -36,7 +36,8 @@ let companyDAOMock = {
     getCompanyDetails: sinon.stub().rejects(),
     addFolderId: sinon.spy(),
     getCompanyByNip: sinon.stub(),
-    findShortcut: sinon.stub()
+    findShortcut: sinon.stub(),
+    updateCompany: sinon.stub()
 };
 let addressDAOMock = {
     getAddressById: sinon.stub().resolves(),
@@ -100,7 +101,8 @@ describe('company.manager', function ()
     {
         let companyMock = {};
         let addressMock = {};
-        before(() => {
+        before(() =>
+        {
             companyDAOMock.getCompanyByNip.reset();
             addressDAOMock.getAddressById.reset();
             companyMock = {name: 'Firma', addressId: 1, nip: 1234567777};
@@ -370,7 +372,8 @@ describe('company.manager', function ()
 
     describe('findShortcut', function ()
     {
-        before(() => {
+        before(() =>
+        {
             companyDAOMock.findShortcut.reset();
             companyDAOMock.findShortcut.resolves();
             companyManager.findShortcut({shortcut: 'FIRMATEST'});
@@ -379,6 +382,28 @@ describe('company.manager', function ()
         {
             expect(companyDAOMock.findShortcut).callCount(1);
             expect(companyDAOMock.findShortcut).calledWith({shortcut: 'FIRMATEST'});
+        });
+    });
+
+    describe('updateCompany', function ()
+    {
+        before(() =>
+        {
+            addressDAOMock.updateAddress.reset();
+            companyDAOMock.updateCompany.resolves();
+            addressDAOMock.updateAddress.resolves();
+
+            companyManager.updateCompany({address: {street: 'fake'}, addressId: 1});
+        });
+        it('should call companyDAO.updateCompany', function ()
+        {
+            expect(companyDAOMock.updateCompany).callCount(1);
+            expect(companyDAOMock.updateCompany).calledWith({address: {street: 'fake'}, addressId: 1});
+        });
+        it('should call addressDAO.updateAddress', function ()
+        {
+            expect(addressDAOMock.updateAddress).callCount(1);
+            expect(addressDAOMock.updateAddress).calledWith({street: 'fake'},1);
         });
     });
 });
