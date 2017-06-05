@@ -83,7 +83,7 @@ function addInvoice(data, invoice, companyId)
     let invoiceId = 0;
     let filename = null;
 
-    return invoiceDao.getInvoiceFullNumber(invoice.year, invoice.month, invoice.number).then(() =>
+    return invoiceDao.getInvoiceFullNumber(invoice, companyId).then(() =>
     {
         return invoiceDao.addInvoice(invoice);
     })
@@ -262,14 +262,14 @@ function getInvoiceById(id)
             });
 }
 
-function checkInvoiceNumber(updatedInvoice, id)
+function checkInvoiceNumber(updatedInvoice, id, companyId)
 {
     return invoiceDao.getInvoiceById(id).then(invoice =>
     {
         if (updatedInvoice.year === invoice.year && updatedInvoice.month === invoice.month && updatedInvoice.number === invoice.number) {
             return 0;
         } else {
-            return invoiceDao.getInvoiceFullNumber(updatedInvoice.year, updatedInvoice.month, updatedInvoice.number);
+            return invoiceDao.getInvoiceFullNumber(updatedInvoice, companyId);
         }
     })
 }
@@ -282,7 +282,7 @@ function updateSellInvoice(invoice, id, companyId)
 
     let auth = null;
     let filename = null;
-    return checkInvoiceNumber(invoice, id).then(() =>
+    return checkInvoiceNumber(invoice, id, companyId).then(() =>
     {
         return invoiceDao.updateInvoice(invoice, id)
     })
@@ -412,9 +412,9 @@ function updateBuyInvoice(invoice, id)
             })
 }
 
-function getInvoiceNumber(year, month)
+function getInvoiceNumber(object)
 {
-    return invoiceDao.getInvoiceNumber(year, month).then(number =>
+    return invoiceDao.getInvoiceNumber(object).then(number =>
     {
         if (_.isNull(number.number)) {
             number.number = 1;
