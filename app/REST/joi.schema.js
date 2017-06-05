@@ -33,7 +33,8 @@ module.exports = {
         },
         invoiceGetNumber: {
             year: Joi.required(),
-            month: Joi.required()
+            month: Joi.required(),
+            type: Joi.required()
         },
         company: {
             name: Joi.string().min(2).required(),

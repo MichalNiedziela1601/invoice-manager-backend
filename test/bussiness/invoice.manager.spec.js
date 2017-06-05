@@ -357,7 +357,7 @@ describe('invoice.manager', function ()
                     it('should call getInvoiceFullNumber', function ()
                     {
                         expect(invoiceDAOMock.getInvoiceFullNumber).callCount(1);
-                        expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(2012, 5, 111);
+                        expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(invoice,1);
                     });
                     it('should call addInvoice', function ()
                     {
@@ -470,7 +470,7 @@ describe('invoice.manager', function ()
                     it('should call getInvoiceFullNumber', function ()
                     {
                         expect(invoiceDAOMock.getInvoiceFullNumber).callCount(1);
-                        expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(2012, 5, 111);
+                        expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(invoice,1);
                     });
                     it('should call addInvoice', function ()
                     {
@@ -602,7 +602,7 @@ describe('invoice.manager', function ()
                 it('should call getInvoiceFullNumber', function ()
                 {
                     expect(invoiceDAOMock.getInvoiceFullNumber).callCount(1);
-                    expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(2012, 5, 111);
+                    expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(invoice,1);
                 });
                 it('should call addInvoice', function ()
                 {
@@ -695,7 +695,7 @@ describe('invoice.manager', function ()
                 it('should call getInvoiceFullNumber', function ()
                 {
                     expect(invoiceDAOMock.getInvoiceFullNumber).callCount(1);
-                    expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(2012, 5, 111);
+                    expect(invoiceDAOMock.getInvoiceFullNumber).calledWith(invoice,1);
                 });
                 it('should call addInvoice', function ()
                 {

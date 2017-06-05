@@ -350,7 +350,7 @@ describe('invoice.dao', function ()
         {
             beforeEach(function ()
             {
-                return invoiceDAO.getInvoiceNumber(2012,2).then(result => {
+                return invoiceDAO.getInvoiceNumber({year: 2012, month: 2, type: 'buy', companyId: 2}).then(result => {
                     number = result;
                 })
             });
@@ -364,7 +364,7 @@ describe('invoice.dao', function ()
         {
             beforeEach(function ()
             {
-                return invoiceDAO.getInvoiceNumber(2012,3).then(result => {
+                return invoiceDAO.getInvoiceNumber({year: 2012, month: 3, type: 'buy', companyId: 2}).then(result => {
                     number = result;
                 })
             });
@@ -382,7 +382,7 @@ describe('invoice.dao', function ()
             let error = {};
             beforeEach(function ()
             {
-                return invoiceDAO.getInvoiceFullNumber(2012,2,2).catch(result => {
+                return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 2, type: 'buy'},2).catch(result => {
                     error = result;
                 })
             });
@@ -398,7 +398,7 @@ describe('invoice.dao', function ()
             let id = {};
             beforeEach(function ()
             {
-                return invoiceDAO.getInvoiceFullNumber(2012,2,4).then(result => {
+                return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 4, type: 'buy'},2).then(result => {
                     id = result;
                 })
             });

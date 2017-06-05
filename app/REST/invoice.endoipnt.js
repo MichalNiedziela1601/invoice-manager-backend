@@ -160,12 +160,16 @@ module.exports = {
         server.route({
             method: 'GET',
             path: '/api/invoice/number',
-            config: {auth: false, validate: {query: joiSchema.schema.invoiceGetNumber}},
+            config: {validate: {query: joiSchema.schema.invoiceGetNumber}},
             handler: function (request, reply)
             {
-                const year = _.get(request, 'query.year');
-                const month = _.get(request, 'query.month');
-                invoiceManager.getInvoiceNumber(year, month).then(number =>
+                const object = {
+                    year: _.get(request, 'query.year'),
+                    month: _.get(request, 'query.month'),
+                    type: _.get(request, 'query.type'),
+                    companyId: _.get(request, 'auth.credentials.companyId')
+                };
+                invoiceManager.getInvoiceNumber(object).then(number =>
                 {
                     reply(number);
                 })
