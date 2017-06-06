@@ -5,14 +5,20 @@ const addresses = [
         buildNr: '4',
         flatNr: '5',
         postCode: '33-100',
-        city: 'Tarnów'
+        city: 'Tarnów',
+        country: 'Poland',
+        countryCode: 'PL',
+        state: null
     }, {
         id: 2,
         street: 'Krakowska',
         buildNr: '4',
         flatNr: null,
         postCode: '33-100',
-        city: 'Tarnów'
+        city: 'Tarnów',
+        country: 'Poland',
+        countryCode: 'PL',
+        state: null
     }
 ];
 
@@ -23,7 +29,10 @@ const updateAddress = [
         buildNr: '4',
         flatNr: '5',
         postCode: '33-100',
-        city: 'Tarnów'
+        city: 'Tarnów',
+        country: 'Poland',
+        countryCode: 'PL',
+        state: null
     }
 ];
 
@@ -33,7 +42,10 @@ const addressAdd = {
     flatNr: '5a',
     postCode: '4498gg',
     city: 'Where',
-    id: 3
+    id: 3,
+    country: 'Poland',
+    countryCode: 'PL',
+    state: null
 };
 
 module.exports = {

@@ -13,20 +13,23 @@ function getAddressById(id)
 
 function updateAddress(address, addressId)
 {
-    return db.none('UPDATE address SET street = $1, build_nr = $2, flat_nr = $3, post_code = $4, city = $5 WHERE id = $6',
-            [address.street, address.buildNr, address.flatNr, address.postCode, address.city, addressId]);
+    return db.none(
+            'UPDATE address SET street = $2, build_nr = $3, flat_nr = $4, post_code = $5, city = $6, state = $7, country = $8, country_code = $9 WHERE id = $1',
+            [addressId, address.street, address.buildNr, address.flatNr, address.postCode, address.city, address.state, address.country, address.countryCode]);
 }
 
 function addAddress(address)
 {
-    let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city) VALUES ($1,$2,$3,$4,$5) RETURNING id;';
-    return db.any(sql, [address.street, address.buildNr, address.flatNr, address.postCode, address.city]).then(result =>
-    {
-        return result[0].id;
-    }).catch(error =>
-    {
-        throw applicationException.new(applicationException.PRECONDITION_FAILED, error);
-    });
+    let sql = 'INSERT INTO address (street, build_nr, flat_nr, post_code, city, state, country, country_code) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id;';
+    return db.any(sql, [address.street, address.buildNr, address.flatNr, address.postCode, address.city, address.state, address.country, address.countryCode])
+            .then(result =>
+            {
+                return result[0].id;
+            })
+            .catch(error =>
+            {
+                throw applicationException.new(applicationException.PRECONDITION_FAILED, error);
+            });
 }
 
 module.exports = {

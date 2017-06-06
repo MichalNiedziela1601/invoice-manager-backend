@@ -62,7 +62,9 @@ describe('address.dao', function ()
                 buildNr: '4',
                 flatNr: '5',
                 postCode: '33-100',
-                city: 'Tarnów'
+                city: 'Tarnów',
+                country: 'Poland',
+                countryCode: 'PL'
             };
 
             return addressDAO.updateAddress(updateAddress, updateAddress.id).then(() =>
@@ -86,7 +88,9 @@ describe('address.dao', function ()
             buildNr: '5',
             flatNr: '5a',
             postCode: '4498gg',
-            city: 'Where'
+            city: 'Where',
+            country: 'Poland',
+            countryCode: 'PL'
         };
         describe('when added succesfully', function ()
         {

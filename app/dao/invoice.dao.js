@@ -29,7 +29,7 @@ function addInvoice(invoice)
                               invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent, invoice.personDealer, invoice.personRecipent,
                               invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.year, invoice.month, invoice.number, invoice.products,
                               invoice.description, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language,
-                              invoice.reverseCharge])
+                              invoice.reverseCharge, invoice.dealerAccountNr, invoice.recipentAccountNr])
                 .then(result =>
                 {
                     return result;
@@ -62,7 +62,7 @@ function updateInvoice(invoice, id)
                                invoice.nettoValue, invoice.bruttoValue, invoice.status, invoice.url, invoice.companyDealer, invoice.companyRecipent,
                                invoice.personDealer, invoice.personRecipent, invoice.googleYearFolderId, invoice.googleMonthFolderId, invoice.description,
                                invoice.products, invoice.paymentMethod, invoice.advance, invoice.fileId, invoice.currency, invoice.language,
-                               invoice.reverseCharge]);
+                               invoice.reverseCharge, invoice.dealerAccountNr, invoice.recipentAccountNr]);
     }).catch(error =>
     {
         console.error(error);

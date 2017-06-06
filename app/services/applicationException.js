@@ -30,10 +30,10 @@ module.exports = {
     errorHandler: function (error, reply)
     {
         if (error instanceof ApplicationException) {
-            reply(error.message || error.error.message || error.details || 'Unknown error').code(error.error.code);
+            reply(error.message.detail || error.message || error.error.message || 'Unknown error').code(error.error.code);
         }
         else {
-            reply().code(500);
+            reply(error).code(500);
             console.error(error);
         }
     }

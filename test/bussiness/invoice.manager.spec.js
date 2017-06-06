@@ -1100,7 +1100,7 @@ describe('invoice.manager', function ()
             it('should call companyDao.getCompanyById', function ()
             {
                 expect(companyDaoMock.getCompanyById).callCount(1);
-                expect(companyDaoMock.getCompanyById).calledWith(2);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
             });
             it('should call googleMethod.renameFile', function ()
             {
@@ -1150,7 +1150,7 @@ describe('invoice.manager', function ()
             it('should call companyDao.getCompanyById', function ()
             {
                 expect(companyDaoMock.getCompanyById).callCount(1);
-                expect(companyDaoMock.getCompanyById).calledWith(2);
+                expect(companyDaoMock.getCompanyById).calledWith(1);
             });
             it('should call googleMethod.renameFile', function ()
             {

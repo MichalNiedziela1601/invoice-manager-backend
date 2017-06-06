@@ -6,9 +6,7 @@ const person = {
     nip: 1234527890,
     addressId: 1,
     shortcut: 'KOWALJAN_KRK',
-    bankName: null,
-    bankAccount: null,
-    swift: null,
+    bankAccounts: null,
     googlePersonId: null
 };
 
@@ -19,9 +17,7 @@ const personAfterAddFolder = {
     nip: 1234527890,
     addressId: 1,
     shortcut: 'KOWALJAN_KRK',
-    bankName: null,
-    bankAccount: null,
-    swift: null,
+    bankAccounts: null,
     googlePersonId: 'wrwewq34w4'
 };
 
@@ -31,11 +27,9 @@ const personAdd = {
     lastName: 'Smith',
     shortcut: 'SMITHJOHN',
     nip: null,
-    bankName: 'BANK',
-    bankAccount: '9878979879454545',
+    bankAccounts: null,
     addressId: 1,
-    googlePersonId: null,
-    swift: null
+    googlePersonId: null
 };
 
 const getPersons = [
@@ -46,9 +40,7 @@ const getPersons = [
         nip: 1234527890,
         addressId: 1,
         shortcut: 'KOWALJAN_KRK',
-        bankName: null,
-        bankAccount: null,
-        swift: null,
+        bankAccounts: null,
         googlePersonId: null
     },
 
@@ -59,9 +51,7 @@ const getPersons = [
         nip: null,
         addressId: 2,
         shortcut: 'ZALEWMARIAN_CITY1',
-        bankName: null,
-        bankAccount: null,
-        swift: null,
+        bankAccounts: null,
         googlePersonId: null
     }
 ];
@@ -73,11 +63,9 @@ const updatePerson = {
     nip: 1234527890,
     addressId: 1,
     shortcut: 'KOWALJAN_KRK',
-    bankName: 'BANK',
-    bankAccount: null,
-    swift: null,
+    bankAccounts: null,
     googlePersonId: null
-}
+};
 
 module.exports = {
     person, personAfterAddFolder, personAdd, getPersons, updatePerson

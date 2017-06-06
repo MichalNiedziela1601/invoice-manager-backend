@@ -34,8 +34,8 @@ function addPerson(person)
 {
     person.lastName = person.lastName[0].toUpperCase() + person.lastName.slice(1);
     person.shortcut = person.shortcut.toUpperCase();
-    return db.one('INSERT INTO person (first_name,last_name,shortcut,address_id, nip, bank_name, bank_account) VALUES ($1,$2,$3,$4,$5,$6,$7) returning id',
-            [person.firstName, person.lastName, person.shortcut, person.addressId, person.nip, person.bankName, person.bankAccount]);
+    return db.one('INSERT INTO person (first_name,last_name,shortcut,address_id, nip, bank_accounts) VALUES ($1,$2,$3,$4,$5,$6) returning id',
+            [person.firstName, person.lastName, person.shortcut, person.addressId, person.nip, person.bankAccounts]);
 }
 
 function findShortcut(filter)
@@ -49,11 +49,9 @@ function findByNip(nip)
             .then(person =>
             {
                 return parser.parseObj(person);
-            }).catch(error =>
+            }).catch(() =>
             {
-                if (error.received === 0) {
-                    throw applicationException.new(applicationException.NOT_FOUND, error)
-                }
+                throw applicationException.new(applicationException.NOT_FOUND, 'Person not found')
             });
 }
 
@@ -68,8 +66,8 @@ function getPersons()
 
 function updatePerson(person)
 {
-    return db.none('UPDATE person SET first_name = $2, last_name = $3, nip = $4, bank_name = $5, bank_account = $6 WHERE id = $1',
-    [person.id, person.firstName, person.lastName, person.nip, person.bankName, person.bankAccount]);
+    return db.none('UPDATE person SET first_name = $2, last_name = $3, nip = $4, bank_accounts = $5 WHERE id = $1',
+            [person.id, person.firstName, person.lastName, person.nip, person.bankAccounts]);
 }
 
 module.exports = {

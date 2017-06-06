@@ -28,7 +28,6 @@ let companyMock = {id: 1, name: 'Firma Test', addressId: 1};
 
 let companyDAOMock = {
     getCompanies: sinon.stub(),
-    addAddress: sinon.stub().resolves(),
     addCompany: sinon.stub().resolves(),
     getNips: sinon.stub().resolves(),
     getCompanyById: sinon.stub().resolves(companyMock),
@@ -41,7 +40,8 @@ let companyDAOMock = {
 };
 let addressDAOMock = {
     getAddressById: sinon.stub().resolves(),
-    updateAddress: sinon.stub().resolves()
+    updateAddress: sinon.stub().resolves(),
+    addAddress: sinon.stub()
 };
 
 let companyManager = proxyquire('../../app/business/company.manager', {
@@ -123,21 +123,6 @@ describe('company.manager', function ()
         });
     });
 
-    describe('addAddress', function ()
-    {
-        before(function ()
-        {
-            return companyManager.addAddress('address');
-        });
-        it('should call addAddress on companyDao', function ()
-        {
-            expect(companyDAOMock.addAddress).to.have.callCount(1);
-        });
-        it('should call addAddress with company address', function ()
-        {
-            expect(companyDAOMock.addAddress).to.have.been.calledWith('address');
-        });
-    });
     describe('addCompany', function ()
     {
         before(function ()
@@ -145,8 +130,8 @@ describe('company.manager', function ()
             companyDAOMock.getCompanyByNip.reset();
             addressDAOMock.getAddressById.reset();
             companyDAOMock.getCompanyByNip.rejects();
-            companyDAOMock.addAddress.reset();
-            companyDAOMock.addAddress.withArgs({street: 'goodStreet'}).resolves(100);
+            addressDAOMock.addAddress.reset();
+            addressDAOMock.addAddress.withArgs({street: 'goodStreet'}).resolves(100);
         });
         describe('always', function ()
         {
@@ -156,11 +141,11 @@ describe('company.manager', function ()
             });
             it('should call addAddress on companyDao', function ()
             {
-                expect(companyDAOMock.addAddress).to.have.callCount(1);
+                expect(addressDAOMock.addAddress).to.have.callCount(1);
             });
             it('should call addAddress on companyDao with company address', function ()
             {
-                expect(companyDAOMock.addAddress).to.have.been.calledWith({street: 'goodStreet'});
+                expect(addressDAOMock.addAddress).to.have.been.calledWith({street: 'goodStreet'});
             });
         });
         describe('when company address successful add to database', function ()
@@ -179,7 +164,7 @@ describe('company.manager', function ()
             before(function ()
             {
                 companyDAOMock.addCompany.reset();
-                companyDAOMock.addAddress.withArgs({street: 'badStreet'}).rejects();
+                addressDAOMock.addAddress.withArgs({street: 'badStreet'}).rejects();
             });
 
             it('should call addCompany on companyDao with company data', function ()
@@ -288,11 +273,11 @@ describe('company.manager', function ()
             before(function ()
             {
                 companyDAOMock.getCompanyById.reset();
-                companyDAOMock.addAddress.reset();
+                addressDAOMock.addAddress.reset();
 
                 companyMock = {name: 'Firma Test 2', id: 2};
                 companyDAOMock.getCompanyById.withArgs(companyMock.id).resolves(companyMock);
-                companyDAOMock.addAddress.withArgs(addressChange).resolves(2);
+                addressDAOMock.addAddress.withArgs(addressChange).resolves(2);
                 companyManager.updateCompanyAddress(addressChange, companyMock.id);
             });
 

@@ -1,6 +1,6 @@
-INSERT INTO company (name, nip, regon, address_id,bank_account, bank_name, shortcut) VALUES
-  ( 'Kuba',1029384756, 243124,null,'22068903623586048228853407','Alior Bank','KUBA'),
-  ('Firma Testowa',1029456789,null,null,'22068903623586048228853408','ING','FIRMTEST');
+INSERT INTO company (name, nip, regon, address_id,bank_accounts, shortcut) VALUES
+  ( 'Kuba',1029384756, 243124,null,'{"0" : {"editMode": false, "account": "56657567567567", "name": "PLN", "bankName" : "BANK MILLENNIUM S.A.", "swift": "BIGBPLPW"}}','KUBA'),
+  ('Firma Testowa',1029456789,null,null,'{"0" : {"editMode": false, "account": "56657567567567", "name": "PLN", "bankName" : "BANK MILLENNIUM S.A.", "swift": "BIGBPLPW"}}','FIRMTEST');
 
 INSERT INTO
   users
