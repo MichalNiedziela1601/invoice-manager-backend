@@ -54,11 +54,6 @@ function addCompany(company)
 }
 
 
-function getNips(nip)
-{
-    return companyDao.getNips(nip);
-}
-
 function updateCompanyAddress(address, companyId)
 {
     return companyDao.getCompanyById(companyId).then(company =>
@@ -108,5 +103,5 @@ function updateCompany(company)
 }
 
 module.exports = {
-    getCompanies, addCompany, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut, updateCompany
+    getCompanies, addCompany, getCompanyDetails, updateCompanyAddress, addFolderId, getCompanyById, findShortcut, updateCompany
 };

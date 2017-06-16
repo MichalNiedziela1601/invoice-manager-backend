@@ -21,8 +21,7 @@ module.exports = {
             reverseCharge: Joi.boolean(),
             paymentMethod: Joi.string(),
             currency: Joi.string(),
-            dealerAccountNr: Joi.string(),
-            recipentAccountNr: Joi.string().optional(),
+            dealerAccountNr: Joi.string()
         },
         invoiceById: {
             id: Joi.number().min(1).required()
@@ -40,7 +39,7 @@ module.exports = {
         },
         company: {
             name: Joi.string().min(2).required(),
-            nip: [Joi.number(), Joi.allow(null)],
+            nip: [Joi.string(), Joi.allow(null)],
             regon: [Joi.number(),Joi.allow(null)],
             shortcut: Joi.string(),
             bankAccounts: Joi.any(),
@@ -50,7 +49,6 @@ module.exports = {
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
-                state: [Joi.string(), Joi.allow(null)],
                 country: Joi.string(),
                 countryCode: Joi.string(),
                 id: Joi.number().optional()
@@ -64,7 +62,7 @@ module.exports = {
         },
         updatedCompany: {
             name: Joi.string().min(2).required(),
-            nip: [Joi.number(), Joi.allow(null)],
+            nip: [Joi.string(), Joi.allow(null)],
             regon: [Joi.number(),Joi.allow(null)],
             shortcut: Joi.string(),
             bankAccounts: Joi.any(),
@@ -78,7 +76,6 @@ module.exports = {
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
-                state: [Joi.string(), Joi.allow(null)],
                 country: Joi.string(),
                 countryCode: Joi.string(),
                 id: Joi.number().optional()
@@ -90,7 +87,6 @@ module.exports = {
             flatNr: Joi.any().optional(),
             postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
             city: Joi.string().required(),
-            state: [Joi.string(), Joi.allow(null)],
             country: Joi.string().optional(),
             countryCode: Joi.string(),
             id: Joi.number()
@@ -104,7 +100,7 @@ module.exports = {
         person: {
             firstName: Joi.string().min(2).required(),
             lastName: Joi.string().min(2).required(),
-            nip: [Joi.number(), Joi.allow(null)],
+            nip: [Joi.string(), Joi.allow(null)],
             shortcut: Joi.string(),
             bankAccounts: Joi.any(),
             address: {
@@ -113,7 +109,6 @@ module.exports = {
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
-                state: [Joi.string(), Joi.allow(null)],
                 country: Joi.string(),
                 countryCode: Joi.string(),
                 id: Joi.number().optional()
@@ -122,7 +117,7 @@ module.exports = {
         updatedPerson: {
             firstName: Joi.string().min(2).required(),
             lastName: Joi.string().min(2).required(),
-            nip: [Joi.number(), Joi.allow(null)],
+            nip: [Joi.string(), Joi.allow(null)],
             shortcut: Joi.string(),
             id: Joi.number(),
             addressId: Joi.number(),
@@ -134,7 +129,6 @@ module.exports = {
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
-                state: [Joi.string(), Joi.allow(null)],
                 country: Joi.string(),
                 countryCode: Joi.string(),
                 id: Joi.number().optional()

@@ -8,7 +8,6 @@ const addresses = [
         city: 'Tarnów',
         country: 'Poland',
         countryCode: 'PL',
-        state: null
     }, {
         id: 2,
         street: 'Krakowska',
@@ -18,7 +17,6 @@ const addresses = [
         city: 'Tarnów',
         country: 'Poland',
         countryCode: 'PL',
-        state: null
     }
 ];
 
@@ -32,7 +30,6 @@ const updateAddress = [
         city: 'Tarnów',
         country: 'Poland',
         countryCode: 'PL',
-        state: null
     }
 ];
 
@@ -45,7 +42,6 @@ const addressAdd = {
     id: 3,
     country: 'Poland',
     countryCode: 'PL',
-    state: null
 };
 
 module.exports = {

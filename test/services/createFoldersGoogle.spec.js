@@ -96,6 +96,29 @@ describe('createFoldersGoogle', function ()
                 expect(companyDaoMock.addFolderId).calledWith(companyFolderId, company.nip);
             });
         });
+
+        describe('when throw error', function ()
+        {
+            before(() =>
+            {
+                companyDaoMock.getCompanyById.reset();
+                googleMethods.checkFolderExists.reset();
+                companyDaoMock.getCompanyById.withArgs(1).resolves(company);
+                googleMethods.checkFolderExists.rejects();
+                googleMethods.createFolder.rejects('Cannot create folder');
+
+            });
+            it('should catch error', function ()
+            {
+                createFoldersGoogleMock.createFolderCompany('auth', 1).catch(error =>
+                {
+                    expect(error).eql({
+                        error: {message: 'ERROR', code: 500},
+                        message: 'Something bad with createFolderCompany: Cannot create folder'
+                    });
+                })
+            });
+        });
     });
 
     describe('createYearMonthFolder', function ()
@@ -118,11 +141,11 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name1, companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name2, yearId.files[0].id);
+                expect(googleMethods.findFolderByName).calledWith('auth', name2, yearId.files[0].id);
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -154,16 +177,16 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name1, companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name2, yearId.files[0].id);
+                expect(googleMethods.findFolderByName).calledWith('auth', name2, yearId.files[0].id);
             });
             it('should call createChildFolder', function ()
             {
                 expect(googleMethods.createChildFolder).callCount(1);
-                expect(googleMethods.createChildFolder).calledWith('auth',name2,yearId.files[0].id)
+                expect(googleMethods.createChildFolder).calledWith('auth', name2, yearId.files[0].id)
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -197,16 +220,16 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name1, companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name2, createYearId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name2, createYearId);
             });
             it('should call createChildFolder', function ()
             {
                 expect(googleMethods.createChildFolder).callCount(1);
-                expect(googleMethods.createChildFolder).calledWith('auth',name1,companyFolderId.folderId)
+                expect(googleMethods.createChildFolder).calledWith('auth', name1, companyFolderId.folderId)
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -240,11 +263,11 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call with auth, year and companyFolderId', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name1,companyFolderId.folderId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name1, companyFolderId.folderId);
             });
             it('should second call with auth, month and yearFolderId arguments', function ()
             {
-                expect(googleMethods.findFolderByName).calledWith('auth',name2, createYearId);
+                expect(googleMethods.findFolderByName).calledWith('auth', name2, createYearId);
             });
             it('should call createChildFolder', function ()
             {
@@ -252,7 +275,7 @@ describe('createFoldersGoogle', function ()
             });
             it('should first call createChildFolder with auth, year and companyFolderId arguments', function ()
             {
-                expect(googleMethods.createChildFolder).calledWith('auth',name1,companyFolderId.folderId)
+                expect(googleMethods.createChildFolder).calledWith('auth', name1, companyFolderId.folderId)
             });
             it('should set invoice googleYearFolderId', function ()
             {
@@ -263,6 +286,25 @@ describe('createFoldersGoogle', function ()
                 expect(invoice.googleMonthFolderId).eql(createMonthId);
             });
 
+        });
+
+        describe('when throw error', function ()
+        {
+            before(() =>
+            {
+                googleMethods.findFolderByName.reset();
+                googleMethods.findFolderByName.rejects('Cannot find folder');
+            });
+            it('should catch error', function ()
+            {
+                createFoldersGoogleMock.createYearMonthFolder('auth', invoice, companyFolderId).catch(error =>
+                {
+                    expect(error).eql({
+                        error: {message: 'ERROR', code: 500},
+                        message: 'Something bad with createYearMonthFolder: Cannot find folder'
+                    });
+                })
+            });
         });
     });
 });

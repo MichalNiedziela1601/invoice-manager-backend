@@ -45,7 +45,7 @@ function findShortcut(filter)
 
 function findByNip(nip)
 {
-    return db.one('SELECT * FROM person WHERE nip = $1', [nip])
+    return db.one('SELECT * FROM person WHERE nip::text = $1', [nip])
             .then(person =>
             {
                 return parser.parseObj(person);

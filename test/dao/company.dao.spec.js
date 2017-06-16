@@ -198,51 +198,6 @@ describe('company.dao', function ()
         });
     });
 
-    describe('getNips', function ()
-    {
-        let nips = [];
-        describe('when nip valid to more then one', function ()
-        {
-            beforeEach(function ()
-            {
-                return companyDAO.getNips(102).then(result =>
-                {
-                    nips = result;
-                })
-            });
-            it('should return array of nips', function ()
-            {
-                expect(nips)
-                        .to
-                        .eql([
-                            {
-                                name: data.companies[0].name,
-                                nip: data.companies[0].nip,
-                                id: data.companies[0].id
-                            },
-                            {
-                                name: data.companies[1].name,
-                                nip: data.companies[1].nip,
-                                id: data.companies[1].id
-                            }]);
-            });
-        });
-        describe('when nip valid to one', function ()
-        {
-            beforeEach(function ()
-            {
-                return companyDAO.getNips(10293).then(result =>
-                {
-                    nips = result;
-                })
-            });
-            it('should return array of nips', function ()
-            {
-                expect(nips).to.eql([{name: data.companies[0].name, nip: data.companies[0].nip, id: data.companies[0].id}]);
-            });
-        });
-
-    });
 
     describe('updateCompanyAddress', function ()
     {

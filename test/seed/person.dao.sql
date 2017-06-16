@@ -5,5 +5,5 @@ INSERT INTO address (street, build_nr, flat_nr, post_code, city,country, country
 INSERT INTO
   person
 (first_name, last_name, nip, address_id,shortcut) VALUES
-  ( 'Jan','Kowalski',1234527890,1,'KOWALJAN_KRK'),
+  ( 'Jan','Kowalski','1234527890',1,'KOWALJAN_KRK'),
   ( 'Marian','Zalewski',null,2,'ZALEWMARIAN_CITY1');

@@ -28,7 +28,6 @@ const invoices = [
         contractorType: null,
         reverseCharge: null,
         dealerAccountNr: '1',
-        recipentAccountNr: null
     },
     {
         id: 2,
@@ -59,7 +58,6 @@ const invoices = [
         contractorType: null,
         reverseCharge: null,
         dealerAccountNr: '1',
-        recipentAccountNr: null
     },
     {
         id: 3,
@@ -90,7 +88,6 @@ const invoices = [
         contractorType: null,
         reverseCharge: null,
         dealerAccountNr: '1',
-        recipentAccountNr: null
     }
 ];
 
@@ -123,7 +120,6 @@ const afterUpdateInvoice = {
     contractorType: null,
     reverseCharge: null,
     dealerAccountNr: '1',
-    recipentAccountNr: null
 };
 
 const invoicesAfterDelete = [
@@ -157,7 +153,6 @@ const invoicesAfterDelete = [
         contractorType: null,
         reverseCharge: null,
         dealerAccountNr: '1',
-        recipentAccountNr: null
     },
     {
         id: 3,
@@ -188,7 +183,6 @@ const invoicesAfterDelete = [
         contractorType: null,
         reverseCharge: null,
         dealerAccountNr: '1',
-        recipentAccountNr: null
     }
 ];
 

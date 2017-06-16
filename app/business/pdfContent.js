@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const companyManager = require('./company.manager.js');
-const translate = require('./../REST/translationInvoice');
+const translate = require('./translationInvoice');
 const personManager = require('./person.manager.js');
 const appException = require('../services/applicationException');
 
@@ -25,7 +25,6 @@ function pdfContent(invoice, seller, recipient)
     let description = !_.isUndefined(invoice.description) ?
             [{text: translate[lang].notes + ': ', bold: true}, {text: invoice.description}] :
             '';
-
     if (invoice.reverseCharge) {
         invoiceNr = [
             {text: translate[lang].invoice + ('pl' === lang ? ' (' + translate['en'].invoice + ') ' : ' ') + invoice.invoiceNr + ''},
