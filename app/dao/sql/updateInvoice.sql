@@ -23,6 +23,8 @@ advance = $22,
 file_id = $23,
 currency = $24,
 language = $25,
-reverse_charge = $26
+reverse_charge = $26,
+dealer_account_nr = $27,
+recipent_account_nr = $28
 WHERE
 id = $1;

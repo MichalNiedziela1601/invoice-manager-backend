@@ -38,10 +38,6 @@ function getCompanyDetails(nip)
             });
 }
 
-function addAddress(address)
-{
-    return companyDao.addAddress(address)
-}
 function addCompany(company)
 {
     return getCompanyDetails(company.nip).then(() =>
@@ -49,7 +45,7 @@ function addCompany(company)
         throw applicationException.new(applicationException.CONFLICT, 'Company with this nip exist in database');
     }, () =>
     {
-        return addAddress(company.address).then(function (addressId)
+        return addressDAO.addAddress(company.address).then(function (addressId)
         {
             company.addressId = addressId;
             return companyDao.addCompany(company)
@@ -70,7 +66,7 @@ function updateCompanyAddress(address, companyId)
         if (company.addressId) {
             return addressDAO.updateAddress(address, company.addressId);
         } else {
-            return addAddress(address).then(addressId =>
+            return addressDAO.addAddress(address).then(addressId =>
             {
                 return companyDao.updateCompanyAddress(addressId, companyId);
             });
@@ -112,5 +108,5 @@ function updateCompany(company)
 }
 
 module.exports = {
-    getCompanies, addCompany, addAddress, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut, updateCompany
+    getCompanies, addCompany, getCompanyDetails, getNips, updateCompanyAddress, addFolderId, getCompanyById, findShortcut, updateCompany
 };

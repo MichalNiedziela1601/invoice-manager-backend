@@ -97,7 +97,6 @@ module.exports = {
         server.route({
             method: 'PUT',
             path: '/api/user/account',
-            config: {validate: {payload: joiSchema.schema.account}},
             handler: function (request, reply)
             {
                 const account = request.payload;

@@ -37,13 +37,11 @@ CREATE TABLE "company" (
 	"id"  INTEGER DEFAULT nextval('company_id_seq'::regclass) NOT NULL,
 	"name" TEXT NOT NULL,
 	"shortcut" TEXT NOT NULL UNIQUE,
-	"nip" bigint NOT NULL UNIQUE,
+	"nip" TEXT UNIQUE,
 	"regon" bigint UNIQUE,
 	"address_id" bigint,
 	"google_company_id" TEXT UNIQUE,
-	"bank_account" TEXT,
-	"swift" TEXT,
-	"bank_name" TEXT,
+	"bank_accounts" json,
 	CONSTRAINT company_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -58,6 +56,9 @@ CREATE TABLE "address" (
 	"flat_nr" TEXT,
 	"post_code" TEXT NOT NULL,
 	"city" TEXT NOT NULL,
+	"state" TEXT,
+	"country" TEXT NOT NULL,
+	"country_code" TEXT NOT NULL,
 	CONSTRAINT address_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE
@@ -94,6 +95,8 @@ CREATE TABLE "invoice" (
 	"company_recipent" bigint,
 	"person_dealer" bigint,
 	"person_recipent" bigint,
+	"dealer_account_nr" TEXT,
+	"recipent_account_nr" TEXT,
 	"google_year_folder_id" TEXT,
 	"google_month_folder_id" TEXT,
 	"description" TEXT,
@@ -116,9 +119,7 @@ CREATE TABLE "person" (
 	"nip" bigint UNIQUE,
 	"address_id" bigint NOT NULL,
 	"google_person_id" TEXT UNIQUE,
-	"bank_name" TEXT,
-    "bank_account" TEXT UNIQUE,
-    "swift" TEXT,
+	"bank_accounts" json,
 	CONSTRAINT person_pk PRIMARY KEY ("id")
 ) WITH (
   OIDS=FALSE

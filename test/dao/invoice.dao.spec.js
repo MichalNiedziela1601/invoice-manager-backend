@@ -113,7 +113,9 @@ describe('invoice.dao', function ()
             fileId: null,
             language: null,
             contractorType: null,
-            reverseCharge: null
+            reverseCharge: null,
+            dealerAccountNr: null,
+            recipentAccountNr: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -306,7 +308,9 @@ describe('invoice.dao', function ()
             advance: null,
             currency: null,
             fileId: null,
-            language: null
+            language: null,
+            dealerAccountNr: '1',
+            recipentAccountNr: null
         };
         describe('when properties valid', function ()
         {

@@ -20,7 +20,9 @@ module.exports = {
             products: Joi.required(),
             reverseCharge: Joi.boolean(),
             paymentMethod: Joi.string(),
-            currency: Joi.string()
+            currency: Joi.string(),
+            dealerAccountNr: Joi.string(),
+            recipentAccountNr: Joi.string().optional(),
         },
         invoiceById: {
             id: Joi.number().min(1).required()
@@ -38,17 +40,19 @@ module.exports = {
         },
         company: {
             name: Joi.string().min(2).required(),
-            nip: Joi.number().required(),
+            nip: [Joi.number(), Joi.allow(null)],
             regon: [Joi.number(),Joi.allow(null)],
             shortcut: Joi.string(),
-            bankName: Joi.string(),
-            bankAccount: Joi.string(),
+            bankAccounts: Joi.any(),
             address: {
                 street: Joi.string().required(),
                 buildNr: Joi.string().required(),
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
+                state: [Joi.string(), Joi.allow(null)],
+                country: Joi.string(),
+                countryCode: Joi.string(),
                 id: Joi.number().optional()
             }
         },
@@ -60,11 +64,10 @@ module.exports = {
         },
         updatedCompany: {
             name: Joi.string().min(2).required(),
-            nip: Joi.number().required(),
+            nip: [Joi.number(), Joi.allow(null)],
             regon: [Joi.number(),Joi.allow(null)],
             shortcut: Joi.string(),
-            bankName: Joi.string(),
-            bankAccount: Joi.string(),
+            bankAccounts: Joi.any(),
             id: Joi.number(),
             addressId: Joi.number(),
             googleCompanyId: [Joi.string(),Joi.allow(null)],
@@ -75,6 +78,9 @@ module.exports = {
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
+                state: [Joi.string(), Joi.allow(null)],
+                country: Joi.string(),
+                countryCode: Joi.string(),
                 id: Joi.number().optional()
             }
         },
@@ -84,26 +90,32 @@ module.exports = {
             flatNr: Joi.any().optional(),
             postCode: Joi.string().regex(/^\d{2}-\d{3}$/).required(),
             city: Joi.string().required(),
+            state: [Joi.string(), Joi.allow(null)],
+            country: Joi.string().optional(),
+            countryCode: Joi.string(),
             id: Joi.number()
         },
         account: {
-            bankName: Joi.string().required(),
-            bankAccount: Joi.string().required(),
-            swift: Joi.string().optional()
+            bankName: Joi.required(),
+            account: Joi.required(),
+            swift: Joi.optional(),
+            currency: Joi.required()
         },
         person: {
             firstName: Joi.string().min(2).required(),
             lastName: Joi.string().min(2).required(),
             nip: [Joi.number(), Joi.allow(null)],
             shortcut: Joi.string(),
-            bankName: Joi.string(),
-            bankAccount: Joi.string(),
+            bankAccounts: Joi.any(),
             address: {
                 street: Joi.string().required(),
                 buildNr: Joi.string().required(),
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
+                state: [Joi.string(), Joi.allow(null)],
+                country: Joi.string(),
+                countryCode: Joi.string(),
                 id: Joi.number().optional()
             }
         },
@@ -112,18 +124,19 @@ module.exports = {
             lastName: Joi.string().min(2).required(),
             nip: [Joi.number(), Joi.allow(null)],
             shortcut: Joi.string(),
-            bankName: Joi.string(),
-            bankAccount: Joi.string(),
             id: Joi.number(),
             addressId: Joi.number(),
             googlePersonId: [Joi.string(),Joi.allow(null)],
-            swift: [Joi.string(),Joi.allow(null)],
+            bankAccounts: Joi.any(),
             address: {
                 street: Joi.string().required(),
                 buildNr: Joi.string().required(),
                 flatNr: Joi.any().optional(),
                 postCode: Joi.string().required(),
                 city: Joi.string().required(),
+                state: [Joi.string(), Joi.allow(null)],
+                country: Joi.string(),
+                countryCode: Joi.string(),
                 id: Joi.number().optional()
             }
         },

@@ -2,6 +2,7 @@
 const companyManager = require('../business/company.manager.js');
 const joiSchema = require('./joi.schema.js');
 const applicationException = require('../services/applicationException');
+
 module.exports = {
     register: function (server)
     {

@@ -267,7 +267,8 @@ function pdfContent(invoice, seller, recipient)
                                 [{text: seller.address.postCode + ' ' + seller.address.city}],
                                 [
                                     {
-                                        text: [{text: (seller.nip ? 'NIP: ' : ''), bold: true}, {text: seller.nip}],
+                                        text: [{text: (seller.nip ? 'NIP: ' : ''), bold: true},
+                                            {text: invoice.reverseCharge && seller.nip ? seller.address.countryCode : ''}, {text: seller.nip}],
                                         margin: [0, 0, 0, 20]
                                     }]
                             ]
@@ -294,7 +295,12 @@ function pdfContent(invoice, seller, recipient)
                                 }],
                                 [{text: recipient.address.postCode + ' ' + recipient.address.city}],
                                 [{
-                                    text: [{text: (recipient.nip ? 'NIP: ' : ''), bold: true}, {text: recipient.nip}],
+                                    text: [{
+                                        text: (recipient.nip ? 'NIP: ' : ''),
+                                        bold: true
+                                    },
+                                        {text: invoice.reverseCharge && recipient.nip ? recipient.address.countryCode : ''},
+                                        {text: recipient.nip}],
                                     margin: [0, 0, 0, 20]
                                 }]
                             ]
@@ -340,8 +346,8 @@ function pdfContent(invoice, seller, recipient)
                     width: '*',
                     text: [('bank transfer' === invoice.paymentMethod ? translate[lang].bankTransfer : translate[lang].cash) + '\n',
                            invoice.executionEndDate + '\n',
-                           seller.bankAccount + '\n',
-                           seller.swift]
+                           (invoice.dealerAccountNr ? seller.bankAccounts[invoice.dealerAccountNr].account : '') + '\n',
+                           (invoice.dealerAccountNr ? seller.bankAccounts[invoice.dealerAccountNr].swift : '')]
                 }
                 ],
             },
@@ -454,7 +460,7 @@ function generate(invoice)
         try {
             return pdfContent(invoice, seller, recipient);
         } catch (error) {
-            throw appException.new(appException.ERROR,'Something wrong in pdfContent');
+            throw appException.new(appException.ERROR, 'Something wrong in pdfContent');
         }
     });
 }

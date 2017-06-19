@@ -391,9 +391,9 @@ function updateBuyInvoice(invoice, id)
             {
                 auth = token;
                 if ('company' === invoice.contractorType) {
-                    return companyDao.getCompanyById(invoice.companyRecipent);
+                    return companyDao.getCompanyById(invoice.companyDealer);
                 } else if ('person' === invoice.contractorType) {
-                    return personDao.getPersonById(invoice.personRecipent);
+                    return personDao.getPersonById(invoice.personDealer);
                 }
 
             })
