@@ -8,7 +8,7 @@ const testHelper = require('../testHelper');
 let result = {};
 
 
-describe('', function ()
+describe('personDAO', function ()
 {
     beforeEach(function ()
     {
@@ -168,7 +168,7 @@ describe('', function ()
         {
             beforeEach(function ()
             {
-                return personDAO.findByNip(1234527890).then(person => {
+                return personDAO.findByNip('1234527890').then(person => {
                     result = person;
                 });
             });

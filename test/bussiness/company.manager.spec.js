@@ -204,26 +204,6 @@ describe('company.manager', function ()
         });
     });
 
-    describe('getNips', function ()
-    {
-        describe('when some part of nip are is match', function ()
-        {
-            before(function ()
-            {
-                return companyManager.getNips(34);
-            });
-
-            it('should call getNips from companyDAO ', function ()
-            {
-                expect(companyDAOMock.getNips).to.have.callCount(1);
-            });
-            it('should call getNips with some part of nip', function ()
-            {
-                expect(companyDAOMock.getNips).to.have.calledWith(34);
-            });
-        });
-    });
-
     describe('updateCompanyAddress', function ()
     {
         let addressChange = {

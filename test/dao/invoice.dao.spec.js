@@ -115,7 +115,6 @@ describe('invoice.dao', function ()
             contractorType: null,
             reverseCharge: null,
             dealerAccountNr: null,
-            recipentAccountNr: null
         };
 
         let mockedInvoiceId = {id: 4};
@@ -350,65 +349,135 @@ describe('invoice.dao', function ()
     describe('getInvoiceNumber', function ()
     {
         let number = {};
-        describe('when find max', function ()
+        describe('when type is buy', function ()
         {
-            beforeEach(function ()
+            describe('when find max', function ()
             {
-                return invoiceDAO.getInvoiceNumber({year: 2012, month: 2, type: 'buy', companyId: 2}).then(result => {
-                    number = result;
-                })
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceNumber({year: 2012, month: 2, type: 'buy', companyId: 2}).then(result => {
+                        number = result;
+                    })
+                });
+                it('should return max', function ()
+                {
+                    expect(number).eql({number: 2});
+                });
             });
-            it('should return max', function ()
+
+            describe('when not find max', function ()
             {
-                expect(number).eql({number: 2});
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceNumber({year: 2012, month: 3, type: 'buy', companyId: 2}).then(result => {
+                        number = result;
+                    })
+                });
+                it('should return max', function ()
+                {
+                    expect(number).eql({number: null});
+                });
             });
         });
-
-        describe('when not find max', function ()
+        describe('when type sell', function ()
         {
-            beforeEach(function ()
+            describe('when find max', function ()
             {
-                return invoiceDAO.getInvoiceNumber({year: 2012, month: 3, type: 'buy', companyId: 2}).then(result => {
-                    number = result;
-                })
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceNumber({year: 2012, month: 4, type: 'sell', companyId: 2}).then(result => {
+                        number = result;
+                    })
+                });
+                it('should return max', function ()
+                {
+                    expect(number).eql({number: 2});
+                });
             });
-            it('should return max', function ()
+
+            describe('when not find max', function ()
             {
-                expect(number).eql({number: null});
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceNumber({year: 2012, month: 3, type: 'sell', companyId: 2}).then(result => {
+                        number = result;
+                    })
+                });
+                it('should return max', function ()
+                {
+                    expect(number).eql({number: null});
+                });
             });
         });
     });
 
     describe('getInvoiceFullNumber', function ()
     {
-        describe('when find number', function ()
+        describe('when type buy', function ()
         {
-            let error = {};
-            beforeEach(function ()
+            describe('when find number', function ()
             {
-                return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 2, type: 'buy'},2).catch(result => {
-                    error = result;
-                })
+                let error = {};
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 2, type: 'buy'},2).catch(result => {
+                        error = result;
+                    })
+                });
+                it('should throw error', function ()
+                {
+                    expect(error).eql({
+                        error: {message: 'CONFLICT', code: 409},
+                        message: 'This invoice number exists. Try another!'});
+                });
             });
-            it('should throw error', function ()
+            describe('when not find invoice', function ()
             {
-                expect(error).eql({
-                    error: {message: 'CONFLICT', code: 409},
-                    message: 'This invoice number exists. Try another!'});
+                let id = {};
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 4, type: 'buy'},2).then(result => {
+                        id = result;
+                    })
+                });
+                it('should return null', function ()
+                {
+                    expect(id).eql(null);
+                });
             });
         });
-        describe('when not find invoice', function ()
+
+        describe('when type sell', function ()
         {
-            let id = {};
-            beforeEach(function ()
+            describe('when find number', function ()
             {
-                return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 4, type: 'buy'},2).then(result => {
-                    id = result;
-                })
+                let error = {};
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 4, number: 2, type: 'sell'},2).catch(result => {
+                        error = result;
+                    })
+                });
+                it('should throw error', function ()
+                {
+                    expect(error).eql({
+                        error: {message: 'CONFLICT', code: 409},
+                        message: 'This invoice number exists. Try another!'});
+                });
             });
-            it('should return null', function ()
+            describe('when not find invoice', function ()
             {
-                expect(id).eql(null);
+                let id = {};
+                beforeEach(function ()
+                {
+                    return invoiceDAO.getInvoiceFullNumber({year: 2012, month: 2, number: 4, type: 'sell'},2).then(result => {
+                        id = result;
+                    })
+                });
+                it('should return null', function ()
+                {
+                    expect(id).eql(null);
+                });
             });
         });
     });

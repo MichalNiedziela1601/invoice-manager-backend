@@ -45,15 +45,6 @@ function getCompanyByNip(nip)
     });
 }
 
-function getNips(nip)
-{
-    nip = nip.toString().toUpperCase();
-    return db.any('SELECT id,nip,name FROM company WHERE nip::text like \'%$1#%\' OR shortcut::text like \'%$1#%\'', [nip]).then(companies =>
-    {
-        return parser.parseArrayOfObject(companies);
-    });
-}
-
 function updateCompanyAddress(addressId, companyId)
 {
     return db.none('UPDATE company SET address_id=$1 WHERE id=$2;', [addressId, companyId]);
@@ -99,7 +90,6 @@ module.exports = {
     getCompanyByNip,
     addCompanyRegister,
     getCompanyById,
-    getNips,
     updateCompanyAddress,
     addFolderId,
     updateAccount,

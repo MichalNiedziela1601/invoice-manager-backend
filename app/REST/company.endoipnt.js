@@ -53,22 +53,6 @@ module.exports = {
 
         server.route({
             method: 'GET',
-            path: '/api/companies/{nip}',
-            config: {validate: {params: joiSchema.schema.companyByNip}},
-            handler: function (request, reply)
-            {
-                companyManager.getNips(request.params.nip).then(company =>
-                {
-                    reply(company);
-                }).catch(error =>
-                {
-                    applicationException.errorHandler(error, reply);
-                });
-            }
-        });
-
-        server.route({
-            method: 'GET',
             path: '/api/company/shortcut',
             handler: function (request, reply)
             {
