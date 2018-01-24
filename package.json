@@ -1,31 +1,59 @@
 {
-    "name": "invoice-manager-backend",
-    "version": "1.0.0",
-    "main": "app/index.js",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/aniaw/invoice-manager-backend.git"
-    },
-    "keywords": [
-        "invoice",
-        "accountent"
-    ],
-    "authors": [
-        "sylwek2531 <sylwester.sztajner@labnoratory.com>",
-        "lukasss88 <lukasz.szymanski@labnoratory.com>",
-        "Bielbiel <bartlomiej.biel@labnoratory.com>",
-        "MichalNiedziela1601 <michal.niedziela@labnoratory.com>"
-    ],
-    "license": "ISC",
-    "dependencies": {
-        "bluebird": "3.5.0",
-        "hapi": "16.1.0",
-        "pg": "6.1.3",
-        "pg-promise": "5.6.3"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "seed": "node seed/seed.js",
-        "start": "node app/index.js"
-    }
+  "name": "invoice-manager-backend",
+  "version": "1.0.0",
+  "main": "app/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aniaw/invoice-manager-backend.git"
+  },
+  "keywords": [
+    "invoice",
+    "accountent"
+  ],
+  "authors": [
+    "sylwek2531 <sylwester.sztajner@labnoratory.com>",
+    "lukasss88 <lukasz.szymanski@labnoratory.com>",
+    "Bielbiel <bartlomiej.biel@labnoratory.com>",
+    "MichalNiedziela1601 <michal.niedziela@labnoratory.com>"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "1.0.2",
+    "bcrypt-then": "1.1.0",
+    "bluebird": "3.5.0",
+    "good": "7.1.0",
+    "good-console": "6.4.0",
+    "good-squeeze": "5.0.1",
+    "google-auth-library": "0.10.0",
+    "googleapis": "18.0.0",
+    "hapi": "16.1.0",
+    "hapi-auth-jwt": "4.0.0",
+    "joi": "10.2.2",
+    "jsonwebtoken": "7.3.0",
+    "lodash": "4.17.4",
+    "moment": "2.18.1",
+    "pdfmake": "0.1.28",
+    "pg": "6.1.3",
+    "pg-promise": "5.6.3"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "eslint": "3.17.1",
+    "grunt": "1.0.1",
+    "grunt-cli": "1.2.0",
+    "grunt-eslint": "19.0.0",
+    "istanbul": "0.4.5",
+    "load-grunt-tasks": "3.5.2",
+    "mocha": "3.2.0",
+    "proxyquire": "1.7.11",
+    "sinon": "2.0.0",
+    "sinon-chai": "2.9.0"
+  },
+  "scripts": {
+    "coverage": "node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
+    "test": "mocha --opts test/mocha.opts",
+    "seed": "node seed/seed.js",
+    "start": "nodemon app/index.js",
+    "token": "node googleToken/getGoogleToken.js"
+  }
 }
